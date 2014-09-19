@@ -12,6 +12,7 @@
 
 
 
+<link href="/_content/styles/sons-of-obsidian.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
@@ -86,7 +87,129 @@
 
             <!--Title: Try Getting an Optional Service by Plugin Type-->
 <!--Url: try-getting-an-optional-service-by-plugin-type-->
-<p>TODO(Write some content!)</p>
+
+
+<div class="alert alert-info"><i class="icon-info-sign"></i>The StructureMap team does not recommend using "optional" dependencies as shown in this topic, but
+external frameworks like ASP.Net MVC and Web API use this concept in their IoC container integration, so here it is. The StructureMap team
+prefers the usage of the <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">Nullo pattern</a> instead.</div>
+
+<p>In normal usage, if you ask StructureMap for a service and StructureMap doesn't recognize the requested type, the requested name, or know what the default should be for that type, StructureMap will fail fast by throwing an exception rather than returning a null. Sometimes though, you may want to
+retrieve an <em>optional</em> service from StructureMap that may or may not be registered in the Container. If that particular registration doesn't exist, you
+just want a null value. StructureMap provides first class support for <em>optional</em> dependencies through the usage of the <code>IContainer.TryGetInstance()</code> methods.</p>
+
+<p>Say you have a simple interface <code>IFoo</code> that may or may not be registered in the Container:</p>
+
+<pre data-linenums="10" class="prettyprint lang-cs">
+        public interface IFoo{}
+        public class Foo : IFoo{}
+</pre>
+
+<p>In your own code you might request the <code>IFoo</code> service like the code below, knowing that you'll
+take responsibility yourself for building the <code>IFoo</code> service if StructureMap doesn't have a registration
+for <code>IFoo</code>:</p>
+
+<pre data-linenums="84" class="prettyprint lang-cs">
+        public class MyFoo : IFoo{}
+
+        [Test]
+        public void real_usage()
+        {
+            var container = new Container();
+
+            // if the container doesn&#39;t know about it,
+            // I&#39;ll build it myself
+            var foo = container.TryGetInstance&lt;IFoo&gt;()
+                      ?? new MyFoo();
+        }
+</pre>
+
+<p>Just to make this perfectly clear, if StructureMap has a default registration for <code>IFoo</code>, you get this behavior:</p>
+
+<pre data-linenums="15" class="prettyprint lang-cs">
+        [Test]
+        public void i_have_got_that()
+        {
+            var container = new Container(_ =&gt; _.For&lt;IFoo&gt;().Use&lt;Foo&gt;());
+
+            container.TryGetInstance&lt;IFoo&gt;()
+                .ShouldNotBeNull();
+
+            // -- or --
+
+            container.TryGetInstance(typeof(IFoo))
+                .ShouldNotBeNull();
+        }
+</pre>
+
+<p>If StructureMap knows nothing about <code>IFoo</code>, you get a null:</p>
+
+<pre data-linenums="31" class="prettyprint lang-cs">
+        [Test]
+        public void i_do_not_have_that()
+        {
+            var container = new Container();
+
+            container.TryGetInstance&lt;IFoo&gt;()
+                .ShouldBeNull();
+
+            // -- or --
+
+            container.TryGetInstance(typeof(IFoo))
+                .ShouldBeNull();
+        }
+</pre>
+
+<p><section><h4 id="concretes" class="section-header">Concrete Types</h4></p>
+
+<p>Since it's not a perfect world, there are some gotchas you need to be aware of.
+While StructureMap will happily <em>auto-resolve</em> concrete types that aren't registered,
+that does not apply to the <code>TryGetInstance</code> mechanism:</p>
+
+<pre data-linenums="47" class="prettyprint lang-cs">
+        public class ConcreteThing{}
+
+        [Test]
+        public void no_auto_resolution_of_concrete_types()
+        {
+            var container = new Container();
+
+            container.TryGetInstance&lt;ConcreteThing&gt;()
+                .ShouldBeNull();
+
+            // now register ConcreteThing and do it again
+            container.Configure(_ =&gt; {
+                _.For&lt;ConcreteThing&gt;().Use&lt;ConcreteThing&gt;();
+            });
+
+            container.TryGetInstance&lt;ConcreteThing&gt;()
+                .ShouldNotBeNull();
+        }
+</pre>
+
+<p></section></p>
+
+<p><section><h4 id="generics" class="section-header">Optional Generic Types</h4></p>
+
+<p>If you are using open generic types, the <code>TryGetInstance()</code> mechanism <strong>can</strong> close the open generic registration
+to satisfy the optional dependency like this sample:</p>
+
+<pre data-linenums="68" class="prettyprint lang-cs">
+        public interface IThing&lt;T&gt;{}
+        public class Thing&lt;T&gt; : IThing&lt;T&gt;{}
+
+        [Test]
+        public void can_try_get_open_type_resolution()
+        {
+            var container = new Container(_ =&gt; {
+                _.For(typeof (IThing&lt;&gt;)).Use(typeof (Thing&lt;&gt;));
+            });
+
+            container.TryGetInstance&lt;IThing&lt;string&gt;&gt;()
+                .ShouldBeOfType&lt;Thing&lt;string&gt;&gt;();
+        }
+</pre>
+
+<p></section></p>
 
 
 
@@ -114,6 +237,8 @@
     
 
 <script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="/_content/scripts/prettify.js"></script>
+<script type="text/javascript" src="/_content/scripts/bootstrap-prettify.js"></script>
 <script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
 <script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
 <script type="text/javascript" src="/_content/scripts/toastr.js"></script>

@@ -88,12 +88,14 @@
 <!--Url: get-structuremap-->
 <p><section><h4 id="current-release" class="section-header">Current Release</h4></p>
 
-<p>The latest and greatest version of StructureMap is <strong>3.0</strong>. See the <a href="/release-notes" data-key="release-notes">Release Notes</a> for more information.
+<p>The current version of StructureMap will always be available on <a href="https://www.nuget.org/packages/structuremap/">Nuget</a>. See the <a href="/release-notes" data-key="release-notes">Release Notes</a> for more information.
 </section></p>
 
 <p><section><h4 id="sup-platforms" class="section-header">Supported Platforms</h4></p>
 
-<p>The original <code>StructureMap.dll</code> has been broken up into a couple pieces. The main assembly will be targeting PCL compliance thanks to the diligent efforts of <a href="https://twitter.com/fquednau">Frank Quednau</a>, and that means that Xml configuration and anything to do with ASP.Net has been devolved into separate assemblies and eventually into different Nuget packages. This means that StructureMap 3.0 will <em>theoretically</em> support WP8 and other versions of .Net for the very first time.
+<p>The original <code>StructureMap.dll</code> has been broken up into a couple pieces. The main assembly will be targeting PCL compliance thanks to the diligent efforts of <a href="https://twitter.com/fquednau">Frank Quednau</a>, and that means that anything to do with ASP.Net or falls outside of the PCL core has been devolved into separate assemblies and eventually into different Nuget packages. This means that StructureMap 3.* will <em>theoretically</em> support WP8 and other versions of .Net for the very first time.</p>
+
+<p>At this point StructureMap 3.* has been used on .Net 4, 4.5, and WP8. Nobody in the core StructureMap team is currently working with Xamarin mobile runtimes, but we are interested in verifying StructureMap on new platforms if any volunteers are interested.
 </section></p>
 
 <p><section><h4 id="binaries" class="section-header">Binaries</h4></p>
@@ -107,8 +109,7 @@
 &gt; ripple install StructureMap -p [your project name]
 </code></pre>
 
-<p>Also, you can get the binaries in a zip archive from the <a href="https://github.com/structuremap/structuremap/downloads">downloads area</a>.
-</section>
+<p></section>
 <section><h4 id="source" class="section-header">Source</h4></p>
 
 <p>StructureMap's source is hosted on <a href="https://github.com/structuremap/structuremap/">GitHub</a>. If you want to fix a bug or just want to tinker with an idea, we love receiving pull requests! Start by creating your own <a href="https://github.com/structuremap/structuremap/fork">fork</a> on Github.</p>
@@ -118,11 +119,12 @@
 
 <p><section><h4 id="building-source" class="section-header">Building the Source</h4></p>
 
-<p>StructureMap needs <a href="http://fubuworld.com/fuburake/">FubuRake</a> and <a href="http://fubuworld.com/ripple/">Ripple</a> for building the source. FubuRake is a standard Ruby library to quickly stand up a fully functional, cross platform <a href="https://github.com/jimweirich/rake"><code>rake</code></a> script for a .Net codebase based on Fubu project standards. Ripple is a package manager that simplifies managing Nuget dependencies in your solution. Both dependencies are currently distributed through Ruby Gems and are part of the Fubu family. Before you continue you need to make sure that you have got Ruby, Rake and RubyGems installed.</p>
+<p>StructureMap needs <a href="http://fubuworld.com/fuburake/">FubuRake</a> and <a href="http://fubuworld.com/ripple/">Ripple</a> for building the source. FubuRake is an OSS Ruby library to quickly stand up a fully functional, cross platform <a href="https://github.com/jimweirich/rake"><code>rake</code></a> script for a .Net codebase based on Fubu project standards. Ripple is a package manager that simplifies managing Nuget dependencies in your solution. Both dependencies are currently distributed through Ruby Gems and are part of the Fubu family. Before you continue you need to make sure that you have got Ruby installed.</p>
 
 <ol>
 <li>Clone the repository: <code>git clone git://github.com/structuremap/structuremap.git</code></li>
-<li>Now really make sure that you have got Ruby, Rake and RubyGems installed!</li>
+<li>Now really make sure that you have got Ruby 1.9+ installed</li>
+<li>See the README in the source code for instructions on using gems to install rake and other gems</li>
 <li>In the root of the StructureMap Git repository, run <code>rake</code>. </li>
 <li>Open StructureMap.sln in VS2012 ('rake sln' from the root as well).</li>
 <li>Build.</li>

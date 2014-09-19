@@ -3,7 +3,7 @@
 <html lang="en">
   <head>
     <title>
-      StructureMap - Requesting a Concrete Type</title>
+      StructureMap - Auto Resolving Concrete Types</title>
     
 <meta charset="utf-8"/>
 <meta name="description" content="FubuDocs"/>
@@ -12,6 +12,7 @@
 
 
 
+<link href="/_content/styles/sons-of-obsidian.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
@@ -52,7 +53,7 @@
       <div id="nav-follow" class="navbar">
         <div class="navbar-inner">
           <div class="container">
-            <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li><a href="/resolving" data-key="index">Resolving Services &#187;</a></li><li class="active"><a href="/resolving/requesting-a-concrete-type" data-key="requesting-a-concrete-type">Requesting a Concrete Type &#187;</a></li></ul>
+            <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li><a href="/resolving" data-key="index">Resolving Services &#187;</a></li><li class="active"><a href="/resolving/requesting-a-concrete-type" data-key="requesting-a-concrete-type">Auto Resolving Concrete Types &#187;</a></li></ul>
 <ul class="nav" style="float:right"><li><a href="/resolving/passing-arguments-at-runtime" title="Passing Arguments at Runtime">Previous</a></li><li><a href="/the-container" title="The Container">Next</a></li></ul>
           </div>
         </div>
@@ -81,12 +82,77 @@
           </div>
           <div class="span9">
 
-              <h1 class="no-margin">Requesting a Concrete Type</h1>
+              <h1 class="no-margin">Auto Resolving Concrete Types</h1>
               <hr class="header-line topic-line"></hr>
 
-            <!--Title: Requesting a Concrete Type-->
+            <!--Title: Auto Resolving Concrete Types-->
 <!--Url: requesting-a-concrete-type-->
-<p>TODO(Write some content!)</p>
+<p>StructureMap allows you to resolve instances of concrete classes without configuring that concrete type with a few provisos:</p>
+
+<ul>
+<li>The concrete type must have at least one public constructor</li>
+<li>StructureMap can build all the arguments in the constructor, either because StructureMap has explicit configuration for that dependency or can auto resolve the type</li>
+<li>The constructor does not contain any <em>primitive</em> arguments like strings, numbers, or dates because StructureMap assumes those elements are configuration items and not <em>auto resolvable</em>. </li>
+</ul>
+
+<p>Let's say we have the following object model, which represents the weather condition for a certain location.</p>
+
+<pre data-linenums="81" class="prettyprint lang-cs">
+    public class Weather
+    {
+        public Location Location { get; set; }
+        public Atmosphere Atmosphere { get; set; }
+        public Wind Wind { get; set; }
+        public Condition Condition { get; set; }
+
+        public Weather(Location location, Atmosphere atmosphere, Wind wind, Condition condition)
+        {
+            Location = location;
+            Atmosphere = atmosphere;
+            Wind = wind;
+            Condition = condition;
+        }
+    }
+
+    public class Location
+    {
+        //some properties
+    }
+
+    public class Atmosphere
+    {
+        //some properties
+    }
+
+    public class Wind
+    {
+        //some properties        
+    }
+
+    public class Condition
+    {
+        //some properties        
+    }
+
+</pre>
+
+<p>Before we can resolve the concrete <code>Weather</code> type, we need an instance of an <code>Container</code> object or <code>ObjectFactory</code>. As mentioned earlier, these objects defines a generic <code>GetInstance</code> method which can build us an instance of the <code>Weather</code> type.</p>
+
+<p>You can create a container yourself or use the statically accessed container.</p>
+
+<pre data-linenums="46" class="prettyprint lang-cs">
+var container = new Container();
+var weather1 = container.GetInstance&lt;Weather&gt;();
+
+var weather2 = container.GetInstance&lt;Weather&gt;();
+    weather2 = container.GetInstance&lt;Weather&gt;(); //short version for above.
+</pre>
+
+<p>The reason why we don't need to supply any configuration is because StructureMap supports a concept called <a href="/the-container/auto-wiring" data-key="auto-wiring">Auto Wiring</a>. It's basically a smart way of building instances of types by looking to the constructors of the requested and all the needed underlaying types. During this inspection StructureMap also uses any provided configuration to help building the requested service or dependency.</p>
+
+<p>In our example, where there isn't any configuration available, StructureMap looks at the constructor of the requested <code>Weather</code> type. It sees that it depends on four concrete types which all have a default constructor. StructureMap is therefore able to create an instance for all of them and inject them into the <code>Weather</code> constructor. After that the <code>Weather</code> instance is returned to the caller.</p>
+
+<p>Most of the time you will be mapping abstractions to concrete types, but as you have seen StructureMap supports other use cases as well.</p>
 
 
 
@@ -104,7 +170,7 @@
     <div class="navbar">
       <div class="navbar-inner">
         <div class="container">
-          <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li><a href="/resolving" data-key="index">Resolving Services &#187;</a></li><li class="active"><a href="/resolving/requesting-a-concrete-type" data-key="requesting-a-concrete-type">Requesting a Concrete Type &#187;</a></li></ul>
+          <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li><a href="/resolving" data-key="index">Resolving Services &#187;</a></li><li class="active"><a href="/resolving/requesting-a-concrete-type" data-key="requesting-a-concrete-type">Auto Resolving Concrete Types &#187;</a></li></ul>
 <ul class="nav" style="float:right"><li><a href="/resolving/passing-arguments-at-runtime" title="Passing Arguments at Runtime">Previous</a></li><li><a href="/the-container" title="The Container">Next</a></li></ul>
         </div>
       </div>
@@ -114,6 +180,8 @@
     
 
 <script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="/_content/scripts/prettify.js"></script>
+<script type="text/javascript" src="/_content/scripts/bootstrap-prettify.js"></script>
 <script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
 <script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
 <script type="text/javascript" src="/_content/scripts/toastr.js"></script>

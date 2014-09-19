@@ -88,12 +88,13 @@
             <!--Title: Glossary-->
 <p>There are some terms that reoccur throughout the documentation and show up in the StructureMap API. Understanding these terms and how they relate to StructureMap isn't a prerequisite to using StructureMap, but it helps.</p>
 
-<p><section><h4 id="container" class="section-header">Container</h4>
-Tools like StructureMap are generally known as <em>Inversion of Control (IoC) Containers</em> or <em>Dependency Injection (DI) Containers</em>. In the Java world they are also known as <em>Lightweight Containers</em> to differentiate them from the older <em>EJB Containers</em>.</p>
+<p><section><h4 id="container" class="section-header">Container</h4></p>
+
+<p>Tools like StructureMap are generally known as <em>Inversion of Control (IoC) Containers</em> or <em>Dependency Injection (DI) Containers</em>. In the Java world they are also known as <em>Lightweight Containers</em> to differentiate them from the older <em>EJB Containers</em>.</p>
 
 <p>A container is a tool that can help you composing object graphs and managing their scope (lifecycle). Altough you can do Inversion of Control and Dependecy Injection manually, using tools like StructureMap makes you far more productive and succesfull in doing so.</p>
 
-<p>Obviously there is more to a container then resolving services and managing their scope, but in the core that's just what it is. Before you can do so you need to tell StructureMap, the container, how it must compose those objects graphs and what their lifecycle is. This is called registration and can be done in various mixed ways. The strongly recommend way would be using the <a href="/registration/registry-dsl" data-key="registry-dsl">Registry DSL</a>. In your registration your bassicaly mapping abstractions to concrete types and define their lifecycle.</p>
+<p>Obviously there is more to a container then resolving services and managing their scope, but in the core that's just what it is. Before you can do so you need to tell StructureMap, the container, how it must compose those objects graphs and what their lifecycle is. This is called registration and can be done in various mixed ways. The strongly recommend way would be using the <a href="/registration/registry-dsl" data-key="registry-dsl">Registry DSL</a>. In your registration your basicaly mapping abstractions to concrete types and define their lifecycle.</p>
 
 <p>A simple example of a container using the <a href="/registration/registry-dsl" data-key="registry-dsl">Registry DSL</a>:</p>
 
@@ -121,7 +122,7 @@ var container = new Container(c =&gt;
 </section></p>
 
 <p><section><h4 id="nested-container" class="section-header">Nested Container</h4>
-A nested container is kind of like a temporary clone of a existing container, but scoped for short lived transactions or web requests. For example you can add additional configuration for contextual, scoped services or for making sure that whenever the nested container is disposed all the transient objects that the container created and implements <code>IDisposable</code> are disposed as well.</p>
+A nested container is used to mark the scope of short lived transactions or web requests and track and clean up objects implementing the <code>IDisposable</code> interface for that operation.</p>
 
 <p>You can ask a existing container to create a nested container for you like in the following example:</p>
 
@@ -189,7 +190,7 @@ var container = new Container(c =&gt;
 No Default Instance defined for PluginFamily [plugin type]
 </code></pre>
 
-<p>This specific exception message is gone in 3.0 because the exception messages where vastly improved in version 3.0.
+<p>This specific exception message is gone in 3.0 because the exception messages were modernized in version 3.0 and.
 </section></p>
 
 <p><section><h4 id="plugin-graph" class="section-header">Plugin Graph</h4></p>
@@ -197,11 +198,9 @@ No Default Instance defined for PluginFamily [plugin type]
 <p>A <code>PluginGraph</code> is the configuration model of the runtime configuration of a StructureMap container. The <code>PluginGraph</code> model can be manipulated directly in StructureMap 3.0 for
 any kind of special convention that doesn't fit into the existing conventional support.</section></p>
 
-<p><section><h4 id="pipeline-graph" class="section-header">PipelineGraph</h4></section></p>
-
 <p><section><h4 id="instance" class="section-header">Instance</h4></p>
 
-<p>In StructureMap terms, an "Instance" is a way to build or locate a named object instance for a requested PluginType.  An "Instance" does not automatically equate to a concrete type.  For example, let's say that we're building a system to automate a warehouse.  Our system might consume an interface called IShippingService that acts as a Gateway to various ways of shipping boxes out of our warehouse.</p>
+<p>In StructureMap terms, an "Instance" is a configured and named strategy to build or locate a named object instance for a requested Plugin Type.  An "Instance" does not automatically equate to a concrete type.  For example, let's say that we're building a system to automate a warehouse.  Our system might consume an interface called IShippingService that acts as a Gateway to various ways of shipping boxes out of our warehouse.</p>
 
 <pre data-linenums="33" class="prettyprint lang-cs">
     public interface IShippingService
@@ -248,7 +247,9 @@ any kind of special convention that doesn't fit into the existing conventional s
 
 <p>There is an actual class in StructureMap that represents an "<a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap/Pipeline/Instance.cs">Instance</a>."  </p>
 
-<p>When you call <code>Container.GetInstance&lt;T&gt;("the instance that I want")</code> or <code>Container.GetInstance&lt;T&gt;()</code>, the internal <code>Container</code> object is locating the correct Instance object and then using the Instance's internal <em>build plan</em> to resolve or construct the actual object.
+<p>When you call <code>Container.GetInstance&lt;T&gt;("the instance that I want")</code> or <code>Container.GetInstance&lt;T&gt;()</code>, the internal <code>Container</code> object is locating the correct Instance object and then using the Instance's internal <em>build plan</em> to resolve or construct the actual object.</p>
+
+<p>A StructureMap "Instance" is a close analogue for what many other IoC tools call a "Component."
 </section></p>
 
 <p><section><h4 id="lifecycle" class="section-header">Lifecycle (or Scope)</h4></p>

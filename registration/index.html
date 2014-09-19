@@ -12,6 +12,7 @@
 
 
 
+<link href="/_content/styles/sons-of-obsidian.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
@@ -86,7 +87,140 @@
 
             <!--Title: Registration-->
 <!--Url: registration-->
-<p>TODO(Write some content!)</p>
+<p>As of the 3.0 release, StructureMap provides a streamlined fluent interface called the <em>Registry DSL</em> to configure a StructureMap
+Container with both explicit registrations and conventional auto-registrations. StructureMap no longer supports Xml configuration or MEF-style attribute configuration -- but there is some facility for rolling your own attribute-based configuration support.  </p>
+
+<div class="alert alert-info"><i class="icon-info-sign"></i>The static <code>ObjectFactory</code> wrapper for Container is still available in 3.0, but we strongly recommend against using it for new applications.  It only exists for easier compatibility with older installations.</div>
+
+<p>The first step in using StructureMap is configuring a <code>Container</code> object. The following examples are based on the usage of the <a href="/registration/registry-dsl" data-key="registry-dsl">Registry DSL</a>.</p>
+
+<p>Let's say that you have a simple set of services like this:</p>
+
+<pre data-linenums="16" class="prettyprint lang-cs">
+    public interface IBar{}
+    public class Bar : IBar{}
+    public interface IFoo{}
+
+    public class Foo : IFoo
+    {
+        public IBar Bar { get; private set; }
+
+        public Foo(IBar bar)
+        {
+            Bar = bar;
+        }
+    }
+</pre>
+
+<p>A simple configuration of a StructureMap Container might then be:</p>
+
+<pre data-linenums="13" class="prettyprint lang-cs">
+// Example #1 - Create an container instance and directly pass in the configuration.
+var container1 = new Container(c =&gt;
+{
+    c.For&lt;IFoo&gt;().Use&lt;Foo&gt;();
+    c.For&lt;IBar&gt;().Use&lt;Bar&gt;();
+});
+
+// Example #2 - Create an container instance but add configuration later.
+var container2 = new Container();
+
+container2.Configure(c =&gt;
+{
+    c.For&lt;IFoo&gt;().Use&lt;Foo&gt;();
+    c.For&lt;IBar&gt;().Use&lt;Bar&gt;();
+});
+
+// Example #3 - Initialize the static ObjectFactory container.
+// NOTE: ObjectFactory has been deprecated and will be removed
+// in a future 4.0 release
+ObjectFactory.Initialize(i =&gt;
+{
+    i.For&lt;IFoo&gt;().Use&lt;Foo&gt;();
+    i.For&lt;IBar&gt;().Use&lt;Bar&gt;();
+});
+</pre>
+
+<p>Initializing or configuring the container is usually done at application startup and is located as close as possible to the application's entry point. 
+This place is sometimes referred to as the composition root of the application. 
+In our example we are composing our application's object graph by connecting abstractions to concrete types.</p>
+
+<p>We are using the fluent API <code>For&lt;TInterface&gt;().Use&lt;TConcrete&gt;()</code> which registers a default instance for a given plugin type (the TInterface type in this case). In our example we want an new instance of <code>Foo</code> every time we request the abstraction <code>IFoo</code>.</p>
+
+<p>The recommended way of using the <a href="/registration/registry-dsl" data-key="registry-dsl">Registry DSL</a> is by defining one or more <code>Registry</code> classes. Typically, you would subclass the <code>Registry</code> class, 
+then use the Fluent API methods exposed by the <code>Registry</code> class to describe a <code>Container</code> configuration. </p>
+
+<p>Here's a sample <code>Registry</code> class used to configure the same types as in our previous example:</p>
+
+<pre data-linenums="6" class="prettyprint lang-cs">
+public class FooBarRegistry : Registry
+{
+    public FooBarRegistry()
+    {
+        For&lt;IFoo&gt;().Use&lt;Foo&gt;();
+        For&lt;IBar&gt;().Use&lt;Bar&gt;();
+    }
+}
+</pre>
+
+<p>When you set up a <code>Container</code> or <code>ObjectFactory</code>, you need to simply direct the <code>Container</code> to use the configuration in that <code>Registry</code> class.</p>
+
+<pre data-linenums="43" class="prettyprint lang-cs">
+// Example #1
+var container1 = new Container(new FooBarRegistry());
+
+// Example #2
+var container2 = new Container(c =&gt;
+{
+    c.AddRegistry&lt;FooBarRegistry&gt;();
+});
+
+// Example #3 -- create a container for a single Registry
+var container3 = Container.For&lt;FooBarRegistry&gt;();
+</pre>
+
+<div class="alert alert-info"><i class="icon-info-sign"></i>The StructureMap team highly recommends using `Registry` classes for your real application configuration.  The syntax is shorter inside the Registry class constructor than from within the <code>Container</code> constructor method. Registry classes can be used to modularize the configuration of a bigger application into more manageable chunks.  Lastly, using <code>Registry</code> classes makes it easier to stand up additional <code>Container</code> objects in testing scenarios that reflect the real application composition.</div>
+
+<p>In real world applications you also have to deal with repetitive similar registrations. Such registrations are tedious, easy to forget and can be a weak spot in your application. StructureMap provides <a href="/registration/auto-registration-and-conventions" data-key="auto-registration-and-conventions">Auto-Registration and Conventions</a>  which mitigates this pain and eases the maintenance burden. StructureMap exposes this feature through the <a href="/registration/registry-dsl" data-key="registry-dsl">Registry DSL</a> by the <code>Scan</code> method.</p>
+
+<p>In our example there is an reoccuring pattern, we are connecting the plugin type <code>ISomething</code> to a concrete type <code>Something</code>, meaning <code>IFoo</code> to <code>Foo</code> and <code>IBar</code> to <code>Bar</code>. Wouldn't it be cool if we could write a convention for exactly doing that? Fortunatly StructureMap has already one build in. Let's see how we can create an container with the same configuration as in the above examples.</p>
+
+<pre data-linenums="60" class="prettyprint lang-cs">
+// Example #1
+var container1 = new Container(c =&gt;
+    c.Scan(scanner =&gt;
+    {
+        scanner.TheCallingAssembly();
+        scanner.WithDefaultConventions();
+    }));
+
+// Example #2
+var container2 = new Container();
+
+container2.Configure(c =&gt;
+    c.Scan(scanner =&gt;
+    {
+        scanner.TheCallingAssembly();
+        scanner.WithDefaultConventions();
+    }));
+
+
+</pre>
+
+<p>We instruct the scanner to scan through the calling assembly with default conventions on. This wil find and registers the default instance for <code>IFoo</code> and <code>IBar</code> which are obviously the concrete types <code>Foo</code> and <code>Bar</code>. Now whenever you add an additional interface <code>IMoreFoo</code> and a class <code>MoreFoo</code> to your application's code base, it's automatically picked up by the scanner. </p>
+
+<p>Sometimes classes need to be suplied with some primitive value in its constructor. For example the <code>System.Data.SqlClient.SqlConnection</code> needs to be supplied with the connection string in its constructor. No problem, just set up the value of the constructor argument in the bootstrapping:</p>
+
+<pre data-linenums="85" class="prettyprint lang-cs">
+var container = new Container(c =&gt;
+{
+    //just for demo purposes, normally you don&#39;t want to embed the connection string directly into code.
+    c.For&lt;IDbConnection&gt;().Use&lt;SqlConnection&gt;().Ctor&lt;string&gt;().Is(&quot;YOUR_CONNECTION_STRING&quot;);    
+    //a better way would be providing a delegate that retrieves the value from your app config.    
+});
+</pre>
+
+<p>So far you have seen an couple of ways to work with the <a href="/registration/registry-dsl" data-key="registry-dsl">Registry DSL</a> and configure an <code>Container</code> object or <code>ObjectFactory</code>. We have seen examples of configuration that allows us to build objects that doesn't depend on anything like the <code>Bar</code> class, or do depend on other types like the <code>Foo</code> class needs an instance of <code>IBar</code>. In our last example we have seen configuration for objects that needs some primitive types like strings in its constructor function.</p>
 
 
 
@@ -114,6 +248,8 @@
     
 
 <script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="/_content/scripts/prettify.js"></script>
+<script type="text/javascript" src="/_content/scripts/bootstrap-prettify.js"></script>
 <script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
 <script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
 <script type="text/javascript" src="/_content/scripts/toastr.js"></script>

@@ -12,6 +12,7 @@
 
 
 
+<link href="/_content/styles/sons-of-obsidian.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
@@ -86,7 +87,71 @@
 
             <!--Title: WhatDoIHave()-->
 <!--Url: whatdoihave-->
-<p>TODO(Write some content!)</p>
+<p>The <code>IContainer.WhatDoIHave()</code> method can give you a quick textual report of the current configuration of a running <code>Container</code>:</p>
+
+<pre data-linenums="21" class="prettyprint lang-cs">
+            var container = new Container();
+            var report = container.WhatDoIHave();
+
+            Debug.WriteLine(report);
+</pre>
+
+<p>If you're familiar with <code>WhatDoIHave()</code> from earlier versions of StructureMap, the usage has been enhanced for 3.0 to allow you
+to filter the results for easier usage. The format was also tweaked extensively to (hopefully) improve the usability of this feature.</p>
+
+<p>Enough talk, say you have a <code>Container</code> with this configuration:</p>
+
+<pre data-linenums="32" class="prettyprint lang-cs">
+            var container = new Container(x =&gt; {
+                x.For&lt;IEngine&gt;().Use&lt;Hemi&gt;().Named(&quot;The Hemi&quot;);
+
+                x.For&lt;IEngine&gt;().Add&lt;VEight&gt;().Singleton().Named(&quot;V8&quot;);
+                x.For&lt;IEngine&gt;().Add&lt;FourFiftyFour&gt;().AlwaysUnique();
+                x.For&lt;IEngine&gt;().Add&lt;StraightSix&gt;().LifecycleIs&lt;ThreadLocalStorageLifecycle&gt;();
+
+                x.For&lt;IEngine&gt;().Add(() =&gt; new Rotary()).Named(&quot;Rotary&quot;);
+                x.For&lt;IEngine&gt;().Add(c =&gt; c.GetInstance&lt;PluginElectric&gt;());
+
+                x.For&lt;IEngine&gt;().Add(new InlineFour());
+
+                x.For&lt;IEngine&gt;().UseIfNone&lt;VTwelve&gt;();
+                x.For&lt;IEngine&gt;().MissingNamedInstanceIs.ConstructedBy(c =&gt; new NamedEngine(c.RequestedName));
+            });
+</pre>
+
+<p>If you were to run the code below against this <code>Container</code>:</p>
+
+<pre data-linenums="50" class="prettyprint lang-cs">
+            Debug.WriteLine(container.WhatDoIHave());
+</pre>
+
+<p>you would get the output shown in <a href="https://gist.githubusercontent.com/jeremydmiller/907e1deb2553a5ca5b18/raw/8b57456f36ccc5043e61d09e72b1ab5fcea94718/gistfile1.txt" target="_new">this gist</a>.</p>
+
+<p>If you're curious, all the raw code for this example is in <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/WhatDoIHave_Smoke_Tester.cs">here</a>.</p>
+
+<p><section><h4 id="filtering" class="section-header">Filtering WhatDoIHave()</h4></p>
+
+<p>Filtering the <code>WhatDoIHave()</code> results can be done in these ways:</p>
+
+<pre data-linenums="167" class="prettyprint lang-cs">
+            var container = new Container();
+
+            // Filter by the Assembly of the Plugin Type
+            var byAssembly = container.WhatDoIHave(assembly: typeof (IWidget).Assembly);
+
+            // Only report on the specified Plugin Type
+            var byPluginType = container.WhatDoIHave(pluginType:typeof(IWidget));
+
+            // Filter to Plugin Type&#39;s in the named namespace
+            // The &#39;IsInNamespace&#39; test will include child namespaces
+            var byNamespace = container.WhatDoIHave(@namespace: &quot;StructureMap.Testing.Widget&quot;);
+
+            // Filter by a case insensitive string.Contains() match
+            // against the Plugin Type name
+            var byType = container.WhatDoIHave(typeName: &quot;Widget&quot;);
+</pre>
+
+<p></section></p>
 
 
 
@@ -114,6 +179,8 @@
     
 
 <script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="/_content/scripts/prettify.js"></script>
+<script type="text/javascript" src="/_content/scripts/bootstrap-prettify.js"></script>
 <script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
 <script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
 <script type="text/javascript" src="/_content/scripts/toastr.js"></script>
