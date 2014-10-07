@@ -87,43 +87,75 @@
 
             <!--Title: Nested Containers (Per Request/Transaction)-->
 <!--Url: nested-containers-->
+<div class="alert alert-info"><i class="icon-info-sign"></i><i>Nested Containers</i> are <b>not</b> interchangeable with <i>Child Containers</i>. See <a href="/the-container/profiles-and-child-containers" data-key="profiles-and-child-containers">Profiles and Child Containers</a> for more information on child containers.</div>
+
 <p><em>Nested Container's</em> are a powerful feature in StructureMap for service resolution and clean object disposal in the 
 context of short lived operations. Nested Container's were introduced in version 2.6, but greatly improved in both performance (100X reduction in the time to create a nested container in a large application) and <em>ahem</em> <a href="http://github.com/structuremap/structuremap/issues/3">lifecycle
 mechanics</a> as a major goal of the 3.0 release.</p>
 
+<p><section><h4 id="history" class="section-header">History</h4></p>
+
 <p>The original use case and impetus for building this feature was a simplistic message handling system that dequeued
 messages from a Sql Server table (please forget for a second the wisdom of using Sql Server as a queueing system), deserialized
 the contents into a .Net object, then created the proper handler object for that message type and executed that handler -- all within
-a single . </p>
+a single transaction. What we wanted at the time was a way to track and clean up all <code>IDisposable</code> objects created during the lifespan of each
+transaction. We also wanted a new type of object lifecycle where objects like the <a href="http://elliottjorgensen.com/nhibernate-api-ref/NHibernate/ISession.html">NHibernate ISession</a> would be shared by every object 
+created during the lifetime of the nested container -- even if the <code>ISession</code> was resolved lazily after the intial 
+resolution of the message handler. The result was what is now the <em>nested container</em> feature
+of StructureMap. 
+</section></p>
+
+<p><section><h4 id="why" class="section-header">Why Nested Containers over HttpContext or ThreadLocal Scoping?</h4></p>
 
 <p>Why not just use <code>HttpContext</code> based lifecycles like we've always done in the past? Because <code>HttpContext</code> is not supported by the any
 type of <a href="http://www.strathweb.com/2013/05/the-future-is-now-owin-and-multi-hosting-asp-net-web-applications/">OWIN</a> web host and will not be a part of ASP.Net vNext. Using a Nested Container per HTTP request is a better, lighterweight way
-to scope services to an HTTP request without coupling your code to what will soon be legacy ASP.Net runtime code.</p>
+to scope services to an HTTP request without coupling your code to what will soon be legacy ASP.Net runtime code.
+</section></p>
 
-<p>At the time of this document, Nested Container's per HTTP request or message are supported by frameworks like <a href="http://fubuworld.com/fubumvc">FubuMVC</a>, <a href="http://fubuworld.com/fubutransportation">FubuTransportation</a>,
-<a href="http://masstransit-project.com">MassTransit</a>, 
-ASP.Net MVC through the <a href="https://www.nuget.org/packages/StructureMap.MVC5/">StructureMap.MVC5</a> nuget package, and Web API with the <a href="https://www.nuget.org/packages/StructureMap.WebApi2/">StructureMap.WebApi2</a> nuget.</p>
+<p><section><h4 id="uses" class="section-header">Who uses it?</h4></p>
 
-<p>The StructureMap integrations for NancyFx and NServiceBus do not support StructureMap nested containers at this time but may in the future.</p>
+<p>At the time of this document, Nested Container's per HTTP request are supported by frameworks like <a href="http://fubuworld.com/fubumvc">FubuMVC</a>,
+ASP.Net MVC through the <a href="https://www.nuget.org/packages/StructureMap.MVC5/">StructureMap.MVC5</a> nuget package, and Web API with the <a href="https://www.nuget.org/packages/StructureMap.WebApi2/">StructureMap.WebApi2</a> nuget. Several service bus frameworks also use a StructureMap nested container per message invocation including <a href="http://fubuworld.com/fubutransportation">FubuTransportation</a>,
+<a href="http://masstransit-project.com">MassTransit</a>, and <a href="http://particular.net/nservicebus">NServiceBus</a>.</p>
+
+<p></section></p>
 
 <p><section><h4 id="creation" class="section-header">Creation</h4>
 Creating a nested container is as simple as calling the <code>IContainer.GetNestedContainer()</code> method as shown below:</p>
 
-<pre data-linenums="10" class="prettyprint lang-cs">
+<pre data-linenums="11" class="prettyprint lang-cs">
+        public interface IWorker
+        {
+            void DoWork();
+        }
+
+        public class Worker : IWorker, IDisposable
+        {
+            public void DoWork()
+            {
+                // do stuff!
+            }
+
+            public void Dispose()
+            {
+                // clean up
+            }
+        }
+
         [Test]
         public void creating_a_nested_container()
         {
-            // From ObjectFactory, but please stop using ObjectFactory
-            using (var nested = ObjectFactory.Container.GetNestedContainer())
-            {
-                // do stuff
-            }
-
             // From an IContainer object
-            var container = new Container();
+            var container = new Container(_ =&gt; {
+                _.For&lt;IWorker&gt;().Use&lt;Worker&gt;();
+            });
+
             using (var nested = container.GetNestedContainer())
             {
-                // do stuff
+                // This object is disposed when the nested container
+                // is disposed
+                var worker = nested.GetInstance&lt;IWorker&gt;();
+                worker.DoWork();
             }
         }
 </pre>
@@ -141,7 +173,7 @@ Creating a nested container is as simple as calling the <code>IContainer.GetNest
 
 <p>In the context of a Nested Container however, the <code>Transient</code> scoping now applies to the Nested Container itself:</p>
 
-<pre data-linenums="48" class="prettyprint lang-cs">
+<pre data-linenums="67" class="prettyprint lang-cs">
         [Test]
         public void nested_container_behavior_of_transients()
         {
@@ -171,9 +203,9 @@ Creating a nested container is as simple as calling the <code>IContainer.GetNest
         }
 </pre>
 
-<p><code>Instance's</code> scoped to anything but <code>Transient</code> are resolved as normal, but through the parent container:</p>
+<p><code>Instance's</code> scoped to anything but <code>Transient</code> are resolved as normal, but <strong>through the parent container</strong>:</p>
 
-<pre data-linenums="29" class="prettyprint lang-cs">
+<pre data-linenums="48" class="prettyprint lang-cs">
         [Test]
         public void nested_container_usage_of_singletons()
         {
@@ -192,19 +224,21 @@ Creating a nested container is as simple as calling the <code>IContainer.GetNest
         }
 </pre>
 
-<p>TODO(link to lifecycles)
+<p>See <a href="/object-lifecycle" data-key="index">Object Lifecycles</a> for more information on supported object lifecycles.
 </section></p>
 
 <p><section><h4 id="overrides" class="section-header">Overriding Services from the Parent</h4>
 A nested container is a new Container object that still retains access to the parent container that created it so that it can
-efficiently share registrations, policies, and cached <em>build plan's</em>. <strong>There is no need to recreate registrations from the parent container
-into the nested container and doing so makes StructureMap work less efficiently.</strong> You can, however, register register services into the nested container that override the parent container.</p>
+efficiently share registrations, policies, and cached <em>build plan's</em>. You can, however, register register services into the nested container that override the parent container.</p>
 
-<p>The <a href="http://fubuworld.com/fubumvc">FubuMVC web framework</a> uses a Nested Container per HTTP request. During an HTTP request, FubuMVC injects services
+<div class="alert alert-info"><i class="icon-info-sign"></i>There is no need to recreate registrations from the parent container
+into the nested container and doing so makes StructureMap work less efficiently.</div>
+
+<p>The <a href="http://fubuworld.com/fubumvc">FubuMVC web framework</a> uses a nested container per HTTP request. During an HTTP request, FubuMVC injects services
 for the current HTTP request and response to a nested container before creating the actual services that will handle the request. The
 FubuMVC mechanics are conceptually similar to this code sample:</p>
 
-<pre data-linenums="142" class="prettyprint lang-cs">
+<pre data-linenums="161" class="prettyprint lang-cs">
         [Test]
         public void overriding_services_in_a_nested_container()
         {
@@ -240,7 +274,10 @@ FubuMVC mechanics are conceptually similar to this code sample:</p>
         }
 </pre>
 
-<p>When handling requests for new services, a nested container first checks its own configuration.</p>
+<div class="alert alert-info"><i class="icon-info-sign"></i>The StructureMap team strongly cautions against altering the configuration of the main application container, but overriding services in a nested container is useful (but please upgrade to at least version 3.1.2) and should not incur any problems with locking across threads.</div>
+
+<p>When handling requests for new services, a nested container first checks its own configuration if it has its own explicit registration for the request. If the nested container does have an explicit registration, it uses that registration. Otherwise, a nested container will attempt to build
+an object using the registered configuration of its parent container.</p>
 
 <div class="alert alert-info"><i class="icon-info-sign"></i>While the 3.0 version of nested containers acts like a <a href="http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">Chain of Responsibility</a> pattern to apply its own overrides, the earlier version
  of StructureMap made a complete copy of the underlying Container configuration. This crime against computer science was removed in 3.0 and hence, the 100X 
@@ -248,131 +285,137 @@ FubuMVC mechanics are conceptually similar to this code sample:</p>
 
 <p></section></p>
 
-<p><section><h4 id="lazy" class="section-header">Lazy Resolution</h4>
-<pre data-linenums="178" class="prettyprint lang-cs">
-        public class Foo{}</p>
+<p><section><h4 id="lazy" class="section-header">Lazy Resolution</h4></p>
 
-<pre><code>    public class FooHolder
-    {
-        public IContainer Container { get; set; }
-        public Func&amp;lt;Foo&amp;gt; Func { get; set; }
-        public Lazy&amp;lt;Foo&amp;gt; Lazy { get; set; }
+<p>Nested container object lifecycles equally apply to objects resolved lazily with
+either <code>Lazy&lt;T&gt;</code>, <code>Func&lt;T&gt;</code>, or <code>Func&lt;string, T&gt;</code> as shown below:</p>
 
-        public FooHolder(IContainer container, Func&amp;lt;Foo&amp;gt; func, Lazy&amp;lt;Foo&amp;gt; lazy)
+<pre data-linenums="197" class="prettyprint lang-cs">
+        public class Foo{}
+
+        public class FooHolder
         {
-            Container = container;
-            Func = func;
-            Lazy = lazy;
+            public IContainer Container { get; set; }
+            public Func&lt;Foo&gt; Func { get; set; }
+            public Lazy&lt;Foo&gt; Lazy { get; set; }
+
+            public FooHolder(IContainer container, Func&lt;Foo&gt; func, Lazy&lt;Foo&gt; lazy)
+            {
+                Container = container;
+                Func = func;
+                Lazy = lazy;
+            }
         }
-    }
 
-    [Test]
-    public void service_location_and_container_resolution_inside_nested_containers()
-    {
-        var container = new Container();
-
-        using (var nested = container.GetNestedContainer())
-        {
-            var holder = nested.GetInstance&amp;lt;FooHolder&amp;gt;();
-
-            // The injected IContainer is the nested container
-            holder.Container.ShouldBeTheSameAs(nested);
-
-            // Func&amp;lt;T&amp;gt; and Lazy&amp;lt;T&amp;gt; values will be built by 
-            // the nested container w/ the nested container
-            // scoping
-            var nestedFoo = nested.GetInstance&amp;lt;Foo&amp;gt;();
-
-            holder.Func().ShouldBeTheSameAs(nestedFoo);
-            holder.Lazy.Value.ShouldBeTheSameAs(nestedFoo);
-        }
-    }
-</code></pre>
-
-<p></pre></section></p>
-
-<p><section><h4 id="profiles" class="section-header">Profiles</h4>
-<pre data-linenums="78" class="prettyprint lang-cs">
         [Test]
-        public void nested<em>container</em>from<em>profile</em>container()
+        public void service_location_and_container_resolution_inside_nested_containers()
+        {
+            var container = new Container();
+
+            using (var nested = container.GetNestedContainer())
+            {
+                var holder = nested.GetInstance&lt;FooHolder&gt;();
+
+                // The injected IContainer is the nested container
+                holder.Container.ShouldBeTheSameAs(nested);
+
+                // Func&lt;T&gt; and Lazy&lt;T&gt; values will be built by 
+                // the nested container w/ the nested container
+                // scoping
+                var nestedFoo = nested.GetInstance&lt;Foo&gt;();
+
+                holder.Func().ShouldBeTheSameAs(nestedFoo);
+                holder.Lazy.Value.ShouldBeTheSameAs(nestedFoo);
+            }
+        }
+</pre>
+
+<div class="alert alert-info"><i class="icon-info-sign"></i>Do note that the <code>IContainer</code> object injected above was the nested container that
+created the <code>FooHandler</code> object. If you do want to use service location within an object, just take in
+<code>IContainer</code> as a constructor dependency and you will always get the correctly scoped <code>IContainer</code>.</div>
+
+<p></section></p>
+
+<p><section><h4 id="profiles" class="section-header">Profiles</h4></p>
+
+<p>You can created nested containers from profile containers as shown in the sample below:</p>
+
+<pre data-linenums="97" class="prettyprint lang-cs">
+        [Test]
+        public void nested_container_from_profile_container()
         {
             var container = new Container(x =&gt; {
-                x.For&lt;IColor&gt;().Use&lt;Red&gt;();</p>
+                x.For&lt;IColor&gt;().Use&lt;Red&gt;();
 
-<pre><code>            x.Profile(&amp;quot;Blue&amp;quot;, _ =&amp;gt; _.For&amp;lt;IColor&amp;gt;().Use&amp;lt;Blue&amp;gt;());
-            x.Profile(&amp;quot;Green&amp;quot;, _ =&amp;gt; _.For&amp;lt;IColor&amp;gt;().Use&amp;lt;Green&amp;gt;());
-        });
+                x.Profile(&quot;Blue&quot;, _ =&gt; _.For&lt;IColor&gt;().Use&lt;Blue&gt;());
+                x.Profile(&quot;Green&quot;, _ =&gt; _.For&lt;IColor&gt;().Use&lt;Green&gt;());
+            });
 
-        using (var nested = container.GetProfile(&amp;quot;Blue&amp;quot;).GetNestedContainer())
-        {
-            nested.GetInstance&amp;lt;IColor&amp;gt;().ShouldBeOfType&amp;lt;Blue&amp;gt;();
+            using (var nested = container.GetProfile(&quot;Blue&quot;).GetNestedContainer())
+            {
+                nested.GetInstance&lt;IColor&gt;().ShouldBeOfType&lt;Blue&gt;();
+            }
+
+            using (var nested = container.GetNestedContainer(&quot;Green&quot;))
+            {
+                nested.GetInstance&lt;IColor&gt;().ShouldBeOfType&lt;Green&gt;();
+            }
         }
+</pre>
 
-        using (var nested = container.GetNestedContainer(&amp;quot;Green&amp;quot;))
-        {
-            nested.GetInstance&amp;lt;IColor&amp;gt;().ShouldBeOfType&amp;lt;Green&amp;gt;();
-        }
-    }
-</code></pre>
+<p>See <a href="/the-container/profiles-and-child-containers" data-key="profiles-and-child-containers">Profiles and Child Containers</a> for more information about using profiles.
+</section></p>
 
-<p></pre></section></p>
+<p><section><h4 id="disposing" class="section-header">Disposing Services</h4></p>
 
-<p><section><h4 id="disposing" class="section-header">Disposing Services</h4>
-<pre data-linenums="101" class="prettyprint lang-cs">
+<p>As stated above, disposing a nested container will also dispose all objects created with the default <em>Transient</em> lifecycle by the
+nested container that implement the <code>IDisposable</code> interface. That behavior is demonstrated
+below:</p>
+
+<pre data-linenums="120" class="prettyprint lang-cs">
         [Test]
-        public void nested<em>container</em>disposal()
+        public void nested_container_disposal()
         {
             var container = new Container(_ =&gt; {
                 // A singleton scoped service
-                _.ForSingletonOf&lt;IColorCache&gt;().Use&lt;ColorCache&gt;();</p>
+                _.ForSingletonOf&lt;IColorCache&gt;().Use&lt;ColorCache&gt;();
 
-<pre><code>            // A transient scoped service
-            _.For&amp;lt;IColor&amp;gt;().Use&amp;lt;Green&amp;gt;();
-        });
+                // A transient scoped service
+                _.For&lt;IColor&gt;().Use&lt;Green&gt;();
+            });
 
-        ColorCache singleton = null;
-        Green nestedGreen = null;
-        Blue nestedBlue = null;
+            ColorCache singleton = null;
+            Green nestedGreen = null;
+            Blue nestedBlue = null;
 
-        using (var nested = container.GetNestedContainer())
-        {
-            // Singleton&amp;#39;s are really built by the parent
-            singleton = nested.GetInstance&amp;lt;IColorCache&amp;gt;()
-                .ShouldBeOfType&amp;lt;ColorCache&amp;gt;();
+            using (var nested = container.GetNestedContainer())
+            {
+                // Singleton&#39;s are really built by the parent
+                singleton = nested.GetInstance&lt;IColorCache&gt;()
+                    .ShouldBeOfType&lt;ColorCache&gt;();
 
-            nestedGreen = nested.GetInstance&amp;lt;IColor&amp;gt;()
-                .ShouldBeOfType&amp;lt;Green&amp;gt;();
+                nestedGreen = nested.GetInstance&lt;IColor&gt;()
+                    .ShouldBeOfType&lt;Green&gt;();
 
 
-            nestedBlue = nested.GetInstance&amp;lt;Blue&amp;gt;();
+                nestedBlue = nested.GetInstance&lt;Blue&gt;();
+            }
+
+            // Transients created by the Nested Container
+            // are disposed, but no other lifecycle is
+            // disposed
+            nestedGreen.WasDisposed.ShouldBeTrue();
+            nestedBlue.WasDisposed.ShouldBeTrue();
+
+            // NOT disposed because it&#39;s owned by
+            // the parent container
+            singleton.WasDisposed.ShouldBeFalse();
         }
+</pre>
 
-        // Transients created by the Nested Container
-        // are disposed, but no other lifecycle is
-        // disposed
-        nestedGreen.WasDisposed.ShouldBeTrue();
-        nestedBlue.WasDisposed.ShouldBeTrue();
+<p>For the sake of clarity, the classes used in the sample above are:</p>
 
-        // NOT disposed because it&amp;#39;s owned by
-        // the parent container
-        singleton.WasDisposed.ShouldBeFalse();
-    }
-</code></pre>
-
-<p></pre></section></p>
-
-
-<div class="alert alert-info"><i class="icon-info-sign"></i><code>ObjectFactory</code> will be marked as <code>[Obsolete]</code> soon and removed in a forthcoming 4.0 release. In practice, the static
-service locator has too much potential to be misused and causes harmful coupling from application code to StructureMap infrastructure.</div>
-
-
-
-
-
-
-
-
-<pre data-linenums="219" class="prettyprint lang-cs">
+<pre data-linenums="238" class="prettyprint lang-cs">
     public interface IColor{}
     public class Red : IColor{}
 
@@ -408,38 +451,10 @@ service locator has too much potential to be misused and causes harmful coupling
         }
     }
 </pre>
-<pre data-linenums="256" class="prettyprint lang-cs">
-    public interface IHttpRequest{}
-    public interface IHttpResponse{}
 
-    public class HttpRequest : IHttpRequest{}
-    public class HttpResponse : IHttpResponse{}
+<p></section></p>
 
-    public class StandInHttpRequest : IHttpRequest{}
-    public class StandInHttpResponse : IHttpResponse{}
 
-    public class HttpRequestHandler
-    {
-        private readonly IHttpRequest _request;
-        private readonly IHttpResponse _response;
-
-        public HttpRequestHandler(IHttpRequest request, IHttpResponse response)
-        {
-            _request = request;
-            _response = response;
-        }
-
-        public IHttpRequest Request
-        {
-            get { return _request; }
-        }
-
-        public IHttpResponse Response
-        {
-            get { return _response; }
-        }
-    }
-</pre>
 
 
 
