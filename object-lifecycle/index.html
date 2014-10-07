@@ -94,15 +94,15 @@ of your system's services so you can focus on the actual functionality instead o
 Other services should be created new every time you ask the container for one.  Another set of services need to be <em>scoped</em> to an HTTP request or a logical transaction such that
 every request to the container for a service originating within the context of a single HTTP request gets the same object instance. </p>
 
-<p>In all the cases above, StructureMap will assemble object graphs for you using the correct scoping of each dependency.  Likewise, StructureMap can help you
+<p>In all the cases above, StructureMap will assemble object graphs for you using the correct scoping of each dependency.  Likewise, <strong>in some cases</strong>, StructureMap can help you
 with object cleanup by calling <code>IDisposable.Dispose()</code> as appropriate when an object lifecyle is completed.</p>
 
-<div class="alert alert-info"><i class="icon-info-sign"></i>StructureMap isn't magic, you'll still need to be cognizant of the need for object cleanup.  See the section on best practices for more guidance.</div>
+<div class="alert alert-info"><i class="icon-info-sign"></i>StructureMap isn't magic, you'll still need to be cognizant of the need for object cleanup.  See the section on <a href="/best-practices" data-key="best-practices">Best Practices</a> for more guidance.</div>
 
 <p><section><h4 id="motivation" class="section-header">Motivation for Container Managed Scope</h4> </p>
 
 <p>In the bad old days, we used the infamous <a href="http://c2.com/cgi/wiki?SingletonPattern">Singleton pattern</a>
-like so for objects that really needed to be scoped as one for the entire system:</p>
+as shown below for objects that really needed to be scoped as one single instance for the entire system:</p>
 
 <pre data-linenums="4" class="prettyprint lang-cs">
     public class EvilSingleton
@@ -129,7 +129,7 @@ like so for objects that really needed to be scoped as one for the entire system
     }
 </pre>
 
-<p>The code above isn't terribly difficult to write or understand, but using a Singleton has some negative effects on your code explained in <a href="http://c2.com/cgi/wiki?SingletonsAreEvil">Singletons are Evil</a> and my own writing at <a href="http://codebetter.com/jeremymiller/2005/08/04/chill-out-on-the-singleton-fetish">Chill out on the Singleton Fetish</a>.</p>
+<p>The code above isn't terribly difficult to write or understand, but using a Singleton has some negative effects on your code as explained in <a href="http://c2.com/cgi/wiki?SingletonsAreEvil">Singletons are Evil</a> and my own writing at <a href="http://codebetter.com/jeremymiller/2005/08/04/chill-out-on-the-singleton-fetish">Chill out on the Singleton Fetish</a>.</p>
 
 <p>Instead, let's just use StructureMap to handle the singleton scoping instead and rewrite the code sample above as:</p>
 
@@ -153,7 +153,7 @@ like so for objects that really needed to be scoped as one for the entire system
 
     // This version of the class just uses constructor 
     // injection to get an object instance of
-    // ISingletonDependency.
+    // ISingletonDependency. 
     public class DependencyUser
     {
         private readonly ISingletonDependency _dependency;
@@ -162,17 +162,12 @@ like so for objects that really needed to be scoped as one for the entire system
         {
             _dependency = dependency;
         }
-
-        public void DoWork()
-        {
-            _dependency.DoSomething();
-        }
     }
 
 </pre>
 
 <p>The big advantage to the second, StructureMap-managed singleton scoping is that my <code>DependencyUser</code> class does not have to have any knowledge of
-how the <code>ISingletonDependency</code> object is built and certainly no coupling to the hard Singleton mechanics from the first sample that was so harmful in the past.
+how the <code>ISingletonDependency</code> object is built and certainly no coupling to the hard Singleton mechanics from the first sample that was so harmful in the past. 
 </section></p>
 
 

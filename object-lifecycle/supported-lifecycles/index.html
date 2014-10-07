@@ -100,11 +100,15 @@
 
 <p>Older versions of StructureMap referred to <em>Transient</em> as <em>PerRequest</em>, which might be a more accurate reflection of how this lifecycle behaves but 
 causes some confusion with ASP.Net HTTP scoping.  The easiest way to think of <em>Transient</em> is that a single object instance will be created for each top level
-call to <code>Container.GetInstance()</code>.  In the case of a nested container, <em>Transient's</em> are scoped to the lifecycle
-of the nested container.</p>
+call to <code>Container.GetInstance()</code> (or any other object resolution method on the <code>IContainer</code> interface). <em>Transient</em> objects resolved from a nested container, <em>Transient's</em> are scoped to the lifecycle
+of the nested container itself. See <a href="/the-container/nested-containers" data-key="nested-containers">Nested Containers (Per Request/Transaction)</a> for more information.</p>
 
-<p>The following unit test demonstrates how <em>Transient</em> lifecycles work in both root and nested containers. Also note that a transient dependency will
-be created exactly once in an object graph.</p>
+<div class="alert alert-info"><i class="icon-info-sign"></i>Transient lifecycle objects are <b>only</b> tracked and disposed if created by nested containers. If you resolve a transient object from the main application container,
+it will not track the object created. While that behavior avoids the manual <i>Release()</i> method and potential memory leak found in other IoC containers like Windsor, it
+puts the onus for disposing those objects on the user. The StructureMap team strongly recommends using nested containers for short
+lived operations if disposing transient objects created by the Container is important.</div>
+
+<p>The following unit test demonstrates how <em>Transient</em> lifecycles work in both root and nested containers. </p>
 
 <pre data-linenums="54" class="prettyprint lang-cs">
         [Test]
@@ -134,12 +138,82 @@ be created exactly once in an object graph.</p>
         }
 </pre>
 
+<p>Also note that a transient dependency will
+be created exactly once in an object graph resolved from <code>IContainer.GetInstance(Type)</code>. Imagine that you are building an
+object graph with various objects that all need to apply some work to a shared <a href="http://msdn.microsoft.com/en-us/magazine/dd882510.aspx">unit of work</a> object (think NHibernate's ISession, Entity Framework's DbContext, RavenDb's IDocumentSession):</p>
+
+<pre data-linenums="71" class="prettyprint lang-cs">
+        public interface IUnitOfWork{}
+        public class DefaultUnitOfWork : IUnitOfWork{}
+
+        public class Worker1
+        {
+            public IUnitOfWork Uow { get; set; }
+
+            public Worker1(IUnitOfWork uow)
+            {
+                Uow = uow;
+            }
+        }
+
+        public class Worker2
+        {
+            public IUnitOfWork Uow { get; set; }
+
+            public Worker2(IUnitOfWork uow)
+            {
+                Uow = uow;
+            }
+        }
+
+        public class WorkerCoordinator
+        {
+            public IUnitOfWork Uow { get; set; }
+            public Worker1 Worker1 { get; set; }
+            public Worker2 Worker2 { get; set; }
+
+            public WorkerCoordinator(IUnitOfWork uow, Worker1 worker1, Worker2 worker2)
+            {
+                Uow = uow;
+                Worker1 = worker1;
+                Worker2 = worker2;
+            }
+        }
+
+        [Test]
+        public void transient_scoped_Instance_is_built_once_per_resolution_to_the_Container()
+        {
+            var container = new Container(_ =&gt; {
+                _.For&lt;IUnitOfWork&gt;().Use&lt;DefaultUnitOfWork&gt;();
+            });
+
+            var cooridinator = container.GetInstance&lt;WorkerCoordinator&gt;();
+
+            // The IUnitOfWork object instance is the same for
+            // all the objects in the object graph that had
+            // a constructor dependency on IUnitOfWork
+            cooridinator.Uow
+                .ShouldBeTheSameAs(cooridinator.Worker1.Uow);
+
+            cooridinator.Uow
+                .ShouldBeTheSameAs(cooridinator.Worker2.Uow);
+
+            cooridinator.Worker1.Uow
+                .ShouldBeTheSameAs(cooridinator.Worker2.Uow);
+
+
+        }
+</pre>
+
 <p></section></p>
 
 <p><section><h4 id="unique" class="section-header">AlwaysUnique</h4></p>
 
 <p>Very simply, using the <em>AlwaysUnique</em> means that a new object instance will be created every single time a configured Instance is either requested
-from a Container or as a dependency to another object. </p>
+from a Container or as a dependency to another object. The <em>AlwaysUnique</em> lifecycle is a "fire and forget" operation as the object instances are neither tracked nor disposed by StructureMap. </p>
+
+<div class="alert alert-info"><i class="icon-info-sign"></i>The StructureMap team strongly feels that the default lifecycle is appropriate in most cases and that the <i>unique</i>
+lifecycle is mostly useful for logging services as demonstrated in the <a href="http://jeremydmiller.com/2014/08/12/structuremap-3-1/">StructureMap 3.1 announcement.</a></div>
 
 <pre data-linenums="82" class="prettyprint lang-cs">
         [Test]
@@ -177,7 +251,7 @@ from a Container or as a dependency to another object. </p>
 
 <p><section><h4 id="singleton" class="section-header">Singleton</h4></p>
 
-<p>StructureMap 3.0 fixed the <a href="https://github.com/structuremap/structuremap/issues/3">dreaded singletons with nested container's bug</a> that was so nasty in 2.6. </p>
+<p>StructureMap 3.0 fixed the <a href="https://github.com/structuremap/structuremap/issues/3">dreaded singletons with nested container's bug</a> that was so problematic in 2.6. </p>
 
 <pre data-linenums="11" class="prettyprint lang-cs">
         [Test]
@@ -194,6 +268,72 @@ from a Container or as a dependency to another object. </p>
                 .ShouldBeTheSameAs(c.GetInstance&lt;IService&gt;())
                 .ShouldBeTheSameAs(c.GetInstance&lt;IService&gt;())
                 .ShouldBeTheSameAs(c.GetInstance&lt;IService&gt;());
+        }
+</pre>
+
+<p>Do note that objects created as the singleton scope will be disposed when the Container is disposed if they
+implement the <code>IDisposable</code> interface:</p>
+
+<pre data-linenums="71" class="prettyprint lang-cs">
+        public interface IUnitOfWork{}
+        public class DefaultUnitOfWork : IUnitOfWork{}
+
+        public class Worker1
+        {
+            public IUnitOfWork Uow { get; set; }
+
+            public Worker1(IUnitOfWork uow)
+            {
+                Uow = uow;
+            }
+        }
+
+        public class Worker2
+        {
+            public IUnitOfWork Uow { get; set; }
+
+            public Worker2(IUnitOfWork uow)
+            {
+                Uow = uow;
+            }
+        }
+
+        public class WorkerCoordinator
+        {
+            public IUnitOfWork Uow { get; set; }
+            public Worker1 Worker1 { get; set; }
+            public Worker2 Worker2 { get; set; }
+
+            public WorkerCoordinator(IUnitOfWork uow, Worker1 worker1, Worker2 worker2)
+            {
+                Uow = uow;
+                Worker1 = worker1;
+                Worker2 = worker2;
+            }
+        }
+
+        [Test]
+        public void transient_scoped_Instance_is_built_once_per_resolution_to_the_Container()
+        {
+            var container = new Container(_ =&gt; {
+                _.For&lt;IUnitOfWork&gt;().Use&lt;DefaultUnitOfWork&gt;();
+            });
+
+            var cooridinator = container.GetInstance&lt;WorkerCoordinator&gt;();
+
+            // The IUnitOfWork object instance is the same for
+            // all the objects in the object graph that had
+            // a constructor dependency on IUnitOfWork
+            cooridinator.Uow
+                .ShouldBeTheSameAs(cooridinator.Worker1.Uow);
+
+            cooridinator.Uow
+                .ShouldBeTheSameAs(cooridinator.Worker2.Uow);
+
+            cooridinator.Worker1.Uow
+                .ShouldBeTheSameAs(cooridinator.Worker2.Uow);
+
+
         }
 </pre>
 
@@ -303,7 +443,7 @@ The ThreadLocalStorage based lifecycle is seldom used, but the easiest example o
 
 <ul>
 <li>HttpContext</li>
-<li>HttpSession</li>
+<li>HttpSession (requires objects to be <code>Serializable</code>, not recommended but still present for legacy code</li>
 <li>Hybrid -- uses ThreadLocalStorage in the absence of an active HttpContext</li>
 <li>HybridSession</li>
 </ul>
@@ -327,7 +467,8 @@ The ThreadLocalStorage based lifecycle is seldom used, but the easiest example o
             HttpContextLifecycle.DisposeAndClearAll();
 </pre> 
 
-<p></section></p>
+<p>at the end of your HTTP request.
+</section></p>
 
 
 

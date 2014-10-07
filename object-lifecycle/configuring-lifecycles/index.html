@@ -89,50 +89,60 @@
 <!--Url: configuring-lifecycles-->
 <p>Unless designated otherwise, StructureMap uses <strong>Transient</strong> as the default scope for all configured <em>Instance's</em>.  </p>
 
-<div class="alert alert-info"><i class="icon-info-sign"></i>StructureMap's default scoping to transient is not a universal assumption across IoC containers in .Net.  Be careful with this if you are coming to StructureMap from tools that choose _Singleton_ as their default scope.</div>
+<div class="alert alert-info"><i class="icon-info-sign"></i>StructureMap's default scoping to <i>Transient</i> is not a universal assumption across IoC containers in .Net.  Be careful with this if you are coming to StructureMap from tools that choose <i>Singleton</i> as their default scope.</div>
 
-<p>Lifecycle's can be configured at the <em>Plugin Type</em> level such that every <em>Instance</em> of a <em>Plugin Type</em> is scoped to the designated lifecycle by default like so:</p>
+<p>The resolution of the lifecycle for any given <em>Instance</em> is to check:</p>
 
-<pre data-linenums="148" class="prettyprint lang-cs">
-        public class LifecycleAtPluginTypeRegistry : Registry
+<ol>
+<li>Use the explicitly configured lifecycle for the <em>Instance</em></li>
+<li>If no lifecycle is configured for the <em>Instance</em>, use the explicitly configured lifecycle for the <em>Plugin Type</em></li>
+<li>If no lifecycle is configured for either the <em>Instance</em> or the <em>Plugin Type</em>, use the default <em>Transient</em> lifecycle</li>
+</ol>
+
+<p>The lifecycle precedence rules and the syntax for configuring object lifecycles are shown below:</p>
+
+<pre data-linenums="27" class="prettyprint lang-cs">
+        [Test]
+        public void lifecycle_precedence()
         {
-            public LifecycleAtPluginTypeRegistry()
+            var container = new Container(x =&gt; {
+                x.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
+
+                // Configure the default lifecycle for
+                // a PluginType (Rule)
+                x.For&lt;Rule&gt;().Singleton();
+                x.For&lt;Rule&gt;().Add&lt;ARule&gt;().Named(&quot;C&quot;);
+
+                // Configure the lifecycle for a single Instance
+                x.For&lt;Rule&gt;().Add&lt;ARule&gt;().Named(&quot;A&quot;).Transient();
+                x.For&lt;Rule&gt;().Add&lt;ARule&gt;().Named(&quot;B&quot;).AlwaysUnique();
+
+            });
+
+            // The default lifecycle is Transient
+            container.Model.For&lt;IWidget&gt;().Default
+                .Lifecycle.ShouldBeOfType&lt;TransientLifecycle&gt;();
+
+            // Override at the Family
+            container.Model.For&lt;Rule&gt;().Lifecycle.ShouldBeOfType&lt;SingletonLifecycle&gt;();
+            container.Model.For&lt;Rule&gt;().Find(&quot;C&quot;).Lifecycle.ShouldBeOfType&lt;SingletonLifecycle&gt;();
+
+            // &#39;C&#39; is the default lifecycle for Rule (Singleton)
+            container.GetInstance&lt;Rule&gt;(&quot;C&quot;)
+                .ShouldBeTheSameAs(container.GetInstance&lt;Rule&gt;(&quot;C&quot;));
+
+            // &#39;A&#39; is a transient
+            container.GetInstance&lt;Rule&gt;(&quot;A&quot;)
+                .ShouldNotBeTheSameAs(container.GetInstance&lt;Rule&gt;(&quot;A&quot;));
+
+            using (var nested = container.GetNestedContainer())
             {
-                For&lt;IService&gt;().Singleton();
-
-                // This is the default behavior anyway
-                For&lt;IGateway&gt;().Transient();
-
-
-                For&lt;IRule&gt;().AlwaysUnique();
-
-                // ThreadLocal scoping is so rare that SM does
-                // not have a convenience method for setting
-                // that as the lifecycle
-                For&lt;ICache&gt;().LifecycleIs(Lifecycles.ThreadLocal);
-
-                // Use a custom lifecycle
-                For&lt;IWeirdThing&gt;().LifecycleIs&lt;MyCustomLifecycle&gt;();
+                // &#39;B&#39; is always unique
+                nested.GetInstance&lt;Rule&gt;(&quot;B&quot;)
+                    .ShouldNotBeTheSameAs(nested.GetInstance&lt;Rule&gt;(&quot;B&quot;));
             }
         }
 </pre>
-
-<p>New in version 3.0 is the ability (finally) to override the lifecycle at the individual <em>Instance</em> level like this:</p>
-
-<pre data-linenums="172" class="prettyprint lang-cs">
-        public class LifecycleByInstanceRegistry : Registry
-        {
-            public LifecycleByInstanceRegistry()
-            {
-                For&lt;IService&gt;().Use&lt;Service&gt;().Named(&quot;1&quot;).Singleton();
-                For&lt;IService&gt;().Use&lt;Service&gt;().Named(&quot;2&quot;).Transient();
-                For&lt;IService&gt;().Use&lt;Service&gt;().Named(&quot;3&quot;).AlwaysUnique();
-                For&lt;IService&gt;().Use&lt;Service&gt;().Named(&quot;4&quot;).LifecycleIs&lt;MyCustomLifecycle&gt;();
-            }
-        }
-</pre>
-
-<p>Configuring the lifecycle on an individual <em>Instance</em> overrides any configured lifecycle at the <em>Plugin Type</em> level.</p>
 
 
 
