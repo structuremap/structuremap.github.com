@@ -159,8 +159,7 @@ The following examples also show how StructureMap can register an assembly by pr
 a type within that assembly.</p>
 
 <p>Excluding additional types or namespaces is as easy as calling the corresponding method
-again.
-</section></p>
+again.</p>
 
 <pre data-linenums="247" class="prettyprint lang-cs">
         [Test]
@@ -202,7 +201,70 @@ again.
         }
 </pre>
 
-<p>TODO(Conventions)</p>
+<p></section></p>
+
+<p><section><h4 id="custom" class="section-header">Custom Registration Conventions</h4></p>
+
+<p>It's just not possible (or desirable) for StructureMap to include every possible type of auto registration
+convention users might want, but that's okay because StructureMap allows you to create and use your own
+conventions through the <code>IRegistrationConvention</code> interface:</p>
+
+<pre data-linenums="8" class="prettyprint lang-cs">
+    public interface IRegistrationConvention
+    {
+        void Process(Type type, Registry registry);
+    }
+</pre>
+
+<p>Let's say that you'd like a custom convention that just registers a concrete type against all the interfaces
+that it implements. You could then build a custom <code>IRegistrationConvention</code> class like the following example: </p>
+
+<pre data-linenums="15" class="prettyprint lang-cs">
+        public interface IFoo{}
+        public interface IBar{}
+        public interface IBaz{}
+
+        public class BusyGuy : IFoo, IBar, IBaz{}
+
+        // Custom IRegistrationConvention
+        public class AllInterfacesConvention : IRegistrationConvention
+        {
+            public void Process(Type type, Registry registry)
+            {
+                // Only work on concrete types
+                if (!type.IsConcrete() || type.IsGenericType) return;
+
+                // Register against all the interfaces implemented
+                // by this concrete class
+                type.GetInterfaces().Each(@interface =&gt; {
+                    registry.For(@interface).Use(type);
+                });
+            }
+        }
+
+        [Test]
+        public void use_custom_registration_convention()
+        {
+            var container = new Container(_ =&gt; {
+                _.Scan(x =&gt; {
+                    // You&#39;re probably going to want to tightly filter
+                    // the Type&#39;s that are applicable to avoid unwanted
+                    // registrations
+                    x.TheCallingAssembly();
+                    x.IncludeNamespaceContainingType&lt;BusyGuy&gt;();
+
+                    // Register the custom policy
+                    x.Convention&lt;AllInterfacesConvention&gt;();
+                });
+            });
+
+            container.GetInstance&lt;IFoo&gt;().ShouldBeOfType&lt;BusyGuy&gt;();
+            container.GetInstance&lt;IBar&gt;().ShouldBeOfType&lt;BusyGuy&gt;();
+            container.GetInstance&lt;IBaz&gt;().ShouldBeOfType&lt;BusyGuy&gt;();
+        }
+</pre>
+
+<p></section></p>
 
 
 
