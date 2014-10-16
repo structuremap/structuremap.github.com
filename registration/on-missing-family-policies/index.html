@@ -12,6 +12,7 @@
 
 
 
+<link href="/_content/styles/sons-of-obsidian.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
@@ -86,7 +87,223 @@
 
             <!--Title: On Missing Family Policies-->
 <!--Url: on-missing-family-policies-->
-<p>TODO(Write some content!)</p>
+<p>New for StructureMap 3.0 is a feature to create missing service registrations at runtime based on pluggable rules using the new <code>IFamilyPolicy</code>
+interface:</p>
+
+<pre data-linenums="6" class="prettyprint lang-cs">
+
+    /// &lt;summary&gt;
+    /// Allows StructureMap to fill in missing registrations by unknown plugin types
+    /// at runtime
+    /// &lt;/summary&gt;
+    public interface IFamilyPolicy
+    {
+        /// &lt;summary&gt;
+        /// Allows you to create missing registrations for an unknown plugin type
+        /// at runtime.
+        /// Return null if this policy does not apply to the given type
+        /// &lt;/summary&gt;
+        PluginFamily Build(Type type);
+
+        /// &lt;summary&gt;
+        /// Should this policy be used to determine whether or not the Container has
+        /// registrations for a plugin type in the PluginGraph.HasFamily(type) method
+        /// &lt;/summary&gt;
+        bool AppliesToHasFamilyChecks { get; }
+    }
+</pre>
+
+<p>Internally, if you make a request to <code>IContainer.GetInstance(type)</code> for a type that the active <code>Container</code> does not recognize, StructureMap will next
+try to apply all the registered <code>IFamilyPolicy</code> policies to create a <code>PluginFamily</code> object for that plugin type that models the registrations for that plugin type, including the default, additional named instances, interceptors or decorators, and lifecycle rules. </p>
+
+<p>The simplest built in example is the <code>EnumerableFamilyPolicy</code> shown below that can fill in requests for <code>IList&lt;T&gt;</code>, <code>ICollection&lt;T&gt;</code>, and <code>T[]</code> with a collection of all the known registrations of the type <code>T</code>:</p>
+
+<pre data-linenums="9" class="prettyprint lang-cs">
+    public class EnumerableFamilyPolicy : IFamilyPolicy
+    {
+        public PluginFamily Build(Type type)
+        {
+            if (EnumerableInstance.IsEnumerable(type))
+            {
+                var family = new PluginFamily(type);
+                family.SetDefault(new AllPossibleInstance(type));
+
+                return family;
+            }
+
+            return null;
+        }
+
+        public bool AppliesToHasFamilyChecks
+        {
+            get
+            {
+                return false;
+            }
+
+        }
+    }
+</pre>
+
+<p>The result of <code>EnumerableFamilyPolicy</code> in action is shown by the acceptance test below:</p>
+
+<pre data-linenums="12" class="prettyprint lang-cs">
+        [Test]
+        public void collection_types_are_all_possible_by_default()
+        {
+            // NOTE that we do NOT make any explicit registration of 
+            // IList&lt;IWidget&gt;, IEnumerable&lt;IWidget&gt;, ICollection&lt;IWidget&gt;, or IWidget[]
+            var container = new Container(_ =&gt; {
+                _.For&lt;IWidget&gt;().Add&lt;AWidget&gt;();
+                _.For&lt;IWidget&gt;().Add&lt;BWidget&gt;();
+                _.For&lt;IWidget&gt;().Add&lt;CWidget&gt;();
+            });
+
+            // IList&lt;T&gt;
+            container.GetInstance&lt;IList&lt;IWidget&gt;&gt;()
+                .Select(x =&gt; x.GetType())
+                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
+
+            // ICollection&lt;T&gt;
+            container.GetInstance&lt;ICollection&lt;IWidget&gt;&gt;()
+                .Select(x =&gt; x.GetType())
+                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
+
+            // Array of T
+            container.GetInstance&lt;IWidget[]&gt;()
+                .Select(x =&gt; x.GetType())
+                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
+        }
+</pre>
+
+<p>See also the <a href="/the-container/handling-missing-named-instances" data-key="handling-missing-named-instances">Handling Missing Named Instances</a> for runtime determination of named instances within a known plugin type.</p>
+
+<p><section><h4 id="built-in" class="section-header">Built In Policies</h4></p>
+
+<p>StructureMap and StructureMap.AutoMocking use several <code>IFamilyPolicy</code> rules internally to create default behavior. In all cases, any custom
+<code>IFamilyPolicy</code> rule that you explicitly add to a <code>Container</code> will be evaluated before the built in policies.</p>
+
+<ol>
+<li><a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap/Graph/CloseGenericFamilyPolicy.cs">CloseGenericFamilyPolicy</a> - 
+uses the registration for an open type as a template to create the registrations for a closed type the first time StructureMap encounters
+that closed type. See <a href="/the-container/working-with-generic-types" data-key="working-with-generic-types">Working with Generic Types</a> for more information.</li>
+<li><a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap/Graph/FuncBuildByNamePolicy.cs">FuncBuildByNamePolicy</a> - 
+Used internally to create registrations for <code>Func&amp;lt;string, T&amp;gt;</code> builders.</li>
+<li><a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap/Graph/EnumerableFamilyPolicy.cs">EnumerableFamilyPolicy</a> - 
+Shown above.</li>
+<li><a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap/AutoMocking/AutoMockedContainer.cs">AutoMockedContainer</a> - 
+Used by StructureMap.AutoMocking to create registrations on the fly that just return a mock object for the requested plugin type.</li>
+</ol>
+
+<p></section></p>
+
+<p><section><h4 id="custom" class="section-header">Using a Custom IFamilyPolicy</h4></p>
+
+<p>FubuMVC 2.0 (still unreleased to the public as of yet, but in production usage) uses a <a href="https://github.com/DarthFubuMVC/fubumvc/blob/master/src/FubuMVC.StructureMap/Settings/SettingPolicy.cs">custom family policy</a> in its StructureMap
+integration to <em>auto-resolve</em> concrete configuration types like the following type:</p>
+
+<pre data-linenums="13" class="prettyprint lang-cs">
+    public class SomeSettings
+    {
+        public string ThisDirectory { get; set; }
+        public string ThatDirectory { get; set; }
+    }
+</pre>
+
+<p>Unless the system using this object has explicitly registered <code>SomeSettings</code>, we want StructureMap to resolve this object by
+using data from the basic .Net <a href="http://msdn.microsoft.com/en-us/library/aa903313(v=vs.71).aspx">appSettings collection</a> to create a <code>SomeSettings</code> object.</p>
+
+<p>For the sake of the example, assume that you have a functioning service that implements this interface below:</p>
+
+<pre data-linenums="21" class="prettyprint lang-cs">
+    public interface ISettingsProvider
+    {
+        T SettingsFor&lt;T&gt;() where T : class, new();
+
+        object SettingsFor(Type settingsType);
+    }
+
+    public class AppSettingsProvider : ISettingsProvider
+    {
+        public T SettingsFor&lt;T&gt;() where T : class, new()
+        {
+            return SettingsFor(typeof (T)).As&lt;T&gt;();
+        }
+
+        public object SettingsFor(Type settingsType)
+        {
+            // The real one reads key/value data from
+            // the appSettings and uses FubuCore&#39;s
+            // model binding to assign data to a new
+            // object of settingsType
+            return null;
+        }
+    }
+</pre>
+
+<p>Assuming that <code>ISettingsProvider</code> is registered in your StructureMap <code>Container</code>, you could then craft a custom
+<code>IFamilyPolicy</code> class like this:</p>
+
+<pre data-linenums="47" class="prettyprint lang-cs">
+    public class SettingPolicy : IFamilyPolicy
+    {
+        public PluginFamily Build(Type type)
+        {
+            if (type.Name.EndsWith(&quot;Settings&quot;) &amp;&amp; type.IsConcreteWithDefaultCtor())
+            {
+                var family = new PluginFamily(type);
+                var instance = buildInstanceForType(type);
+                family.SetDefault(instance);
+
+                return family;
+            }
+
+            return null;
+        }
+
+        public bool AppliesToHasFamilyChecks
+        {
+            get { return true; }
+        }
+
+
+        private static Instance buildInstanceForType(Type type)
+        {
+            var instanceType = typeof (SettingsInstance&lt;&gt;).MakeGenericType(type);
+            var instance = Activator.CreateInstance(instanceType).As&lt;Instance&gt;();
+            return instance;
+        }
+    }
+
+    // SettingsInstance just uses the registered service for ISettingsProvider to
+    // build the real object
+    public class SettingsInstance&lt;T&gt; : LambdaInstance&lt;T&gt; where T : class, new()
+    {
+        public SettingsInstance() : base(&quot;Building {0} from application settings&quot;.ToFormat(typeof (T).FullName),
+            c =&gt; c.GetInstance&lt;ISettingsProvider&gt;().SettingsFor&lt;T&gt;())
+        {
+        }
+    }
+</pre>
+
+<p><code>SettingPolicy</code> is able to create a registration on the fly for any concrete type whose name ends in "Settings" and has a default, no arg
+constructor.</p>
+
+<p>To use register the custom <code>SettingPolicy</code>, use one of the <code>Registry.Policies.OnMissingFamily()</code> methods:</p>
+
+<pre data-linenums="90" class="prettyprint lang-cs">
+    public class SettingsRegistry : Registry
+    {
+        public SettingsRegistry()
+        {
+            For&lt;ISettingsProvider&gt;().Use&lt;AppSettingsProvider&gt;();
+            Policies.OnMissingFamily&lt;SettingPolicy&gt;();
+        }
+    }
+</pre>
+
+<p>You can see the real implementation of the <code>SettingPolicy</code> in action in <a href="https://github.com/DarthFubuMVC/fubumvc/blob/master/src/FubuMVC.StructureMap/Settings/SettingPolicy.cs">its integration tests on GitHub</a>.
+</section></p>
 
 
 
@@ -114,6 +331,8 @@
     
 
 <script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="/_content/scripts/prettify.js"></script>
+<script type="text/javascript" src="/_content/scripts/bootstrap-prettify.js"></script>
 <script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
 <script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
 <script type="text/javascript" src="/_content/scripts/toastr.js"></script>
