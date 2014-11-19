@@ -12,6 +12,7 @@
 
 
 
+<link href="/_content/styles/sons-of-obsidian.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
@@ -86,7 +87,47 @@
 
             <!--Title: Changing Configuration at Runtime-->
 <!--Url: changing-configuration-at-runtime-->
-<p>TODO(Write some content!)</p>
+
+
+<div class="alert alert-info"><i class="icon-info-sign"></i>Use the technique shown here with caution.</div>
+<p>If you need to add or change configuration to an existing StructureMap <code>Container</code> object, you can use the <code>IContainer.Configure()</code> method
+to add or change your container at runtime as shown below:</p>
+
+<pre data-linenums="42" class="prettyprint lang-cs">
+        [Test]
+        public void change_default_in_an_existing_container()
+        {
+            var container = new Container(x =&gt; { x.For&lt;IFoo&gt;().Use&lt;AFoo&gt;(); });
+
+            container.GetInstance&lt;IFoo&gt;().ShouldBeOfType&lt;AFoo&gt;();
+
+            // Now, change the container configuration
+            container.Configure(x =&gt; x.For&lt;IFoo&gt;().Use&lt;BFoo&gt;());
+
+            // The default of IFoo is now different
+            container.GetInstance&lt;IFoo&gt;().ShouldBeOfType&lt;BFoo&gt;();
+
+            // or use the Inject method that&#39;s just syntactical
+            // sugar for replacing the default of one type at a time
+
+            container.Inject&lt;IFoo&gt;(new CFoo());
+
+            container.GetInstance&lt;IFoo&gt;().ShouldBeOfType&lt;CFoo&gt;();
+        }
+</pre>
+
+<p><section><h4 id="best-practices" class="section-header">Best Practices</h4></p>
+
+<p>First off, the best advice on this functionality is <em>don't use it outside of testing scenarios on the root container</em>. The <code>Configure()</code> method has to use a threading lock around the internal object model of a StructureMap container and can cause serious contention at runtime if you try to override services in the main application controller. Some frameworks (looking at you NancyFx) have abused this functionality quite badly in the past and the result was not pretty.</p>
+
+<ul>
+<li>Do favor writing configuration to StructureMap <code>Registry</code> objects, then applying that <code>Registry</code> to a container rather than repeatedly calling <code>Configure()</code></li>
+<li>Do not call <code>Configure()</code> on the main application container after the initial configuration. Use nested or child containers that are not shared across threads or HTTP requests if you need to override services at runtime</li>
+<li>There's a potential performance hit from using <code>Configure()</code> at runtime because StructureMap has to recycle its internal <em>Build Plan's</em> based on
+the potential new configuration.</li>
+</ul>
+
+<p></section></p>
 
 
 
@@ -114,6 +155,8 @@
     
 
 <script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="/_content/scripts/prettify.js"></script>
+<script type="text/javascript" src="/_content/scripts/bootstrap-prettify.js"></script>
 <script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
 <script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
 <script type="text/javascript" src="/_content/scripts/toastr.js"></script>
