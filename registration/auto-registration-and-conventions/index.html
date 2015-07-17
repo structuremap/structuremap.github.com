@@ -1,106 +1,105 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>
-      StructureMap - Auto-Registration and Conventions</title>
-    
-<meta charset="utf-8"/>
-<meta name="description" content="FubuDocs"/>
-<meta name="author" content="FubuDocs"/>
-
-
-
-
-<link href="/_content/styles/sons-of-obsidian.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/toastr-responsive.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/fubudocs.core.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/fubudocs.theme.css" rel="stylesheet" type="text/css" />
-
-<link media="screen" type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300">
-
-    
-  </head>
-  <body data-spy="scroll" data-target=".bs-docs-sidebar" position="relative">
-      
-    <div class="container">
-      
-      
-
-<div class="row">
-  <div class="span6">
-    <p class="logo">
-      <a href="/topics" title="Fubu" class="root-link"><span>Fubu</span></a>
-      <a href="/" title="The original IoC/DI Container for .Net" class="project-logo"><span>StructureMap</span></a>
-    </p>
-  </div>
-  <div class="span6">
-    <div class="top-header text-right">
-      <em>
-        <em><a href="http://groups.google.com/group/structuremap-users?hl=en">Join our vibrant mailing list</a></em>
-      </em>
-      <div class="social">
-        <a href="https://github.com/structuremap/structuremap" class="ico-github"><img alt="Github" src="/_content/images/github-icon.png" /></a>
-      </div>
-    </div>
-  </div>
-</div>
-      
-
-      <div id="nav-follow" class="navbar">
-        <div class="navbar-inner">
-          <div class="container">
-            <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li><a href="/registration" data-key="index">Registration &#187;</a></li><li class="active"><a href="/registration/auto-registration-and-conventions" data-key="auto-registration-and-conventions">Auto-Registration and Conventions &#187;</a></li></ul>
-<ul class="nav" style="float:right"><li><a href="/registration/registry-dsl" title="Registry DSL">Previous</a></li><li><a href="/registration/inline-dependencies" title="Inline Dependencies">Next</a></li></ul>
-          </div>
-        </div>
-      </div>
-      <hr/>
-      <div class="row">
-        
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>StructureMap - Auto-Registration and Conventions</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		
         
 
-        <div class="row">
-          <div class="span3 sidebar" data-spy="affix" data-offset-top="150" data-offset-bottom="200">
-            
-            <h3 class="half-margin">Topics</h3>
-            <ul id="page-toc" class="nav nav-tabs nav-stacked bs-docs-sidebar">
-            </ul>
-            <br/>
-            <h3>
-              StructureMap v1.0.0
-            </h3>
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
 
-            <br/>
-            <h3 class="no-margin">Next</h3>
-<p><a href="/registration/inline-dependencies" data-key="inline-dependencies">Inline Dependencies</a></p>
-<h3 class="no-margin">Previous</h3>
-<p><a href="/registration/registry-dsl" data-key="registry-dsl">Registry DSL</a></p>
-          </div>
-          <div class="span9">
 
-              <h1 class="no-margin">Auto-Registration and Conventions</h1>
-              <hr class="header-line topic-line"></hr>
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+    
+    <!-- HTML code from Bootply.com editor -->
+    
+    <body  >
 
-            <!--Title: Auto-Registration and Conventions-->
+<a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+        
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">StructureMap</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav">
+            <li>
+              <a href="/quickstart">A Gentle Quickstart</a>
+            </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
+            </li>
+		        <li>
+<a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      </ul>
+
+		      <ul class="nav navbar-nav navbar-right">
+		      	<li><a href="/registration/registry-dsl" title="Registry DSL">Previous</a></li>
+		      	<li><a href="/registration/inline-dependencies" title="Inline Dependencies">Next</a></li>
+		      </ul>
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/registration">Registration</a></li><li class="active">Auto-Registration and Conventions</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+		      
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>StructureMap </h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/registration/inline-dependencies">Inline Dependencies</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/registration/registry-dsl">Registry DSL</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+		      
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Auto-Registration and Conventions</h1>
+			      
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--Title: Auto-Registration and Conventions-->
 <!--Url: auto-registration-and-conventions-->
 <p>StructureMap has rich support for registering types by scanning assemblies.
 Between scanning and default conventions, configurations are often just a few
 lines.</p>
-
-<p><section><h4 id="scan-calling-assembly" class="section-header">Scan the Calling Assembly</h4></p>
-
+<h2>Scan the Calling Assembly</h2>
 <p>One of the easiest ways to register types is by scanning the assembly your
-registry is placed in. </p>
-
+registry is placed in.</p>
 <p><strong>Note</strong> if you have other registries, StructureMap will not automatically
-find them.
-</section></p>
-
-<pre data-linenums="159" class="prettyprint lang-cs">
+find them.</p>
+<pre><code class="language-csharp">
         [Test]
         public void scan_but_ignore_registries_by_default()
         {
@@ -108,33 +107,28 @@ find them.
 
             TestingRegistry.WasUsed.ShouldBeFalse();
         }
-</pre>
 
-<p><section><h4 id="scan-for-registries" class="section-header">Scan for Registries</h4></p>
-
+</code></pre>
+<h2>Scan for Registries</h2>
 <p>StructureMap can automatically include other registries with the<code>LookForRegistries</code>
-method.
-</section></p>
-
-<pre data-linenums="195" class="prettyprint lang-cs">
+method.</p>
+<pre><code class="language-csharp">
         [Test]
         public void Search_for_registries_when_explicitly_told()
         {
-            Scan(x =&gt; {
+            Scan(x =&gt;
+            {
                 x.TheCallingAssembly();
                 x.LookForRegistries();
             });
 
             TestingRegistry.WasUsed.ShouldBeTrue();
         }
-</pre>
 
-<p><section><h4 id="scan-path" class="section-header">Scan the File System</h4></p>
-
-<p>StructureMap provides facilities for registering types by path.
-</section></p>
-
-<pre data-linenums="141" class="prettyprint lang-cs">
+</code></pre>
+<h2>Scan the File System</h2>
+<p>StructureMap provides facilities for registering types by path.</p>
+<pre><code class="language-csharp">
         [Test]
         public void scan_all_assemblies_in_a_folder()
         {
@@ -150,22 +144,20 @@ method.
             shouldHaveFamilyWithSameName&lt;IInterfaceInWidget5&gt;();
             shouldHaveFamilyWithSameName&lt;IWorker&gt;();
         }
-</pre>
 
-<p><section><h4 id="excluding-types" class="section-header">Excluding Types</h4></p>
-
+</code></pre>
+<h2>Excluding Types</h2>
 <p>StructureMap also makes it easy to exclude types, either individually or by namespace.
 The following examples also show how StructureMap can register an assembly by providing
 a type within that assembly.</p>
-
 <p>Excluding additional types or namespaces is as easy as calling the corresponding method
 again.</p>
-
-<pre data-linenums="247" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
         [Test]
         public void use_a_single_exclude_of_type()
         {
-            Scan(x =&gt; {
+            Scan(x =&gt;
+            {
                 x.AssemblyContainingType&lt;ITypeThatHasAttributeButIsNotInRegistry&gt;();
                 x.ExcludeType&lt;ITypeThatHasAttributeButIsNotInRegistry&gt;();
             });
@@ -178,7 +170,8 @@ again.</p>
         [Test]
         public void use_a_single_exclude2()
         {
-            Scan(x =&gt; {
+            Scan(x =&gt;
+            {
                 x.AssemblyContainingType&lt;ITypeThatHasAttributeButIsNotInRegistry&gt;();
                 x.ExcludeNamespace(&quot;StructureMap.Testing.Widget5&quot;);
             });
@@ -191,7 +184,8 @@ again.</p>
         [Test]
         public void use_a_single_exclude3()
         {
-            Scan(x =&gt; {
+            Scan(x =&gt;
+            {
                 x.AssemblyContainingType&lt;ITypeThatHasAttributeButIsNotInRegistry&gt;();
                 x.ExcludeNamespaceContainingType&lt;ITypeThatHasAttributeButIsNotInRegistry&gt;();
             });
@@ -199,32 +193,36 @@ again.</p>
             shouldNotHaveFamily&lt;IInterfaceInWidget5&gt;();
             shouldNotHaveFamily&lt;ITypeThatHasAttributeButIsNotInRegistry&gt;();
         }
-</pre>
 
-<p></section></p>
-
-<p><section><h4 id="custom" class="section-header">Custom Registration Conventions</h4></p>
-
+</code></pre>
+<h2>Custom Registration Conventions</h2>
 <p>It's just not possible (or desirable) for StructureMap to include every possible type of auto registration
 convention users might want, but that's okay because StructureMap allows you to create and use your own
 conventions through the <code>IRegistrationConvention</code> interface:</p>
-
-<pre data-linenums="8" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
     public interface IRegistrationConvention
     {
         void Process(Type type, Registry registry);
     }
-</pre>
-
+</code></pre>
 <p>Let's say that you'd like a custom convention that just registers a concrete type against all the interfaces
-that it implements. You could then build a custom <code>IRegistrationConvention</code> class like the following example: </p>
+that it implements. You could then build a custom <code>IRegistrationConvention</code> class like the following example:</p>
+<pre><code class="language-csharp">
+        public interface IFoo
+        {
+        }
 
-<pre data-linenums="15" class="prettyprint lang-cs">
-        public interface IFoo{}
-        public interface IBar{}
-        public interface IBaz{}
+        public interface IBar
+        {
+        }
 
-        public class BusyGuy : IFoo, IBar, IBaz{}
+        public interface IBaz
+        {
+        }
+
+        public class BusyGuy : IFoo, IBar, IBaz
+        {
+        }
 
         // Custom IRegistrationConvention
         public class AllInterfacesConvention : IRegistrationConvention
@@ -236,17 +234,17 @@ that it implements. You could then build a custom <code>IRegistrationConvention<
 
                 // Register against all the interfaces implemented
                 // by this concrete class
-                type.GetInterfaces().Each(@interface =&gt; {
-                    registry.For(@interface).Use(type);
-                });
+                type.GetInterfaces().Each(@interface =&gt; { registry.For(@interface).Use(type); });
             }
         }
 
         [Test]
         public void use_custom_registration_convention()
         {
-            var container = new Container(_ =&gt; {
-                _.Scan(x =&gt; {
+            var container = new Container(_ =&gt;
+            {
+                _.Scan(x =&gt;
+                {
                     // You&#39;re probably going to want to tightly filter
                     // the Type&#39;s that are applicable to avoid unwanted
                     // registrations
@@ -262,56 +260,42 @@ that it implements. You could then build a custom <code>IRegistrationConvention<
             container.GetInstance&lt;IBar&gt;().ShouldBeOfType&lt;BusyGuy&gt;();
             container.GetInstance&lt;IBaz&gt;().ShouldBeOfType&lt;BusyGuy&gt;();
         }
-</pre>
 
-<p></section></p>
-
+</code></pre>
 
 
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/registration/registry-dsl">Registry DSL</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/registration/inline-dependencies">Inline Dependencies</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
 
 
+    </body>
 
 
-          </div>
-        </div>
-      </div>
-    </div>
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
-    <br></br>
-    <hr></hr>
-    <div class="navbar">
-      <div class="navbar-inner">
-        <div class="container">
-          <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li><a href="/registration" data-key="index">Registration &#187;</a></li><li class="active"><a href="/registration/auto-registration-and-conventions" data-key="auto-registration-and-conventions">Auto-Registration and Conventions &#187;</a></li></ul>
-<ul class="nav" style="float:right"><li><a href="/registration/registry-dsl" title="Registry DSL">Previous</a></li><li><a href="/registration/inline-dependencies" title="Inline Dependencies">Next</a></li></ul>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-
-<script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
-<script type="text/javascript" src="/_content/scripts/prettify.js"></script>
-<script type="text/javascript" src="/_content/scripts/bootstrap-prettify.js"></script>
-<script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
-<script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
-<script type="text/javascript" src="/_content/scripts/toastr.js"></script>
-<script type="text/javascript" src="/_content/scripts/twitter/bootstrap.min.js"></script>
-<script type="text/javascript" src="/_content/scripts/diagnostics/bootstrap-scrollspy.js"></script>
-<script type="text/javascript" src="/_content/scripts/fubudocs-tools.js"></script>
-<script type="text/javascript" src="/_content/scripts/twitter/bootstrap-affix.js"></script>
-<script type="text/javascript" src="/_content/scripts/topics.js"></script>
-
-<footer class="footer">
-  <div class="container">
-    <p class="pull-right">
-      <a href="#">Back to top</a>
-    </p>
-    <p>
-      Powered by <a href="http://github.com/DarthFubuMVC/FubuDocs">FubuDocs</a>.
-    </p>
-  </div>
-</footer>
-  </body>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
 </html>
+

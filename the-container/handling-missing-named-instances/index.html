@@ -1,102 +1,105 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>
-      StructureMap - Handling Missing Named Instances</title>
-    
-<meta charset="utf-8"/>
-<meta name="description" content="FubuDocs"/>
-<meta name="author" content="FubuDocs"/>
-
-
-
-
-<link href="/_content/styles/sons-of-obsidian.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/toastr-responsive.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/fubudocs.core.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/fubudocs.theme.css" rel="stylesheet" type="text/css" />
-
-<link media="screen" type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300">
-
-    
-  </head>
-  <body data-spy="scroll" data-target=".bs-docs-sidebar" position="relative">
-      
-    <div class="container">
-      
-      
-
-<div class="row">
-  <div class="span6">
-    <p class="logo">
-      <a href="/topics" title="Fubu" class="root-link"><span>Fubu</span></a>
-      <a href="/" title="The original IoC/DI Container for .Net" class="project-logo"><span>StructureMap</span></a>
-    </p>
-  </div>
-  <div class="span6">
-    <div class="top-header text-right">
-      <em>
-        <em><a href="http://groups.google.com/group/structuremap-users?hl=en">Join our vibrant mailing list</a></em>
-      </em>
-      <div class="social">
-        <a href="https://github.com/structuremap/structuremap" class="ico-github"><img alt="Github" src="/_content/images/github-icon.png" /></a>
-      </div>
-    </div>
-  </div>
-</div>
-      
-
-      <div id="nav-follow" class="navbar">
-        <div class="navbar-inner">
-          <div class="container">
-            <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li><a href="/the-container" data-key="index">The Container &#187;</a></li><li class="active"><a href="/the-container/handling-missing-named-instances" data-key="handling-missing-named-instances">Handling Missing Named Instances &#187;</a></li></ul>
-<ul class="nav" style="float:right"><li><a href="/the-container/working-with-enumerable-types" title="Working with Enumerable Types">Previous</a></li><li><a href="/object-lifecycle" title="Object Lifecycles">Next</a></li></ul>
-          </div>
-        </div>
-      </div>
-      <hr/>
-      <div class="row">
-        
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>StructureMap - Handling Missing Named Instances</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		
         
 
-        <div class="row">
-          <div class="span3 sidebar" data-spy="affix" data-offset-top="150" data-offset-bottom="200">
-            
-            <h3 class="half-margin">Topics</h3>
-            <ul id="page-toc" class="nav nav-tabs nav-stacked bs-docs-sidebar">
-            </ul>
-            <br/>
-            <h3>
-              StructureMap v1.0.0
-            </h3>
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
 
-            <br/>
-            <h3 class="no-margin">Next</h3>
-<p><a href="/object-lifecycle" data-key="index">Object Lifecycles</a></p>
-<h3 class="no-margin">Previous</h3>
-<p><a href="/the-container/working-with-enumerable-types" data-key="working-with-enumerable-types">Working with Enumerable Types</a></p>
-          </div>
-          <div class="span9">
 
-              <h1 class="no-margin">Handling Missing Named Instances</h1>
-              <hr class="header-line topic-line"></hr>
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+    
+    <!-- HTML code from Bootply.com editor -->
+    
+    <body  >
 
-            <!--Title: Handling Missing Named Instances-->
+<a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+        
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">StructureMap</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav">
+            <li>
+              <a href="/quickstart">A Gentle Quickstart</a>
+            </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
+            </li>
+		        <li>
+<a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      </ul>
+
+		      <ul class="nav navbar-nav navbar-right">
+		      	<li><a href="/the-container/working-with-enumerable-types" title="Working with Enumerable Types">Previous</a></li>
+		      	<li><a href="/object-lifecycle" title="Object Lifecycles">Next</a></li>
+		      </ul>
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/the-container">The Container</a></li><li class="active">Handling Missing Named Instances</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+		      
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>StructureMap </h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/object-lifecycle">Object Lifecycles</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/the-container/working-with-enumerable-types">Working with Enumerable Types</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+		      
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Handling Missing Named Instances</h1>
+			      
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--Title: Handling Missing Named Instances-->
 <!--Url: handling-missing-named-instances-->
 <p>Let's say that something asks StructureMap to resolve a named instance of a type that StructureMap does not know about. What if instead
 of throwing the exception for an unknown named service, StructureMap could be taught to create a new registration for that type for the name
 requested? That's the exact purpose of the <em>Missing Named Instance</em> feature in StructureMap.</p>
-
-<div class="alert alert-info"><i class="icon-info-sign"></i>I've always thought of this feature as being somewhat akin to Ruby's <i><a href="http://rubylearning.com/satishtalim/ruby_method_missing.html">Method Missing</a></i> language feature.</div>
-
+<div class="alert alert-info" role="alert">I've always thought of this feature as being somewhat akin to Ruby's <i><a href="http://rubylearning.com/satishtalim/ruby_method_missing.html">Method Missing</a></i> language feature.</div>
 <p>Using the contrived example from the StructureMap tests for this feature, let's say that you have a simple interface and object implementation like this:</p>
-
-<pre data-linenums="13" class="prettyprint lang-cs">
-        public interface Rule{}
+<pre><code class="language-csharp">
+        public interface Rule
+        {
+        }
 
         public class ColorRule : Rule
         {
@@ -107,40 +110,40 @@ requested? That's the exact purpose of the <em>Missing Named Instance</em> featu
                 Color = color;
             }
         }
-</pre>
 
+</code></pre>
 <p>If a user asks the container for a named <code>Rule</code> by a name and that rule doesn't exist, we'll just build
 a <code>ColorRule</code> where the <code>Color</code> property should be the name of the Instance requested. That registration
 and the usage is shown below:</p>
-
-<pre data-linenums="27" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
         [Test]
         public void configure_and_use_missing_instance()
         {
-            var container = new Container(x =&gt; {
+            var container = new Container(x =&gt;
+            {
                 x.For&lt;Rule&gt;().MissingNamedInstanceIs
                     .ConstructedBy(context =&gt; new ColorRule(context.RequestedName));
             });
 
             container.GetInstance&lt;Rule&gt;(&quot;red&quot;)
-                .ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldEqual(&quot;red&quot;);
+                .ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldBe(&quot;red&quot;);
 
             container.GetInstance&lt;Rule&gt;(&quot;green&quot;)
-                .ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldEqual(&quot;green&quot;);
+                .ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldBe(&quot;green&quot;);
 
             container.GetInstance&lt;Rule&gt;(&quot;blue&quot;)
-                .ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldEqual(&quot;blue&quot;);
+                .ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldBe(&quot;blue&quot;);
         }
-</pre>
 
+</code></pre>
 <p>The <em>missing named instance</em> rules are evaluated last, meaning that the container will still resolve
 explicitly registered instances:</p>
-
-<pre data-linenums="47" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
         [Test]
         public void does_not_override_explicit_registrations()
         {
-            var container = new Container(x =&gt; {
+            var container = new Container(x =&gt;
+            {
                 x.For&lt;Rule&gt;().Add(new ColorRule(&quot;DarkRed&quot;)).Named(&quot;red&quot;);
 
                 x.For&lt;Rule&gt;().MissingNamedInstanceIs
@@ -149,55 +152,62 @@ explicitly registered instances:</p>
 
             container.GetInstance&lt;Rule&gt;(&quot;red&quot;)
                 .ShouldBeOfType&lt;ColorRule&gt;()
-                .Color.ShouldEqual(&quot;DarkRed&quot;);
+                .Color.ShouldBe(&quot;DarkRed&quot;);
         }
-</pre>
 
+</code></pre>
 <p>You also have the ability to explicitly supply an <code>Instance</code> to be evaluated in the <em>missing named instance</em>
 resolution:</p>
-
-<pre data-linenums="64" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
         [Test]
         public void configure_and_use_missing_instance_by_generic_registration()
         {
             var instance = new LambdaInstance&lt;ColorRule&gt;(c =&gt; new ColorRule(c.RequestedName));
 
-            var container = new Container(x =&gt; {
+            var container = new Container(x =&gt;
+            {
                 x.For(typeof (Rule))
                     .MissingNamedInstanceIs(instance);
             });
 
-            container.GetInstance&lt;Rule&gt;(&quot;red&quot;).ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldEqual(&quot;red&quot;);
-            container.GetInstance&lt;Rule&gt;(&quot;green&quot;).ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldEqual(&quot;green&quot;);
-            container.GetInstance&lt;Rule&gt;(&quot;blue&quot;).ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldEqual(&quot;blue&quot;);
+            container.GetInstance&lt;Rule&gt;(&quot;red&quot;).ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldBe(&quot;red&quot;);
+            container.GetInstance&lt;Rule&gt;(&quot;green&quot;).ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldBe(&quot;green&quot;);
+            container.GetInstance&lt;Rule&gt;(&quot;blue&quot;).ShouldBeOfType&lt;ColorRule&gt;().Color.ShouldBe(&quot;blue&quot;);
         }
-</pre>
 
-<p><section><h4 id="multi_tenancy" class="section-header">Multi-Tenancy</h4></p>
-
+</code></pre>
+<h2>Multi-Tenancy</h2>
 <p>To the best of my recollection, the feature described in this section was designed for a multi-tenancy situation where
 we needed to allow the business rules to vary by client, but most clients would still be using the default rules. In our
 implemenation, we would make a <em>service location</em> call to the container for the rules by the client id and use the
 object returned to calculate the business rules (it was an invoice processing service).</p>
-
 <p>If our rules logic class structure looked like:</p>
+<pre><code class="language-csharp">
+        public interface Rule
+        {
+        }
 
-<pre data-linenums="10" class="prettyprint lang-cs">
-        public interface Rule {}
-        public class DefaultRule : Rule {}
+        public class DefaultRule : Rule
+        {
+        }
 
-        public class Client1Rule : Rule{}
-        public class Client2Rule : Rule{}
-</pre>
+        public class Client1Rule : Rule
+        {
+        }
 
+        public class Client2Rule : Rule
+        {
+        }
+
+</code></pre>
 <p>then we could allow client specific rules while still allowing the container to fall through to the default rules
 for clients that don't need customized rules:</p>
-
-<pre data-linenums="18" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
         [Test]
         public void use_customer_overrides()
         {
-            var container = new Container(_ =&gt; {
+            var container = new Container(_ =&gt;
+            {
                 _.For&lt;Rule&gt;().MissingNamedInstanceIs.Type&lt;DefaultRule&gt;();
 
                 _.For&lt;Rule&gt;().Add&lt;Client1Rule&gt;().Named(&quot;client1&quot;);
@@ -212,19 +222,20 @@ for clients that don't need customized rules:</p>
             // DefaultRule
             container.GetInstance&lt;Rule&gt;(&quot;client3&quot;).ShouldBeOfType&lt;DefaultRule&gt;();
         }
-</pre>
 
+</code></pre>
 <p>In a more complex usage, maybe you need to pull client specific information from a database or configuration files
 to construct the rules object. The code below is a partial sample of how you might use the <em>missing named instance</em>
 feature to do data lookups inside of StructureMap:</p>
-
-<pre data-linenums="39" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
         public interface IClientRulesRepsitory
         {
             ClientRulesData Find(string clientName);
         }
 
-        public class ClientRulesData{}
+        public class ClientRulesData
+        {
+        }
 
         public class DataUsingRule : Rule
         {
@@ -239,9 +250,11 @@ feature to do data lookups inside of StructureMap:</p>
         [Test]
         public void register_by_looking_up_data()
         {
-            var container = new Container(_ =&gt; {
+            var container = new Container(_ =&gt;
+            {
                 _.For&lt;Rule&gt;().MissingNamedInstanceIs.ConstructedBy(
-                    &quot;Building client rules by looking up client data&quot;,c =&gt; {
+                    &quot;Building client rules by looking up client data&quot;, c =&gt;
+                    {
                         var data = c.GetInstance&lt;IClientRulesRepsitory&gt;()
                             .Find(c.RequestedName);
 
@@ -249,56 +262,42 @@ feature to do data lookups inside of StructureMap:</p>
                     });
             });
         }
-</pre>
 
-<p></section></p>
-
+</code></pre>
 
 
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/the-container/working-with-enumerable-types">Working with Enumerable Types</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/object-lifecycle">Object Lifecycles</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
 
 
+    </body>
 
 
-          </div>
-        </div>
-      </div>
-    </div>
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
-    <br></br>
-    <hr></hr>
-    <div class="navbar">
-      <div class="navbar-inner">
-        <div class="container">
-          <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li><a href="/the-container" data-key="index">The Container &#187;</a></li><li class="active"><a href="/the-container/handling-missing-named-instances" data-key="handling-missing-named-instances">Handling Missing Named Instances &#187;</a></li></ul>
-<ul class="nav" style="float:right"><li><a href="/the-container/working-with-enumerable-types" title="Working with Enumerable Types">Previous</a></li><li><a href="/object-lifecycle" title="Object Lifecycles">Next</a></li></ul>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-
-<script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
-<script type="text/javascript" src="/_content/scripts/prettify.js"></script>
-<script type="text/javascript" src="/_content/scripts/bootstrap-prettify.js"></script>
-<script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
-<script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
-<script type="text/javascript" src="/_content/scripts/toastr.js"></script>
-<script type="text/javascript" src="/_content/scripts/twitter/bootstrap.min.js"></script>
-<script type="text/javascript" src="/_content/scripts/diagnostics/bootstrap-scrollspy.js"></script>
-<script type="text/javascript" src="/_content/scripts/fubudocs-tools.js"></script>
-<script type="text/javascript" src="/_content/scripts/twitter/bootstrap-affix.js"></script>
-<script type="text/javascript" src="/_content/scripts/topics.js"></script>
-
-<footer class="footer">
-  <div class="container">
-    <p class="pull-right">
-      <a href="#">Back to top</a>
-    </p>
-    <p>
-      Powered by <a href="http://github.com/DarthFubuMVC/FubuDocs">FubuDocs</a>.
-    </p>
-  </div>
-</footer>
-  </body>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
 </html>
+

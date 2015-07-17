@@ -1,136 +1,130 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>
-      StructureMap - Internals and Architecture</title>
-    
-<meta charset="utf-8"/>
-<meta name="description" content="FubuDocs"/>
-<meta name="author" content="FubuDocs"/>
-
-
-
-
-<link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/toastr-responsive.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/fubudocs.core.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/fubudocs.theme.css" rel="stylesheet" type="text/css" />
-
-<link media="screen" type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300">
-
-    
-  </head>
-  <body data-spy="scroll" data-target=".bs-docs-sidebar" position="relative">
-      
-    <div class="container">
-      
-      
-
-<div class="row">
-  <div class="span6">
-    <p class="logo">
-      <a href="/topics" title="Fubu" class="root-link"><span>Fubu</span></a>
-      <a href="/" title="The original IoC/DI Container for .Net" class="project-logo"><span>StructureMap</span></a>
-    </p>
-  </div>
-  <div class="span6">
-    <div class="top-header text-right">
-      <em>
-        <em><a href="http://groups.google.com/group/structuremap-users?hl=en">Join our vibrant mailing list</a></em>
-      </em>
-      <div class="social">
-        <a href="https://github.com/structuremap/structuremap" class="ico-github"><img alt="Github" src="/_content/images/github-icon.png" /></a>
-      </div>
-    </div>
-  </div>
-</div>
-      
-
-      <div id="nav-follow" class="navbar">
-        <div class="navbar-inner">
-          <div class="container">
-            <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li class="active"><a href="/architecture" data-key="architecture">Internals and Architecture &#187;</a></li></ul>
-<ul class="nav" style="float:right"><li><a href="/integrations" title="Integrations">Previous</a></li><li><a href="/best-practices" title="Best Practices">Next</a></li></ul>
-          </div>
-        </div>
-      </div>
-      <hr/>
-      <div class="row">
-        
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>StructureMap - Internals and Architecture</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		
         
 
-        <div class="row">
-          <div class="span3 sidebar" data-spy="affix" data-offset-top="150" data-offset-bottom="200">
-            
-            <h3 class="half-margin">Topics</h3>
-            <ul id="page-toc" class="nav nav-tabs nav-stacked bs-docs-sidebar">
-            </ul>
-            <br/>
-            <h3>
-              StructureMap v1.0.0
-            </h3>
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
 
-            <br/>
-            <h3 class="no-margin">Next</h3>
-<p><a href="/best-practices" data-key="best-practices">Best Practices</a></p>
-<h3 class="no-margin">Previous</h3>
-<p><a href="/integrations" data-key="index">Integrations</a></p>
-          </div>
-          <div class="span9">
 
-              <h1 class="no-margin">Internals and Architecture</h1>
-              <hr class="header-line topic-line"></hr>
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+    
+    <!-- HTML code from Bootply.com editor -->
+    
+    <body  >
 
-            <!--Title: Internals and Architecture-->
+<a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+        
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">StructureMap</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav">
+            <li>
+              <a href="/quickstart">A Gentle Quickstart</a>
+            </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
+            </li>
+		        <li>
+<a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      </ul>
+
+		      <ul class="nav navbar-nav navbar-right">
+		      	<li><a href="/diagnostics" title="Diagnostics">Previous</a></li>
+		      	<li><a href="/best-practices" title="Best Practices">Next</a></li>
+		      </ul>
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li class="active">Internals and Architecture</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+		      
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>StructureMap </h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/best-practices">Best Practices</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/diagnostics">Diagnostics</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+		      
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Internals and Architecture</h1>
+			      
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--Title: Internals and Architecture-->
 <p>TODO(Write content!)</p>
 
 
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/diagnostics">Diagnostics</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/best-practices">Best Practices</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
 
 
+    </body>
 
 
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <br></br>
-    <hr></hr>
-    <div class="navbar">
-      <div class="navbar-inner">
-        <div class="container">
-          <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li class="active"><a href="/architecture" data-key="architecture">Internals and Architecture &#187;</a></li></ul>
-<ul class="nav" style="float:right"><li><a href="/integrations" title="Integrations">Previous</a></li><li><a href="/best-practices" title="Best Practices">Next</a></li></ul>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-
-<script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
-<script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
-<script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
-<script type="text/javascript" src="/_content/scripts/toastr.js"></script>
-<script type="text/javascript" src="/_content/scripts/twitter/bootstrap.min.js"></script>
-<script type="text/javascript" src="/_content/scripts/diagnostics/bootstrap-scrollspy.js"></script>
-<script type="text/javascript" src="/_content/scripts/fubudocs-tools.js"></script>
-<script type="text/javascript" src="/_content/scripts/twitter/bootstrap-affix.js"></script>
-<script type="text/javascript" src="/_content/scripts/topics.js"></script>
-
-<footer class="footer">
-  <div class="container">
-    <p class="pull-right">
-      <a href="#">Back to top</a>
-    </p>
-    <p>
-      Powered by <a href="http://github.com/DarthFubuMVC/FubuDocs">FubuDocs</a>.
-    </p>
-  </div>
-</footer>
-  </body>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
 </html>
+

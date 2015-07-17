@@ -1,107 +1,107 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>
-      StructureMap - Passing Arguments at Runtime</title>
-    
-<meta charset="utf-8"/>
-<meta name="description" content="FubuDocs"/>
-<meta name="author" content="FubuDocs"/>
-
-
-
-
-<link href="/_content/styles/sons-of-obsidian.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/toastr-responsive.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/fubudocs.core.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/fubudocs.theme.css" rel="stylesheet" type="text/css" />
-
-<link media="screen" type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300">
-
-    
-  </head>
-  <body data-spy="scroll" data-target=".bs-docs-sidebar" position="relative">
-      
-    <div class="container">
-      
-      
-
-<div class="row">
-  <div class="span6">
-    <p class="logo">
-      <a href="/topics" title="Fubu" class="root-link"><span>Fubu</span></a>
-      <a href="/" title="The original IoC/DI Container for .Net" class="project-logo"><span>StructureMap</span></a>
-    </p>
-  </div>
-  <div class="span6">
-    <div class="top-header text-right">
-      <em>
-        <em><a href="http://groups.google.com/group/structuremap-users?hl=en">Join our vibrant mailing list</a></em>
-      </em>
-      <div class="social">
-        <a href="https://github.com/structuremap/structuremap" class="ico-github"><img alt="Github" src="/_content/images/github-icon.png" /></a>
-      </div>
-    </div>
-  </div>
-</div>
-      
-
-      <div id="nav-follow" class="navbar">
-        <div class="navbar-inner">
-          <div class="container">
-            <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li><a href="/resolving" data-key="index">Resolving Services &#187;</a></li><li class="active"><a href="/resolving/passing-arguments-at-runtime" data-key="passing-arguments-at-runtime">Passing Arguments at Runtime &#187;</a></li></ul>
-<ul class="nav" style="float:right"><li><a href="/resolving/try-geting-an-optional-service-by-plugin-type-and-name" title="Try Geting an Optional Service by Plugin Type and Name">Previous</a></li><li><a href="/resolving/requesting-a-concrete-type" title="Auto Resolving Concrete Types">Next</a></li></ul>
-          </div>
-        </div>
-      </div>
-      <hr/>
-      <div class="row">
-        
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>StructureMap - Passing Arguments at Runtime</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		
         
 
-        <div class="row">
-          <div class="span3 sidebar" data-spy="affix" data-offset-top="150" data-offset-bottom="200">
-            
-            <h3 class="half-margin">Topics</h3>
-            <ul id="page-toc" class="nav nav-tabs nav-stacked bs-docs-sidebar">
-            </ul>
-            <br/>
-            <h3>
-              StructureMap v1.0.0
-            </h3>
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
 
-            <br/>
-            <h3 class="no-margin">Next</h3>
-<p><a href="/resolving/requesting-a-concrete-type" data-key="requesting-a-concrete-type">Auto Resolving Concrete Types</a></p>
-<h3 class="no-margin">Previous</h3>
-<p><a href="/resolving/try-geting-an-optional-service-by-plugin-type-and-name" data-key="try-geting-an-optional-service-by-plugin-type-and-name">Try Geting an Optional Service by Plugin Type and Name</a></p>
-          </div>
-          <div class="span9">
 
-              <h1 class="no-margin">Passing Arguments at Runtime</h1>
-              <hr class="header-line topic-line"></hr>
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+    
+    <!-- HTML code from Bootply.com editor -->
+    
+    <body  >
 
-            <!--Title: Passing Arguments at Runtime-->
+<a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+        
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">StructureMap</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav">
+            <li>
+              <a href="/quickstart">A Gentle Quickstart</a>
+            </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
+            </li>
+		        <li>
+<a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      </ul>
+
+		      <ul class="nav navbar-nav navbar-right">
+		      	<li><a href="/resolving/try-geting-an-optional-service-by-plugin-type-and-name" title="Try Geting an Optional Service by Plugin Type and Name">Previous</a></li>
+		      	<li><a href="/resolving/requesting-a-concrete-type" title="Auto Resolving Concrete Types">Next</a></li>
+		      </ul>
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/resolving">Resolving Services</a></li><li class="active">Passing Arguments at Runtime</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+		      
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>StructureMap </h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/resolving/requesting-a-concrete-type">Auto Resolving Concrete Types</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/resolving/try-geting-an-optional-service-by-plugin-type-and-name">Try Geting an Optional Service by Plugin Type and Name</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+		      
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Passing Arguments at Runtime</h1>
+			      
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--Title: Passing Arguments at Runtime-->
 <!--Url: passing-arguments-at-runtime-->
 <p>Most of the time you will be using StructureMap to build objects based on pre-canned configuration established upfront, but StructureMap
 also has the capability to supply dependencies by type or named parameters (if you know the name of constructor arguments or setter property names) to the Container at runtime using the <code>IContainer.With()</code> methods.</p>
-
 <p>Why would you use this? Here are a few examples from my own usage over the years:</p>
-
 <ol>
 <li>In adhoc code, retrieve some service but override a <code>connectionString</code> constructor argument to connect to a different database</li>
 <li>If you were to use StructureMap as a configuration intermediary, it becomes common to use this mechanism to swap out configuration on the fly</li>
 <li>Inject an Entity object into a service (uncommon now, but I did this on several systems years ago)</li>
 <li>Inject something contextual that can only be built at runtime like an ASP.Net HttpContext into a pre-configured object graph</li>
 </ol>
-
 <p>Now, for some samples. Let's say that we have some classes like so:</p>
-
-<pre data-linenums="113" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
     public class ColorWidget : IWidget
     {
         public string Color { get; set; }
@@ -123,49 +123,40 @@ also has the capability to supply dependencies by type or named parameters (if y
             Service = service;
         }
     }
-</pre>
 
+</code></pre>
 <p>and unless stated otherwise in a sample, a <code>Container</code> configured like so:</p>
-
-<pre data-linenums="13" class="prettyprint lang-cs">
-            var container = new Container(x =&gt; {
+<pre><code class="language-csharp">
+            var container = new Container(x =&gt;
+            {
                 x.For&lt;IWidget&gt;().Use&lt;BWidget&gt;();
                 x.For&lt;IService&gt;().Use&lt;AService&gt;();
             });
-</pre>
-
-<p><section><h4 id="named" class="section-header">Passing Named Arguments</h4></p>
-
+</code></pre>
+<h2>Passing Named Arguments</h2>
 <p>The original usage of explicit arguments was to replace primitive arguments to constructor functions like this sample:</p>
-
-<pre data-linenums="93" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
         [Test]
         public void supply_named_arguments()
         {
-            var container = new Container(x =&gt; {
-                x.For&lt;IWidget&gt;().Use&lt;ColorWidget&gt;().Ctor&lt;string&gt;().Is(&quot;Red&quot;);
-            });
+            var container = new Container(x =&gt; { x.For&lt;IWidget&gt;().Use&lt;ColorWidget&gt;().Ctor&lt;string&gt;().Is(&quot;Red&quot;); });
 
             container.GetInstance&lt;IWidget&gt;()
                 .ShouldBeOfType&lt;ColorWidget&gt;()
-                .Color.ShouldEqual(&quot;Red&quot;);
+                .Color.ShouldBe(&quot;Red&quot;);
 
             container.With(&quot;color&quot;).EqualTo(&quot;Blue&quot;)
                 .GetInstance&lt;IWidget&gt;()
                 .ShouldBeOfType&lt;ColorWidget&gt;()
-                .Color.ShouldEqual(&quot;Blue&quot;);
+                .Color.ShouldBe(&quot;Blue&quot;);
         }
-</pre>
 
-<p>The canonical usage is overriding file paths, database connection string, or urls.
-</section></p>
-
-<p><section><h4 id="fluent" class="section-header">Passing Arguments with a Fluent Interface</h4></p>
-
+</code></pre>
+<p>The canonical usage is overriding file paths, database connection string, or urls.</p>
+<h2>Passing Arguments with a Fluent Interface</h2>
 <p>You can invoke the explicit argument passing as a fluent interface starting with
 <code>IContainer.With()</code> like the following sample:</p>
-
-<pre data-linenums="20" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
             var widget = new BWidget();
             var service = new BService();
 
@@ -179,21 +170,17 @@ also has the capability to supply dependencies by type or named parameters (if y
 
             guyWithWidgetAndService
                 .Service.ShouldBeTheSameAs(service);
-</pre>
-
-<p></section></p>
-
-<p><section><h4 id="nested" class="section-header">Using a Nested Closure</h4></p>
-
+</code></pre>
+<h2>Using a Nested Closure</h2>
 <p>If you dislike fluent interfaces or want to pass in a <em>lot</em> of dependencies,
 the nested closure syntax might be more usable:</p>
-
-<pre data-linenums="74" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
             var widget = new BWidget();
             var service = new BService();
 
             var guyWithWidgetAndService = container
-                .With(x =&gt; {
+                .With(x =&gt;
+                {
                     x.With&lt;IWidget&gt;(widget);
                     x.With&lt;IService&gt;(service);
                 })
@@ -204,16 +191,11 @@ the nested closure syntax might be more usable:</p>
 
             guyWithWidgetAndService
                 .Service.ShouldBeTheSameAs(service);
-</pre>
-
-<p></section></p>
-
-<p><section><h4 id="by-type" class="section-header">Using the ExplicitArguments object</h4></p>
-
+</code></pre>
+<h2>Using the ExplicitArguments object</h2>
 <p>Finally, you can also pass an object of type <code>ExplicitArguments</code> directly to an overload
 of the <code>IContainer.GetInstance()</code> method:</p>
-
-<pre data-linenums="46" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
             var widget = new BWidget();
             var service = new BService();
 
@@ -229,64 +211,41 @@ of the <code>IContainer.GetInstance()</code> method:</p>
 
             guyWithWidgetAndService
                 .Service.ShouldBeTheSameAs(service);
-</pre>
-
-<p></section></p>
+</code></pre>
 
 
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/resolving/try-geting-an-optional-service-by-plugin-type-and-name">Try Geting an Optional Service by Plugin Type and Name</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/resolving/requesting-a-concrete-type">Auto Resolving Concrete Types</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
 
 
+    </body>
 
 
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
-
-
-
-
-
-
-
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <br></br>
-    <hr></hr>
-    <div class="navbar">
-      <div class="navbar-inner">
-        <div class="container">
-          <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li><a href="/resolving" data-key="index">Resolving Services &#187;</a></li><li class="active"><a href="/resolving/passing-arguments-at-runtime" data-key="passing-arguments-at-runtime">Passing Arguments at Runtime &#187;</a></li></ul>
-<ul class="nav" style="float:right"><li><a href="/resolving/try-geting-an-optional-service-by-plugin-type-and-name" title="Try Geting an Optional Service by Plugin Type and Name">Previous</a></li><li><a href="/resolving/requesting-a-concrete-type" title="Auto Resolving Concrete Types">Next</a></li></ul>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-
-<script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
-<script type="text/javascript" src="/_content/scripts/prettify.js"></script>
-<script type="text/javascript" src="/_content/scripts/bootstrap-prettify.js"></script>
-<script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
-<script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
-<script type="text/javascript" src="/_content/scripts/toastr.js"></script>
-<script type="text/javascript" src="/_content/scripts/twitter/bootstrap.min.js"></script>
-<script type="text/javascript" src="/_content/scripts/diagnostics/bootstrap-scrollspy.js"></script>
-<script type="text/javascript" src="/_content/scripts/fubudocs-tools.js"></script>
-<script type="text/javascript" src="/_content/scripts/twitter/bootstrap-affix.js"></script>
-<script type="text/javascript" src="/_content/scripts/topics.js"></script>
-
-<footer class="footer">
-  <div class="container">
-    <p class="pull-right">
-      <a href="#">Back to top</a>
-    </p>
-    <p>
-      Powered by <a href="http://github.com/DarthFubuMVC/FubuDocs">FubuDocs</a>.
-    </p>
-  </div>
-</footer>
-  </body>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
 </html>
+

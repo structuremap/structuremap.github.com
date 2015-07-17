@@ -1,119 +1,128 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>
-      StructureMap - A Gentle Quickstart</title>
-    
-<meta charset="utf-8"/>
-<meta name="description" content="FubuDocs"/>
-<meta name="author" content="FubuDocs"/>
-
-
-
-
-<link href="/_content/styles/sons-of-obsidian.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/toastr.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/twitter/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/twitter/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/toastr-responsive.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/fubudocs.core.css" rel="stylesheet" type="text/css" />
-<link href="/_content/styles/fubudocs.theme.css" rel="stylesheet" type="text/css" />
-
-<link media="screen" type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,300">
-
-    
-  </head>
-  <body data-spy="scroll" data-target=".bs-docs-sidebar" position="relative">
-      
-    <div class="container">
-      
-      
-
-<div class="row">
-  <div class="span6">
-    <p class="logo">
-      <a href="/topics" title="Fubu" class="root-link"><span>Fubu</span></a>
-      <a href="/" title="The original IoC/DI Container for .Net" class="project-logo"><span>StructureMap</span></a>
-    </p>
-  </div>
-  <div class="span6">
-    <div class="top-header text-right">
-      <em>
-        <em><a href="http://groups.google.com/group/structuremap-users?hl=en">Join our vibrant mailing list</a></em>
-      </em>
-      <div class="social">
-        <a href="https://github.com/structuremap/structuremap" class="ico-github"><img alt="Github" src="/_content/images/github-icon.png" /></a>
-      </div>
-    </div>
-  </div>
-</div>
-      
-
-      <div id="nav-follow" class="navbar">
-        <div class="navbar-inner">
-          <div class="container">
-            <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li class="active"><a href="/quickstart" data-key="quickstart">A Gentle Quickstart &#187;</a></li></ul>
-<ul class="nav" style="float:right"><li><a href="/roadmap" title="Roadmap">Previous</a></li><li><a href="/glossary" title="Glossary">Next</a></li></ul>
-          </div>
-        </div>
-      </div>
-      <hr/>
-      <div class="row">
-        
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>StructureMap - A Gentle Quickstart</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		
         
 
-        <div class="row">
-          <div class="span3 sidebar" data-spy="affix" data-offset-top="150" data-offset-bottom="200">
-            
-            <h3 class="half-margin">Topics</h3>
-            <ul id="page-toc" class="nav nav-tabs nav-stacked bs-docs-sidebar">
-            </ul>
-            <br/>
-            <h3>
-              StructureMap v1.0.0
-            </h3>
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
 
-            <br/>
-            <h3 class="no-margin">Next</h3>
-<p><a href="/glossary" data-key="glossary">Glossary</a></p>
-<h3 class="no-margin">Previous</h3>
-<p><a href="/roadmap" data-key="roadmap">Roadmap</a></p>
-          </div>
-          <div class="span9">
 
-              <h1 class="no-margin">A Gentle Quickstart</h1>
-              <hr class="header-line topic-line"></hr>
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+    
+    <!-- HTML code from Bootply.com editor -->
+    
+    <body  >
 
-            <!--Title: A Gentle Quickstart-->
+<a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+        
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">StructureMap</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav">
+            <li>
+              <a href="/quickstart">A Gentle Quickstart</a>
+            </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
+            </li>
+		        <li>
+<a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      </ul>
+
+		      <ul class="nav navbar-nav navbar-right">
+		      	<li><a href="/roadmap" title="Roadmap">Previous</a></li>
+		      	<li><a href="/glossary" title="Glossary">Next</a></li>
+		      </ul>
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li class="active">A Gentle Quickstart</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+		      
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>StructureMap </h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/glossary">Glossary</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/roadmap">Roadmap</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+		      
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>A Gentle Quickstart</h1>
+			      
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--Title: A Gentle Quickstart-->
 <!--Url: quickstart-->
 <p>The first thing you should know is that StructureMap (and other IoC tools like it) are designed to
 make compositional and modular software designs easier to build by offloading the grubby mechanics of
 resolving dependencies, reading configuration data, and assembling object graphs to the IoC tool instead
 of cluttering up your application code.</p>
-
-<p>Before you get started with StructureMap it's recommended that you first get comfortable with the <a href="/software-design-concepts" data-key="concepts">Software Design Concepts</a> 
-of <a href="http://codebetter.com/jeremymiller/2005/10/06/the-dependency-injection-pattern-%E2%80%93-what-is-it-and-why-do-i-care/">Dependency Injection</a> 
-and <a href="http://codebetter.com/jeremymiller/2005/09/20/what%E2%80%99s-so-great-about-inversion-of-control/">Inversion Of Control</a>. 
+<p>Before you get started with StructureMap it's recommended that you first get comfortable with the <a href="/software-design-concepts">Software Design Concepts</a>
+of <a href="http://codebetter.com/jeremymiller/2005/10/06/the-dependency-injection-pattern-%E2%80%93-what-is-it-and-why-do-i-care/">Dependency Injection</a>
+and <a href="http://codebetter.com/jeremymiller/2005/09/20/what%E2%80%99s-so-great-about-inversion-of-control/">Inversion Of Control</a>.
 It's important that you structure and build your application with these concepts in mind to fully utilize StructureMap's abilities.</p>
-
-<p>Assuming that you're already familiar with those concepts, or you'd really rather skip the pedantry and jump right into concrete code, the first thing to do is, go <a href="/get-structuremap" data-key="get-structuremap">Get StructureMap</a> and jump into usage.</p>
-
-<p><section><h4 id="main-usage" class="section-header">Main Usage</h4></p>
-
+<p>Assuming that you're already familiar with those concepts, or you'd really rather skip the pedantry and jump right into concrete code, the first thing to do is, go <a href="/get-structuremap">Get StructureMap</a> and jump into usage.</p>
+<h2>Main Usage</h2>
 <p>By and large, you really only do two kinds of things with StructureMap:</p>
-
 <ol>
-<li><p>Configure the container by registering the <strong>what</strong> and <strong>how</strong> StructureMap should build or find requested services based on a type and/or name.</p></li>
-<li><p>Resolve object instances of a service or dependency built out with all of its dependencies.</p></li>
+<li>
+<p>Configure the container by registering the <strong>what</strong> and <strong>how</strong> StructureMap should build or find requested services based on a type and/or name.</p>
+</li>
+<li>
+<p>Resolve object instances of a service or dependency built out with all of its dependencies.</p>
+</li>
 </ol>
-
 <p>So let's say that you have a simple object model like so:</p>
+<pre><code class="language-csharp">
+    public interface IBar
+    {
+    }
 
-<pre data-linenums="16" class="prettyprint lang-cs">
-    public interface IBar{}
-    public class Bar : IBar{}
-    public interface IFoo{}
+    public class Bar : IBar
+    {
+    }
+
+    public interface IFoo
+    {
+    }
 
     public class Foo : IFoo
     {
@@ -124,145 +133,92 @@ It's important that you structure and build your application with these concepts
             Bar = bar;
         }
     }
-</pre>
 
+</code></pre>
 <p>You could explicitly build a StructureMap <code>Container</code> object to build these types like this:</p>
-
-<pre data-linenums="37" class="prettyprint lang-cs">
+<pre><code class="language-csharp">
 // Configure and build a brand new
 // StructureMap Container object
-var container = new Container(_ =&gt; {
-    _.For&lt;IFoo&gt;().Use&lt;Foo&gt;();
-    _.For&lt;IBar&gt;().Use&lt;Bar&gt;();
-});
+            var container = new Container(_ =&gt;
+            {
+                _.For&lt;IFoo&gt;().Use&lt;Foo&gt;();
+                _.For&lt;IBar&gt;().Use&lt;Bar&gt;();
+            });
 
 // Now, resolve a new object instance of IFoo
-container.GetInstance&lt;IFoo&gt;()
-    // should be type Foo
-    .ShouldBeOfType&lt;Foo&gt;()
+            container.GetInstance&lt;IFoo&gt;()
+                // should be type Foo
+                .ShouldBeOfType&lt;Foo&gt;()
 
-    // and the IBar dependency too
-    .Bar.ShouldBeOfType&lt;Foo&gt;();
+                // and the IBar dependency too
+                .Bar.ShouldBeOfType&lt;Foo&gt;();
 
 
-</pre>
-
+</code></pre>
 <p>or utilize StructureMap's type scanning conventions to configure the relationships and do the same thing like this:</p>
+<pre><code class="language-csharp">
+            var container = new Container(_ =&gt;
+            {
+                _.Scan(x =&gt;
+                {
+                    x.TheCallingAssembly();
+                    x.WithDefaultConventions();
+                });
+            });
 
-<pre data-linenums="59" class="prettyprint lang-cs">
-var container = new Container(_ =&gt;
-{
-    _.Scan(x =&gt; {
-        x.TheCallingAssembly();
-        x.WithDefaultConventions();
-    });
-});
+            container.GetInstance&lt;IFoo&gt;()
+                .ShouldBeOfType&lt;Foo&gt;()
+                .Bar.ShouldBeOfType&lt;Foo&gt;();
 
-container.GetInstance&lt;IFoo&gt;()
-    .ShouldBeOfType&lt;Foo&gt;()
-    .Bar.ShouldBeOfType&lt;Foo&gt;();
-
-</pre>
-
-<p></section></p>
-
-<p><section><h4 id="integration" class="section-header">Integrating StructureMap within your application</h4></p>
-
+</code></pre>
+<h2>Integrating StructureMap within your application</h2>
 <p>At some point you will want to integrate StructureMap into your application. Whether you are using Windows Presentation Foundation (WPF), FubuMVC, ASP.NET WebForms, ASP.NET MVC or any other framework or technology, you will have to do some sort of plumbing and bootstrapping. Depending on the used technology or framework there can be important integration points that you will have to use to fully enable the power of StructureMap.</p>
-
 <p>While StructureMap doesn't provide integration support out of the box for all of the frameworks and technologies out there, we do find it important to help you get started with integrating StructureMap into your application. That said, StructureMap does provide integration support for <a href="http://fubuworld.com/fubumvc">FubuMVC</a> (a web framework, which is part of the same family as StructureMap).</p>
-
-<p>We have created some starter integration guides for the most common frameworks and technologies. Those guides aren't the one and true way, most of the time, integrating StructureMap can be done in various ways.</p>
-
-<ul>
-<li><p><a href="/integrations" data-key="index">Integrations</a></p>
-
-<ul>
-<li><a href="/integrations/fubumvc-and-fubutransportation" data-key="fubumvc-and-fubutransportation">FubuMVC and FubuTransportation</a></li>
-<li><a href="/integrations/aspnet-mvc" data-key="aspnet-mvc">ASP.Net MVC</a></li>
-<li><a href="/integrations/web-api" data-key="Web-API">Web API</a></li>
-<li><a href="/integrations/nancyfx" data-key="nancyfx">NancyFx</a></li>
-<li><a href="/integrations/simpleweb" data-key="simpleweb">Simple.Web</a></li>
-<li><a href="/integrations/signalr" data-key="signalr">SignalR</a></li>
-<li><a href="/integrations/nservicebus" data-key="nservicebus">NServiceBus</a></li>
-<li><a href="/integrations/masstransit" data-key="masstransit">MassTransit</a></li>
-<li><a href="/integrations/entity-framework" data-key="entity-framework">Entity Framework</a></li>
-<li><a href="/integrations/nhibernate" data-key="nhibernate">NHibernate</a></li>
-<li><a href="/integrations/automapper" data-key="automapper">AutoMapper</a>
-</section>
-<section><h4 id="when-things-go-wrong" class="section-header">What to do when things go wrong?</h4></li>
-</ul></li>
-</ul>
-
+<h2>What to do when things go wrong?</h2>
 <p>StructureMap, and any other IoC tool for that matter, is configuration intensive, which means that their will be problems in that configuration. We're all moving to more convention based type registration, so more stuff is happening off stage and out of your sight, making debugging the configuration even trickier. Not to worry (too much), StructureMap has some diagnostic abilities to help you solve configuration problems:</p>
-
 <ul>
-<li><a href="/interpreting-exceptions" data-key="interpreting-exceptions">Interpreting Exceptions</a></li>
-<li><a href="/diagnostics" data-key="index">Diagnostics</a>
-<ul>
-<li><a href="/diagnostics/whatdoihave" data-key="whatdoihave">WhatDoIHave()</a></li>
-<li><a href="/diagnostics/validating-container-configuration" data-key="validating-container-configuration">Validating Container Configuration</a></li>
-<li><a href="/diagnostics/environment-tests" data-key="environment-tests">Environment Tests</a></li>
-<li><a href="/diagnostics/build-plans" data-key="build-plans">Build Plans</a></li>
-<li><a href="/diagnostics/using-the-container-model" data-key="using-the-container-model">Using the Container Model</a>
-</section></li>
-</ul></li>
+<li><a href="/interpreting-exceptions">Interpreting Exceptions</a></li>
+<li><a href="/diagnostics">Diagnostics</a></li>
 </ul>
-
-<p><section><h4 id="need-help" class="section-header">Need Help?</h4></p>
-
+<h2>Need Help?</h2>
 <ul>
 <li>There is a <a href="http://groups.google.com/group/structuremap-users?hl=en">google group</a> for StructureMap support.</li>
-<li>You can ask questions on <a href="http://stackoverflow.com/">StackOverflow</a>.
-</section></li>
+<li>You can ask questions on <a href="http://stackoverflow.com/">StackOverflow</a> with the tag &quot;structuremap.&quot;</li>
 </ul>
 
 
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/roadmap">Roadmap</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/glossary">Glossary</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
 
 
+    </body>
 
 
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <br></br>
-    <hr></hr>
-    <div class="navbar">
-      <div class="navbar-inner">
-        <div class="container">
-          <ul class="nav"><li><a href="/" data-key="index">StructureMap &#187;</a></li><li class="active"><a href="/quickstart" data-key="quickstart">A Gentle Quickstart &#187;</a></li></ul>
-<ul class="nav" style="float:right"><li><a href="/roadmap" title="Roadmap">Previous</a></li><li><a href="/glossary" title="Glossary">Next</a></li></ul>
-        </div>
-      </div>
-    </div>
-    
-    
-    
-
-<script type="text/javascript" src="/_content/scripts/jquery-1.8.2.min.js"></script>
-<script type="text/javascript" src="/_content/scripts/prettify.js"></script>
-<script type="text/javascript" src="/_content/scripts/bootstrap-prettify.js"></script>
-<script type="text/javascript" src="/_content/scripts/fubudocs.js"></script>
-<script type="text/javascript" src="/_content/scripts/jquery.nestable.js"></script>
-<script type="text/javascript" src="/_content/scripts/toastr.js"></script>
-<script type="text/javascript" src="/_content/scripts/twitter/bootstrap.min.js"></script>
-<script type="text/javascript" src="/_content/scripts/diagnostics/bootstrap-scrollspy.js"></script>
-<script type="text/javascript" src="/_content/scripts/fubudocs-tools.js"></script>
-<script type="text/javascript" src="/_content/scripts/twitter/bootstrap-affix.js"></script>
-<script type="text/javascript" src="/_content/scripts/topics.js"></script>
-
-<footer class="footer">
-  <div class="container">
-    <p class="pull-right">
-      <a href="#">Back to top</a>
-    </p>
-    <p>
-      Powered by <a href="http://github.com/DarthFubuMVC/FubuDocs">FubuDocs</a>.
-    </p>
-  </div>
-</footer>
-  </body>
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+    </foot>
 </html>
+
