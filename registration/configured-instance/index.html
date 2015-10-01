@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>StructureMap - Validating Container Configuration</title>
+		<title>StructureMap - Configuring Instance Construction</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
 		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
@@ -46,8 +46,8 @@
 		        <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/diagnostics/whatdoihave" title="WhatDoIHave()">Previous</a></li>
-		      	<li><a href="/diagnostics/environment-tests" title="Environment Tests">Next</a></li>
+		      	<li><a href="/registration/configuring-the-raw-model" title="Configuring the Raw Model">Previous</a></li>
+		      	<li><a href="/registration/fallback-services" title="Fallback Services">Next</a></li>
 		      </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
@@ -62,7 +62,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/diagnostics">Diagnostics</a></li><li class="active">Validating Container Configuration</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/registration">Registration</a></li><li class="active">Configuring Instance Construction</li></ol>
 		  	</nav>
 		  </div>
 
@@ -79,49 +79,21 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/diagnostics/environment-tests">Environment Tests</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/diagnostics/whatdoihave">WhatDoIHave()</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/registration/fallback-services">Fallback Services</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/registration/configuring-the-raw-model">Configuring the Raw Model</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 		      
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Validating Container Configuration</h1>
+			      	<h1>Configuring Instance Construction</h1>
 			      
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--Title: Validating Container Configuration-->
-<!--Url: validating-container-configuration-->
-<p>To find any potential holes in your StructureMap configuration like missing dependencies, unclear defaults of plugin types, validation errors, or just plain build errors, you can use this method below:</p>
-<pre><code class="language-csharp">
-            container.AssertConfigurationIsValid();
-</code></pre>
-<p>Running this method will walk over every single registration in your <code>Container</code> and:</p>
-<ol>
-<li>Try to create a build plan for that Instance that will flush out any problems with missing dependencies or invalid inline configuration</li>
-<li>Try to build every single configured Instance</li>
-<li>Call any methods on built objects decorated with the <code>[ValidationMethod]</code> attribute to perform environment tests. See <a href="/diagnostics/environment-tests">Environment Tests</a> for more information on this usage.</li>
-</ol>
-<p>If StructureMap encounters any errors of any kind during this method, it will throw an exception summarizing <strong>all</strong> of the problems that it encountered. That output will look something like:</p>
-<pre>
-<pre><code>StructureMap.StructureMapConfigurationException
-StructureMap Failures:  1 Build/Configuration Failures and 0 Validation Errors
-
-Profile 'DEFAULT'
-
------------------------------------------------------------------------------------------------------
-Build Error on Instance 'StructureMap.Testing.Diagnostics.NamedWidget'
-    for PluginType StructureMap.Testing.Diagnostics.IWidget
-
-Unable to create a build plan for concrete type StructureMap.Testing.Diagnostics.NamedWidget
-new NamedWidget(String name)
-  ┗ String name = Required primitive dependency is not explicitly defined
-</code></pre>
-</pre>
-<h2>Standin Dependencies for Runtime Dependencies</h2>
-<p>If you take advantage of StructureMap's ability to supply <a href="/resolving/passing-arguments-at-runtime">arguments at runtime</a>, you may need to add fake or stubbed <em>stand in</em> services to StructureMap just to satisfy dependencies while calling <code>Container.AssertConfigurationIsValid()</code>. For example, in <a href="http://github.com/DarthFubuMVC/fubumvc">FubuMVC</a> we supply several services representing an HTTP request as explicit arguments. In order to use the container validation, we have to register stand in services in the main container.</p>
+			      		<!--Title:Configuring Instance Construction-->
+<p>TODO(Content!)</p>
 
 
 			      	</div>
@@ -130,12 +102,12 @@ new NamedWidget(String name)
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/diagnostics/whatdoihave">WhatDoIHave()</a>
+				        	<strong>Previous: </strong><a href="/registration/configuring-the-raw-model">Configuring the Raw Model</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/diagnostics/environment-tests">Environment Tests</a>
+				        	<strong>Next: </strong><a href="/registration/fallback-services">Fallback Services</a>
 
 				        </span>
 			      	</nav>

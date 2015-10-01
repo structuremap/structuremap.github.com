@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>StructureMap - Setter Injection</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		
+        
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+    
+    <!-- HTML code from Bootply.com editor -->
+    
+    <body  >
+
+<a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+        
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">StructureMap</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+            <li>
+              <a href="/quickstart">A Gentle Quickstart</a>
+            </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
+            </li>
+		        <li>
+<a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/software-design-concepts" title="Software Design Concepts">Previous</a></li>
+		      	<li><a href="/registration" title="Registration">Next</a></li>
+		      </ul>
+      <div class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input id="search" type="search" class="form-control" placeholder="Search">
+        </div>
+      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li class="active">Setter Injection</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+		      
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>StructureMap 3.1.6</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/registration">Registration</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/software-design-concepts">Software Design Concepts</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+		      
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Setter Injection</h1>
+			      
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--Title: Setter Injection-->
+<!--Url: setter-injection-->
+<div class="alert alert-info" role="alert">In all cases, <i>Setter Injection</i> is an opt-in feature in StructureMap that has to be explicitly enabled
+    on a case by case basis.</div>
+<p>StructureMap can inject dependencies into public setter properties as part of its construction process using the <em>Setter Injection</em> form of Dependency Injection. The StructureMap team strongly recommends using constructor injection wherever possible instead of setter injection. That being said,
+there are few cases where setter injection is probably easier (inheritance hierarchies), not to mention legacy or third party tools that
+simply cannot support constructor injection <em>cough</em> ASP.Net <em>cough</em>.</p>
+<p>See this discussion from Martin Fowler on <a href="http://martinfowler.com/articles/injection.html#ConstructorVersusSetterInjection">Constructor vs Setter Injection</a>.</p>
+<p><strong>If you are having any trouble with setter injection in your StructureMap usage, make sure you're familiar with using <a href="/diagnostics/build-plans">Build Plans</a>
+to help in troubleshooting</strong></p>
+<h2>Explicit Setter Injection with [SetterProperty] Attributes</h2>
+<p>The simplest conceptual way to force StructureMap into making public setters mandatory service dependencies by decorating setter properties with the <code>[SetterProperty]</code> attribute like this example:</p>
+<pre><code class="language-csharp">
+    public class Repository
+    {
+        private IDataProvider _provider;
+
+        // Adding the SetterProperty to a setter directs
+        // StructureMap to use this property when
+        // constructing a Repository instance
+        [SetterProperty]
+        public IDataProvider Provider
+        {
+            set { _provider = value; }
+        }
+
+        [SetterProperty]
+        public bool ShouldCache { get; set; }
+    }
+</code></pre>
+<p>Without the <code>[SetterProperty]</code> attributes decorating the setters, StructureMap would ignore the <code>Provider</code> and <code>ShouldCache</code> properties when it builds up a <code>Repository</code> object. With the attributes, StructureMap will try to build and attach values for the two properties as part of object construction.</p>
+<p>If you were to look at StructureMap's &quot;build plan&quot; for the <code>Repository</code> class, you would see something like this:</p>
+<pre>
+PluginType: StructureMap.Testing.DocumentationExamples.Repository
+Lifecycle: Transient
+new Repository()
+    Set IDataProvider Provider = **Default**
+    Set Boolean ShouldCache = Value: False
+</pre>
+<p>If you intensely dislike runaway attribute usage, that's okay because there are other ways to enable setter injection in StructureMap.</p>
+<h2>Inline Setter Configuration</h2>
+<p>Any setter property not configured with <code>[SetterProperty]</code> or the setter policies in the next section can still be filled by StructureMap if an inline dependency is configured matching that setter property as shown in the example below:</p>
+<pre><code class="language-csharp">
+        public class RuleWithSetters : IEventRule
+        {
+            public ICondition Condition { get; set; }
+            public IAction Action { get; set; }
+
+            public void ProcessEvent(SomeEvent @event)
+            {
+                if (Condition.Matches(@event))
+                {
+                    Action.PerformWork(@event);
+                }
+            }
+        }
+
+        public class RuleWithSettersRegistry : Registry
+        {
+            public RuleWithSettersRegistry()
+            {
+                For&lt;IEventRule&gt;().Use&lt;RuleWithSetters&gt;()
+                    .Setter&lt;ICondition&gt;().Is&lt;Condition1&gt;()
+
+                    // or
+                    .Setter(x =&gt; x.Action).Is(new Action1())
+
+                    // or if you need to specify the name
+                    .Setter&lt;IAction&gt;(&quot;Action&quot;).Is&lt;Action2&gt;()
+
+                    // or you can configure values *after* the object
+                    // is constructed with the SetProperty method
+                    .SetProperty(x =&gt; x.Action = new Action2());
+            }
+        }
+
+</code></pre>
+<p>See also:</p>
+<ul>
+<li><a href="/registration/inline-dependencies">Inline Dependencies</a></li>
+<li><a href="/registration/configured-instance">Configuring Instance Construction</a></li>
+</ul>
+<h2>Setter Injection Policies</h2>
+<p>Lastly, you can give StructureMap some criteria for determining which setters should be mandatory dependencies with the <code>Registry.Policies.SetAllProperties()</code> method during Container setup as shown in this example below:</p>
+<pre><code class="language-csharp">
+        public class ClassWithNamedProperties
+        {
+            public int Age { get; set; }
+            public string LastName { get; set; }
+            public string FirstName { get; set; }
+            public IGateway Gateway { get; set; }
+            public IService Service { get; set; }
+        }
+
+
+        [Test]
+        public void specify_setter_policy_and_construct_an_object()
+        {
+            var theService = new ColorService(&quot;red&quot;);
+
+            var container = new Container(x =&gt;
+            {
+                x.For&lt;IService&gt;().Use(theService);
+                x.For&lt;IGateway&gt;().Use&lt;DefaultGateway&gt;();
+
+                x.ForConcreteType&lt;ClassWithNamedProperties&gt;().Configure.Setter&lt;int&gt;().Is(5);
+
+                x.Policies.SetAllProperties(
+                    policy =&gt; policy.WithAnyTypeFromNamespace(&quot;StructureMap.Testing.Widget3&quot;));
+            });
+
+            var description = container.Model.For&lt;ClassWithNamedProperties&gt;().Default.DescribeBuildPlan();
+            Debug.WriteLine(description);
+
+            var target = container.GetInstance&lt;ClassWithNamedProperties&gt;();
+            target.Service.ShouldBeTheSameAs(theService);
+            target.Gateway.ShouldBeOfType&lt;DefaultGateway&gt;();
+        }
+</code></pre>
+<p>All calls to <code>Registry.Policies.SetAllProperties()</code> are additive, meaning you can use as many criteria as possible for setter injection.</p>
+
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/software-design-concepts">Software Design Concepts</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/registration">Registration</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:structuremap.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+}); 
+
+</script>
+    </foot>
+</html>
+

@@ -97,6 +97,7 @@
 <p>StructureMap has rich support for registering types by scanning assemblies.
 Between scanning and default conventions, configurations are often just a few
 lines.</p>
+<p>Also see <a href="/diagnostics/type-scanning">Type Scanning Diagnostics</a> for help in understanding the assembly scanning behavior in your system.</p>
 <h2>Scan the Calling Assembly</h2>
 <p>One of the easiest ways to register types is by scanning the assembly your
 registry is placed in.</p>
@@ -205,7 +206,7 @@ conventions through the <code>IRegistrationConvention</code> interface:</p>
 <pre><code class="language-csharp">
     public interface IRegistrationConvention
     {
-        void Process(Type type, Registry registry);
+        void ScanTypes(TypeSet types, Registry registry);
     }
 </code></pre>
 <p>Let's say that you'd like a custom convention that just registers a concrete type against all the interfaces
@@ -230,14 +231,15 @@ that it implements. You could then build a custom <code>IRegistrationConvention<
         // Custom IRegistrationConvention
         public class AllInterfacesConvention : IRegistrationConvention
         {
-            public void Process(Type type, Registry registry)
+            public void ScanTypes(TypeSet types, Registry registry)
             {
                 // Only work on concrete types
-                if (!type.IsConcrete() || type.IsGenericType) return;
-
-                // Register against all the interfaces implemented
-                // by this concrete class
-                type.GetInterfaces().Each(@interface =&gt; { registry.For(@interface).Use(type); });
+                types.FindTypes(TypeClassification.Concretes | TypeClassification.Closed).Each(type =&gt;
+                {
+                    // Register against all the interfaces implemented
+                    // by this concrete class
+                    type.GetInterfaces().Each(@interface =&gt; registry.For(@interface).Use(type));
+                });
             }
         }
 

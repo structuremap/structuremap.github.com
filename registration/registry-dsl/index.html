@@ -102,7 +102,7 @@ programming to point out missing data.</p>
 <h2>The Registry Class</h2>
 <p>On all but the smallest systems, the main unit of configuration will probably be
 the <code>Registry</code> class.  Typically, you would subclass the <code>Registry</code> class, then
-use the Fluent Interface methods exposed by the Registry class to create Container
+use the <a href="https://en.wikipedia.org/wiki/Fluent_interface">fluent interface</a> methods exposed by the Registry class to create Container
 configuration. Here's a sample <code>Registry</code> class below used to configure an
 instance of an <code>IWidget</code> interface:</p>
 <pre><code class="language-csharp">
@@ -117,7 +117,7 @@ instance of an <code>IWidget</code> interface:</p>
 </code></pre>
 <h2>Including Registries</h2>
 <p>The next question is &quot;how does my new <code>Registry</code> class get used?&quot;</p>
-<p>When you set up a <code>Container</code> or <code>ObjectFactory</code>, you need to simply direct the
+<p>When you set up a <code>Container</code>, you need to simply direct the
 <code>Container</code> to use the configuration in that <code>Registry</code> class:</p>
 <pre><code class="language-csharp">
         [Test]

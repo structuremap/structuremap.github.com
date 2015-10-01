@@ -94,7 +94,29 @@
 			      	<div id="main-pane">
 			      		<!--Title: Environment Tests-->
 <!--Url: environment-tests-->
-<p>TODO(Write some content!)</p>
+<p>Years ago I worked with a legacy system that was particularly fragile in its deployment. While my team at the time and I made some serious improvements in the reliability of the automated deployment, the best thing we did was to add a set of <em>environment tests</em> to the deployment that verified that basic elements of the system were working like:</p>
+<ul>
+<li>Could our code access the configured database?</li>
+<li>Was a certain COM object registered on the server? (I hated COM then and the years haven't changed my mind)</li>
+<li>Could we connect via remoting to another deployed application?</li>
+</ul>
+<p>The deployments still frequently failed, but we were able to spot <strong>and diagnose</strong> the underlying problems much faster with our new environment tests than we could before by trying to run and debug the not-quite-valid application.</p>
+<p>One of the mechanisms we used for these environment tests was StructureMap's ability to mark methods on configured types as environment tests with the <code>[ValidationMethod]</code> attribute as shown below:</p>
+<pre><code class="language-csharp">
+        public class Database : IDatabase
+        {
+            [ValidationMethod]
+            public void TryToConnect()
+            {
+                // try to open a connection to the configured
+                // database connection string
+
+                // throw an exception if the database cannot
+                // be reached
+            }
+        }
+</code></pre>
+<p>Used in conjunction with <a href="/diagnostics/validating-container-configuration">StructureMap's ability to validate a container</a>, you can use this technique to quickly support environment tests embedded into your system code.</p>
 
 
 			      	</div>

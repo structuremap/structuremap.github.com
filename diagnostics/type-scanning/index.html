@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>StructureMap - Type Scanning Diagnostics</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		
+        
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+    
+    <!-- HTML code from Bootply.com editor -->
+    
+    <body  >
+
+<a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+        
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">StructureMap</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+            <li>
+              <a href="/quickstart">A Gentle Quickstart</a>
+            </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
+            </li>
+		        <li>
+<a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/diagnostics/using-the-container-model" title="Using the Container Model">Previous</a></li>
+		      	<li><a href="/architecture" title="Internals and Architecture">Next</a></li>
+		      </ul>
+      <div class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input id="search" type="search" class="form-control" placeholder="Search">
+        </div>
+      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/diagnostics">Diagnostics</a></li><li class="active">Type Scanning Diagnostics</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+		      
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>StructureMap 3.1.6</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/architecture">Internals and Architecture</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/diagnostics/using-the-container-model">Using the Container Model</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+		      
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Type Scanning Diagnostics</h1>
+			      
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--Title:Type Scanning Diagnostics-->
+<div class="alert alert-info" role="alert"><b><big>This functionality was introduced in StructureMap 4.0.</b></big></div>
+<p>Type scanning and conventional auto-registration is a very powerful feature in StructureMap, but it has been frequently troublesome to users when things go wrong. To try to alleviate problems, StructureMap 4.0 introduces some new functionality for detecting and diagnosing problems with type scanning, mostly related to Assembly's being missing.</p>
+<h2>Assert for Assembly Loading Failures</h2>
+<p>At its root, most type scanning and auto-registration schemes in .Net frameworks rely on the <a href="https://msdn.microsoft.com/en-us/library/system.reflection.assembly.getexportedtypes%28v=vs.110%29.aspx">Assembly.GetExportedTypes()</a> method. Unfortunately, that method can be brittle and fail whenever any dependency of that Assembly cannot be loaded into the current process, even if your application has no need for that dependency. In StructureMap 3.* and before, that loading exception was essentially swallowed and lost. In StructureMap 4 and above, you can use this method to assert the presence of any assembly load exceptions during type scanning:</p>
+<pre><code class="language-csharp">
+            TypeRepository.AssertNoTypeScanningFailures();
+</code></pre>
+<p>The method above will throw an exception listing all the Assembly's that failed during the call to <code>GetExportedTypes()</code> only if there were any failures. Use this method during your application bootstrapping if you want it to fail fast with any type scanning problems.</p>
+<h2>What did StructureMap scan?</h2>
+<p>Confusion of type scanning has been a constant problem with StructureMap usage over the years -- especially if users are trying to dynamically load assemblies from the file system for extensibility. In order to see into what StructureMap has done with type scanning, 4.0 introduces the <code>Container.WhatDidIScan()</code> method.</p>
+<p>Let's say that you have a <code>Container</code> that is set up with at least two different scanning operations like this sample from the StructureMap unit tests:</p>
+<pre><code class="language-csharp">
+            var container = new Container(_ =&gt;
+            {
+                _.Scan(x =&gt;
+                {
+                    x.TheCallingAssembly();
+
+                    x.WithDefaultConventions();
+                    x.RegisterConcreteTypesAgainstTheFirstInterface();
+                    x.SingleImplementationsOfInterface();
+                });
+
+                _.Scan(x =&gt;
+                {
+                    // Give your scanning operation a descriptive name
+                    // to help the diagnostics to be more useful
+                    x.Description = &quot;Second Scanner&quot;;
+
+                    x.AssembliesFromApplicationBaseDirectory(assem =&gt; assem.FullName.Contains(&quot;Widget&quot;));
+                    x.ConnectImplementationsToTypesClosing(typeof(IService&lt;&gt;));
+                    x.AddAllTypesOf&lt;IWidget&gt;();
+                });
+            });
+
+            Debug.WriteLine(container.WhatDidIScan());
+</code></pre>
+<p>The resulting textual report is shown below:</p>
+<p><em>Sorry for the formatting and color of the text, but the markdown engine does <strong>not</strong> like the textual report</em></p>
+<pre><code class="language-csharp">
+/*
+All Scanners
+================================================================
+Scanner #1
+Assemblies
+----------
+* StructureMap.Testing, Version=4.0.0.51243, Culture=neutral, PublicKeyToken=null
+
+Conventions
+--------
+* Default I[Name]/[Name] registration convention
+* Register all concrete types against the first interface (if any) that they implement
+* Register any single implementation of any interface against that interface
+
+
+Second Scanner
+Assemblies
+----------
+* StructureMap.Testing.GenericWidgets, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+* StructureMap.Testing.Widget, Version=4.0.0.51243, Culture=neutral, PublicKeyToken=null
+* StructureMap.Testing.Widget2, Version=4.0.0.51243, Culture=neutral, PublicKeyToken=null
+* StructureMap.Testing.Widget3, Version=4.0.0.51243, Culture=neutral, PublicKeyToken=null
+* StructureMap.Testing.Widget4, Version=4.0.0.51243, Culture=neutral, PublicKeyToken=null
+* StructureMap.Testing.Widget5, Version=4.0.0.51243, Culture=neutral, PublicKeyToken=null
+
+Conventions
+--------
+* Connect all implementations of open generic type IService&lt;T&gt;
+* Find and register all types implementing StructureMap.Testing.Widget.IWidget
+
+*/
+</code></pre>
+<p>The textual report will show:</p>
+<ol>
+<li>All the scanning operations (calls to <code>Registry.Scan()</code>) with a descriptive name, either one supplied by you or the <code>Registry</code> type and an order number.</li>
+<li>All the assemblies that were part of the scanning operation including the assembly name, version, and a warning if <code>Assembly.GetExportedTypes()</code> failed on that assembly.</li>
+<li>All the configured scanning conventions inside of the scanning operation</li>
+</ol>
+<p><code>WhatDidIScan()</code> does not at this time show any type filters or exclusions that may be part of the assembly scanner.</p>
+<p>See also: <a href="/registration/auto-registration-and-conventions">Auto-Registration and Conventions</a></p>
+
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/diagnostics/using-the-container-model">Using the Container Model</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/architecture">Internals and Architecture</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:structuremap.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+}); 
+
+</script>
+    </foot>
+</html>
+
