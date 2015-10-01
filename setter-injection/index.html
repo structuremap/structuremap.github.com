@@ -212,6 +212,35 @@ new Repository()
         }
 </code></pre>
 <p>All calls to <code>Registry.Policies.SetAllProperties()</code> are additive, meaning you can use as many criteria as possible for setter injection.</p>
+<h2>Filling Setter's of an Object</h2>
+<p>You can run into situations where you'll want StructureMap to fill the setter dependencies of an object that is built outside of your own code and cannot be built by StructureMap itself. Action filter attributes from ASP.Net MVC are an obvious example.</p>
+<p>You're still in luck because StructureMap has the <code>BuildUp(object)</code> method for just this scenario as shown in this example from the unit tests:</p>
+<pre><code class="language-csharp">
+        public class BuildUpTarget1
+        {
+            public IGateway Gateway { get; set; }
+            public IService Service { get; set; }
+        }
+
+        [Test]
+        public void create_a_setter_rule_and_see_it_applied_in_BuildUp()
+        {
+            
+            var theGateway = new DefaultGateway();
+            var container = new Container(x =&gt;
+            {
+                x.For&lt;IGateway&gt;().Use(theGateway);
+                x.Policies.SetAllProperties(y =&gt; y.OfType&lt;IGateway&gt;());
+            });
+
+            var target = new BuildUpTarget1();
+            container.BuildUp(target);
+
+            target.Gateway.ShouldBeTheSameAs(theGateway);
+            target.Service.ShouldBeNull();
+        }
+</code></pre>
+<p>The normal rules for what setters should be filled as described above apply to <code>BuildUp()</code>.</p>
 
 
 			      	</div>
