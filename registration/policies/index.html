@@ -93,6 +93,317 @@
 
 			      	<div id="main-pane">
 			      		<!--Title: Construction Policies-->
+<div class="alert alert-info" role="alert">The features described in this page were all introduced in StructureMap 4.0.</div>
+<p>StructureMap has long supported <a href="/registration/auto-registration-and-conventions">conventional policies for registration based on type scanning</a>
+and 3.0 introduced cleaner mechanisms for <a href="/interception-and-decorators">interception policies</a>.
+The 4.0 release extends StructureMap's support for conventional build policies with a new mechanism for altering
+<em>how</em> object instances are built based on user created <em>meta-conventions</em> using the <code>IInstancePolicy</code> shown below:</p>
+<pre><code class="language-csharp">
+    /// &lt;summary&gt;
+    /// Custom policy on Instance construction that is evaluated
+    /// as part of creating a &quot;build plan&quot;
+    /// &lt;/summary&gt;
+    public interface IInstancePolicy
+    {
+        /// &lt;summary&gt;
+        /// Apply any conventional changes to the configuration
+        /// of a single Instance
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;
+        /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;
+        void Apply(Type pluginType, Instance instance);
+    }
+</code></pre>
+<p>These policies are registered as part of the <a href="/registration/registry-dsl">registry dsl</a> with
+the <code>Policies.Add()</code> method:</p>
+<pre><code class="language-csharp">
+            var container = new Container(_ =&gt;
+            {
+                _.Policies.Add&lt;MyCustomPolicy&gt;();
+                // or
+                _.Policies.Add(new MyCustomPolicy());
+            });
+</code></pre>
+<p>The <code>IInstancePolicy</code> mechanism probably works differently than other IoC containers in that the policy
+is applied to the container's underlying configuration model instead of at runtime. Internally, StructureMap lazily creates
+a &quot;<a href="/diagnostics/build-plans">build plan</a>&quot; for each configured Instance at the first time
+that that Instance is built or resolved. As part of creating that build plan, StructureMap runs
+all the registered <code>IInstancePolicy</code> objects against the Instance in question to capture any
+potential changes before &quot;baking&quot; the build plan into a .Net <code>Expression</code> that is then compiled into a <code>Func</code>
+for actual construction.</p>
+<p>The <code>Instance</code> objects will give you access to the types being created, the configured name of the Instance (if any),
+the ability to add interceptors and to modify the lifecycle. If you wish to add inline dependencies to
+Instances that are built by calling constructor function and setter properties, you may find it easier
+to use the <code>ConfiguredInstancePolicy</code> base class as a convenience:</p>
+<pre><code class="language-csharp">
+    public abstract class ConfiguredInstancePolicy : IInstancePolicy
+    {
+        public void Apply(Type pluginType, Instance instance)
+        {
+            var configured = instance as IConfiguredInstance;
+            if (configured != null)
+            {
+                apply(pluginType, configured);
+            }
+        }
+
+        // This method is called against any Instance that implements 
+        // the IConfiguredInstance interface
+        protected abstract void apply(Type pluginType, IConfiguredInstance instance);
+    }
+</code></pre>
+<p>For more information, see:</p>
+<ul>
+<li><a href="/diagnostics/build-plans">Build Plans</a></li>
+<li><a href="/registration/configured-instance">Working with IConfiguredInstance</a></li>
+<li><a href="/object-lifecycle">Object Lifecycles</a></li>
+</ul>
+<h2>A Quick Note on Using Policies Sanely</h2>
+<h2>Example 1: Constructor arguments</h2>
+<p>So let me say upfront that I don't like this approach, but other folks have asked for this ability
+over the years. Say that you have some legacy code where many concrete classes have a constructor argument
+called &quot;connectionString&quot; that needs to be the connection string to the application database like these classes:</p>
+<pre><code class="language-csharp">
+        public class BigService
+        {
+            public BigService(IDatabase green)
+            {
+                DB = green;
+            }
+
+            public IDatabase DB { get; set; }
+        }
+
+        public class ImportantService
+        {
+            public ImportantService(IDatabase red)
+            {
+                DB = red;
+            }
+
+            public IDatabase DB { get; set; }
+        }
+
+        public class DoubleDatabaseUser
+        {
+            public DoubleDatabaseUser(IDatabase red, IDatabase green)
+            {
+                Red = red;
+                Green = green;
+            }
+
+            // Watch out for potential conflicts between setters
+            // and ctor params. The easiest thing is to just make
+            // setters private
+            public IDatabase Green { get; private set; }
+            public IDatabase Red { get; private set; }
+        }
+</code></pre>
+<p>Instead
+of explicitly configuring every single concrete class in StructureMap with that inline constructor argument,
+we can make a policy to do that in one place:</p>
+<pre><code class="language-csharp">
+        public class ConnectionStringPolicy : ConfiguredInstancePolicy
+        {
+            protected override void apply(Type pluginType, IConfiguredInstance instance)
+            {
+                var parameter = instance.Constructor.GetParameters().FirstOrDefault(x =&gt; x.Name == &quot;connectionString&quot;);
+                if (parameter != null)
+                {
+                    var connectionString = findConnectionStringFromConfiguration();
+                    instance.Dependencies.AddForConstructorParameter(parameter, connectionString);
+                }
+            }
+
+            // find the connection string from whatever configuration
+            // strategy your application uses
+            private string findConnectionStringFromConfiguration()
+            {
+                return &quot;the connection string&quot;;
+            }
+        }
+</code></pre>
+<p>Now, let's use that policy against the types that need &quot;connectionString&quot; and see what happens:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void use_the_connection_string_policy()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.Policies.Add&lt;ConnectionStringPolicy&gt;();
+            });
+
+            container.GetInstance&lt;DatabaseUser&gt;()
+                .ConnectionString.ShouldBe(&quot;the connection string&quot;);
+
+            container.GetInstance&lt;ConnectedThing&gt;()
+                .ConnectionString.ShouldBe(&quot;the connection string&quot;);
+        }
+</code></pre>
+<p>Years ago StructureMap was knocked by an &quot;IoC expert&quot; for not having this functionality. I said at the
+time -- and still would -- that I would strongly recommend that you simply <strong>don't directly
+open database connections</strong> in more than one or a very few spots in your code anyway. If I did
+need to configure a database connection string in multiple concrete classes, I prefer <a href="http://jeremydmiller.com/2014/11/07/strong_typed_configuration/">strong typed configuration</a>.</p>
+<h2>Example 2: Connecting to Databases based on Parameter Name</h2>
+<p>From another common user request over the years, let's say that your application needs to connect to
+multiple databases, but your data access service in both cases is an interface called <code>IDatabase</code>, and
+that's all the consumers of any database should ever need to know.</p>
+<p>To make this concrete, let's say that our data access is all behind an interface and concrete class pair named
+<code>Database/IDatabase</code> like so:</p>
+<pre><code class="language-csharp">
+        public interface IDatabase { }
+
+        public class Database : IDatabase
+        {
+            public string ConnectionString { get; set; }
+
+            public Database(string connectionString)
+            {
+                ConnectionString = connectionString;
+            }
+
+            public override string ToString()
+            {
+                return string.Format(&quot;ConnectionString: {0}&quot;, ConnectionString);
+            }
+        }
+</code></pre>
+<p>For a registration policy, let's say that the parameter name of an <code>IDatabase</code> dependency
+in a constructor function should match an identifier of one of the registered <code>IDatabase</code> services.
+That policy would be:</p>
+<pre><code class="language-csharp">
+        public class InjectDatabaseByName : ConfiguredInstancePolicy
+        {
+            protected override void apply(Type pluginType, IConfiguredInstance instance)
+            {
+                instance.Constructor.GetParameters()
+                    .Where(x =&gt; x.ParameterType == typeof (IDatabase))
+                    .Each(param =&gt;
+                    {
+                        // Using ReferencedInstance here tells StructureMap
+                        // to &quot;use the IDatabase by this name&quot;
+                        var db = new ReferencedInstance(param.Name);
+                        instance.Dependencies.AddForConstructorParameter(param, db);
+                    });
+            }
+        }
+</code></pre>
+<p>And because I'm generally pretty boring about picking test data names, let's say that two of
+our databases are named &quot;red&quot; and &quot;green&quot; with this container registration below:</p>
+<pre><code class="language-csharp">
+            var container = new Container(_ =&gt;
+            {
+                _.For&lt;IDatabase&gt;().Add&lt;Database&gt;().Named(&quot;red&quot;)
+                    .Ctor&lt;string&gt;(&quot;connectionString&quot;).Is(&quot;*red*&quot;);
+
+                _.For&lt;IDatabase&gt;().Add&lt;Database&gt;().Named(&quot;green&quot;)
+                    .Ctor&lt;string&gt;(&quot;connectionString&quot;).Is(&quot;*green*&quot;);
+                
+                _.Policies.Add&lt;InjectDatabaseByName&gt;();
+            });
+</code></pre>
+<p>For more context, the classes that use <code>IDatabase</code> would need to have constructor functions like
+these below:</p>
+<pre><code class="language-csharp">
+        public class BigService
+        {
+            public BigService(IDatabase green)
+            {
+                DB = green;
+            }
+
+            public IDatabase DB { get; set; }
+        }
+
+        public class ImportantService
+        {
+            public ImportantService(IDatabase red)
+            {
+                DB = red;
+            }
+
+            public IDatabase DB { get; set; }
+        }
+
+        public class DoubleDatabaseUser
+        {
+            public DoubleDatabaseUser(IDatabase red, IDatabase green)
+            {
+                Red = red;
+                Green = green;
+            }
+
+            // Watch out for potential conflicts between setters
+            // and ctor params. The easiest thing is to just make
+            // setters private
+            public IDatabase Green { get; private set; }
+            public IDatabase Red { get; private set; }
+        }
+</code></pre>
+<p>Finally, we can exercise our new policy and see it in action:</p>
+<pre><code class="language-csharp">
+            // ImportantService should get the &quot;red&quot; database
+            container.GetInstance&lt;ImportantService&gt;()
+                .DB.As&lt;Database&gt;().ConnectionString.ShouldBe(&quot;*red*&quot;);
+
+            // BigService should get the &quot;green&quot; database
+            container.GetInstance&lt;BigService&gt;()
+                .DB.As&lt;Database&gt;().ConnectionString.ShouldBe(&quot;*green*&quot;);
+
+            // DoubleDatabaseUser gets both
+            var user = container.GetInstance&lt;DoubleDatabaseUser&gt;();
+
+            user.Green.As&lt;Database&gt;().ConnectionString.ShouldBe(&quot;*green*&quot;);
+            user.Red.As&lt;Database&gt;().ConnectionString.ShouldBe(&quot;*red*&quot;);
+</code></pre>
+<p><strong>How I prefer to do this</strong> - my strong preference would be to use separate interfaces for the different
+databases even if that type is just an empty type marker that implements the same base.
+I feel like using separate interfaces makes the code easier to trace and understand than trying
+to make StructureMap vary dependencies based on naming conventions or what namespace a concrete type
+happens to be in. At least now though, you have the choice of my way or using policies based on
+naming conventions.</p>
+<h2>Example 3: Make objects singletons based on type name</h2>
+<p>Unlike the top two examples, this is taken from a strategy that I used in <a href="http://github.com/darthfubumvc/fubumvc">FubuMVC</a>
+for its service registration. In that case, we wanted any concrete type whose name ended with
+&quot;Cache&quot; to be a singleton in the container registration. With the new <code>IInstancePolicy</code> feature in StructureMap 4,
+we could create a new policy class like so:</p>
+<pre><code class="language-csharp">
+        public class CacheIsSingleton : IInstancePolicy
+        {
+            public void Apply(Type pluginType, Instance instance)
+            {
+                if (instance.ReturnedType.Name.EndsWith(&quot;Cache&quot;))
+                {
+                    instance.SetLifecycleTo&lt;SingletonLifecycle&gt;();
+                }
+            }
+        }
+</code></pre>
+<p>Now, let's say that we have an interface named <code>IWidgets</code> and a single implementation called <code>WidgetCache</code> that
+should track our widgets in the application. Using our new policy, we should see <code>WidgetCache</code> being
+made a singleton:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void set_cache_to_singleton()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.Policies.Add&lt;CacheIsSingleton&gt;();
+
+                _.For&lt;IWidgets&gt;().Use&lt;WidgetCache&gt;();
+            });
+
+            // The policy is applied *only* at the time
+            // that StructureMap creates a &quot;build plan&quot;
+            container.GetInstance&lt;IWidgets&gt;()
+                .ShouldBeTheSameAs(container.GetInstance&lt;IWidgets&gt;());
+
+            // Now that the policy has executed, we 
+            // can verify that WidgetCache is a singleton
+            container.Model.For&lt;IWidgets&gt;().Default
+                .Lifecycle.ShouldBeOfType&lt;SingletonLifecycle&gt;();
+        }
+</code></pre>
 
 
 			      	</div>
