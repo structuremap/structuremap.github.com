@@ -158,45 +158,29 @@ to use the <code>ConfiguredInstancePolicy</code> base class as a convenience:</p
 <li><a href="/registration/configured-instance">Working with IConfiguredInstance</a></li>
 <li><a href="/object-lifecycle">Object Lifecycles</a></li>
 </ul>
-<h2>A Quick Note on Using Policies Sanely</h2>
 <h2>Example 1: Constructor arguments</h2>
 <p>So let me say upfront that I don't like this approach, but other folks have asked for this ability
 over the years. Say that you have some legacy code where many concrete classes have a constructor argument
 called &quot;connectionString&quot; that needs to be the connection string to the application database like these classes:</p>
 <pre><code class="language-csharp">
-        public class BigService
+        public class DatabaseUser
         {
-            public BigService(IDatabase green)
-            {
-                DB = green;
-            }
+            public string ConnectionString { get; set; }
 
-            public IDatabase DB { get; set; }
+            public DatabaseUser(string connectionString)
+            {
+                ConnectionString = connectionString;
+            }
         }
 
-        public class ImportantService
+        public class ConnectedThing
         {
-            public ImportantService(IDatabase red)
+            public string ConnectionString { get; set; }
+
+            public ConnectedThing(string connectionString)
             {
-                DB = red;
+                ConnectionString = connectionString;
             }
-
-            public IDatabase DB { get; set; }
-        }
-
-        public class DoubleDatabaseUser
-        {
-            public DoubleDatabaseUser(IDatabase red, IDatabase green)
-            {
-                Red = red;
-                Green = green;
-            }
-
-            // Watch out for potential conflicts between setters
-            // and ctor params. The easiest thing is to just make
-            // setters private
-            public IDatabase Green { get; private set; }
-            public IDatabase Red { get; private set; }
         }
 </code></pre>
 <p>Instead
