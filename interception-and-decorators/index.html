@@ -94,8 +94,335 @@
 			      	<div id="main-pane">
 			      		<!--Title: Interception and Decorators-->
 <!--Url: interception-and-decorators-->
-<p>Until official documentation is completed, you can analyze the <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Acceptance/interception_acceptance_tests.cs">user acceptance tests</a> for help with this topic.</p>
-<p>TODO(Write some content!)</p>
+<p>All of the samples from this topic are part of the <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Acceptance/interception_acceptance_tests.cs">user acceptance tests</a> in the main codebase.</p>
+<p>Improving the interception facilities and the means of applying <a href="https://en.wikipedia.org/wiki/Decorator_pattern">decorators</a> during object construction was one of the primary
+goals of the big 3.0 release and is significantly different than the older 2.5/2.6 model.</p>
+<p>Interception in StructureMap really comes
+in two basic flavors:</p>
+<ol>
+<li><em>Activates</em> - Do some action on or with an object just created or resolved by StructureMap</li>
+<li><em>Decorates</em> - Wrap (or optionally replace) an object just created with either a dynamic proxy or some sort of decorator</li>
+</ol>
+<p>Interceptors can be configured explicitly on a single <code>Instance</code> registration, on all registrations to a <code>PluginFamily</code>, or conventionally
+to any concrete type implementing an interface, inheriting from a certain base class, or by some sort of user-supplied
+criteria.</p>
+<p>Any type of <code>Instance</code> can be intercepted, meaning that even object literal values supplied to StructureMap at registration can be
+intercepted when they are resolved as dependencies or through service location calls.</p>
+<p>See the <a href="/glossary">Glossary</a> for a refresher on terms like <code>Instance</code> and <code>PluginFamily</code>.</p>
+<p>Also see <a href="/the-container/working-with-the-icontext-at-build-time">Working with the IContext at Build Time</a> for more information about using the <code>Container</code> state within interception.</p>
+<h2>Activation Interceptors</h2>
+<p>For right now, all activation interceptors are either using or subclassing the <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap/Building/Interception/ActivatorInterceptor.cs">ActivatorInterceptor&lt;T&gt;</a> class.</p>
+<p>This class has two constructor functions that interest us:</p>
+<p>To create an activator interceptor that acts on an object that can be cast to type <code>T</code>:</p>
+<pre><code class="language-csharp">
+        public ActivatorInterceptor(Expression&lt;Action&lt;T&gt;&gt; action, string description = null)
+</code></pre>
+<p>To create an activator interceptor that acts on an object that can be cast to type <code>T</code> and
+also uses the <a href="/the-container/working-with-the-icontext-at-build-time">IContext</a> service supplied by StructureMap itself.</p>
+<pre><code class="language-csharp">
+        public ActivatorInterceptor(Expression&lt;Action&lt;IContext, T&gt;&gt; action, string description = null)
+        {
+            _action = action;
+            _description = description;
+        }
+</code></pre>
+<p>In both cases, the <code>description</code> is optional and is only used for diagnostic purposes in the <a href="/diagnostics/build-plans">build plan visualization</a>. If
+omitted, StructureMap tries to do a <code>ToString()</code> on the Expression for the description and that frequently suffices to understand what's going on in the build plan.</p>
+<p><strong>Please note that the Lambda supplied to <code>ActivatorInterceptor&lt;T&gt;</code> must be a .Net Expression so cannot be a multi-line Lambda.</strong>
+You can get around this limitation for more complex activation needs by simply making a wrapping method and using that
+to express the activation.</p>
+<h2>Decorators</h2>
+<p>To demonstrate a decorator in action, say that we have an interface called <code>IWidget</code>, and when we build any instance
+of <code>IWidget</code> we want those objects decorated by another type of <code>IWidget</code> that I clumsily named <code>WidgetHolder</code> in the
+acceptance tests:</p>
+<pre><code class="language-csharp">
+    public class WidgetHolder : IWidget
+    {
+        private readonly IWidget _inner;
+
+        public WidgetHolder(IWidget inner)
+        {
+            _inner = inner;
+        }
+
+        public IWidget Inner
+        {
+            get { return _inner; }
+        }
+    }
+</code></pre>
+<p>Now, to see the decorator mechanism in action:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void decorator_example()
+        {
+            var container = new Container(_ =&gt;
+            {
+                // This usage adds the WidgetHolder as a decorator
+                // on all IWidget registrations and makes AWidget
+                // the default
+                _.For&lt;IWidget&gt;().DecorateAllWith&lt;WidgetHolder&gt;();
+                _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
+            });
+
+            container.GetInstance&lt;IWidget&gt;()
+                .ShouldBeOfType&lt;WidgetHolder&gt;()
+                .Inner.ShouldBeOfType&lt;AWidget&gt;();
+        }
+</code></pre>
+<p>In effect, doing a decorator this way has the same effect (and build plan) as:</p>
+<pre><code class="language-csharp">
+            var container = new Container(_ =&gt;
+            {
+                _.For&lt;IWidget&gt;().Use&lt;WidgetHolder&gt;()
+                    .Ctor&lt;IWidget&gt;().Is&lt;AWidget&gt;();
+            });
+</code></pre>
+<h2>Custom Decorator Interceptors</h2>
+<p>The simplest usage is to just declare a type that will be the decorating type like we did above, but if you need some
+other mechanism for decorators like runtime AOP interception or you want to build the decorating object yourself, StructureMap
+provides the <code>FuncInterceptor&lt;T&gt;</code> type where <code>T</code> is the type you want to decorate.</p>
+<p>These objects can be created in two ways, by a user-supplied <code>Expression&lt;Func&lt;T, T&gt;&gt;</code> and optional description:</p>
+<pre><code class="language-csharp">
+        public FuncInterceptor(Expression&lt;Func&lt;T, T&gt;&gt; expression, string description = null)
+</code></pre>
+<p>and by a user-supplied <code>Expression&lt;Func&lt;IContext, T, T&gt;&gt;</code> and optional description.</p>
+<pre><code class="language-csharp">
+        public FuncInterceptor(Expression&lt;Func&lt;IContext, T, T&gt;&gt; expression, string description = null)
+</code></pre>
+<p>In both cases, the <code>description</code> field is only used for diagnostic purposes.</p>
+<h2>Interception Policies</h2>
+<p>The <a href="/registration/registry-dsl">Registry DSL</a> includes shorthand methods for the most common ways of configuring decorators
+and activators by an individual <code>Instance</code> or by matching on implementing types. For more customized interception policies
+that don't fit these mechanisms, StructureMap allows you to directly define an interception policy with a class
+implementing this interface below:</p>
+<pre><code class="language-csharp">
+    /// &lt;summary&gt;
+    /// User defined policy to conventionally attach interceptors
+    /// to any pluginType/instance combination in a StructureMap
+    /// container
+    /// &lt;/summary&gt;
+    public interface IInterceptorPolicy : IDescribed
+    {
+        /// &lt;summary&gt;
+        /// Determine what (if any) interceptors should be attached to the
+        /// given instance and pluginType
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;pluginType&quot;&gt;The Type that is being requested&lt;/param&gt;
+        /// &lt;param name=&quot;instance&quot;&gt;The Instance being built&lt;/param&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        IEnumerable&lt;IInterceptor&gt; DetermineInterceptors(Type pluginType, Instance instance);
+    }
+</code></pre>
+<p>For a simple example, let's say that we want to decorate any <code>IWidget</code> object with the
+<code>WidgetHolder</code> class from earlier. We could build a small custom interceptor policy
+like this one:</p>
+<pre><code class="language-csharp">
+    public class CustomInterception : IInterceptorPolicy
+    {
+        public string Description
+        {
+            get { return &quot;good interception policy&quot;; }
+        }
+
+        public IEnumerable&lt;IInterceptor&gt; DetermineInterceptors(Type pluginType, Instance instance)
+        {
+            if (pluginType == typeof (IWidget))
+            {
+                // DecoratorInterceptor is the simple case of wrapping one type with another
+                // concrete type that takes the first as a dependency
+                yield return new DecoratorInterceptor(typeof (IWidget), typeof (WidgetHolder));
+            }
+        }
+    }
+</code></pre>
+<p>To use this custom interception policy, use the <code>Policies.Interceptor()</code> methods like this example:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void use_a_custom_interception_policy()
+        {
+            var container = new Container(x =&gt;
+            {
+                x.Policies.Interceptors(new CustomInterception());
+
+                x.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
+            });
+
+            container.GetInstance&lt;IWidget&gt;()
+                .ShouldBeOfType&lt;WidgetHolder&gt;()
+                .Inner.ShouldBeOfType&lt;AWidget&gt;();
+        }
+</code></pre>
+<p>As a helper for creating your own interception policies, you can also use the <code>InterceptorPolicy&lt;T&gt;</code> base class
+to conventionally apply some sort of <code>IInterceptor</code> to any number of <code>Instance's</code>:</p>
+<pre><code class="language-csharp">
+        public InterceptorPolicy(IInterceptor interceptor, Func&lt;Instance, bool&gt; filter = null)
+</code></pre>
+<p>Here's an example of <code>InterceptorPolicy&lt;T&gt;</code> in usage from the acceptance tests:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void apply_policy_selectively_with_a_func()
+        {
+            var activator1 = new ActivatorInterceptor&lt;ITarget&gt;(x =&gt; x.Activate());
+            var policy = new InterceptorPolicy&lt;ITarget&gt;(activator1, i =&gt; i.Name.StartsWith(&quot;A&quot;));
+
+            var container = new Container(x =&gt;
+            {
+                x.Policies.Interceptors(policy);
+                x.For&lt;ITarget&gt;().AddInstances(targets =&gt;
+                {
+                    targets.Type&lt;ATarget&gt;().Named(&quot;A&quot;);
+                    targets.Type&lt;ATarget&gt;().Named(&quot;A1&quot;);
+                    targets.Type&lt;ATarget&gt;().Named(&quot;A2&quot;);
+                    targets.Type&lt;ATarget&gt;().Named(&quot;B&quot;);
+                    targets.Type&lt;ATarget&gt;().Named(&quot;C&quot;);
+                    targets.Type&lt;ATarget&gt;().Named(&quot;D&quot;);
+                });
+            });
+
+            container.GetInstance&lt;ITarget&gt;(&quot;A&quot;).ShouldBeOfType&lt;ATarget&gt;().WasActivated.ShouldBeTrue();
+            container.GetInstance&lt;ITarget&gt;(&quot;A1&quot;).ShouldBeOfType&lt;ATarget&gt;().WasActivated.ShouldBeTrue();
+            container.GetInstance&lt;ITarget&gt;(&quot;A2&quot;).ShouldBeOfType&lt;ATarget&gt;().WasActivated.ShouldBeTrue();
+            container.GetInstance&lt;ITarget&gt;(&quot;B&quot;).ShouldBeOfType&lt;ATarget&gt;().WasActivated.ShouldBeFalse();
+            container.GetInstance&lt;ITarget&gt;(&quot;C&quot;).ShouldBeOfType&lt;ATarget&gt;().WasActivated.ShouldBeFalse();
+            container.GetInstance&lt;ITarget&gt;(&quot;D&quot;).ShouldBeOfType&lt;ATarget&gt;().WasActivated.ShouldBeFalse();
+        }
+
+        public class ATarget : ITarget
+        {
+            public void Activate()
+            {
+                WasActivated = true;
+            }
+
+            public bool WasActivated { get; set; }
+
+            public void Debug()
+            {
+                throw new NotImplementedException();
+            }
+        }
+</code></pre>
+<p>Some quick things to note:</p>
+<ol>
+<li>For decorator interceptors, <code>InterceptorPolicy&lt;T&gt;</code> will only apply if the <code>pluginType</code> matches <code>T</code></li>
+<li>For activation interceptors, <code>InterceptorPolicy&lt;T&gt;</code> will apply to any concrete type returned by an <code>Instance</code> that can be
+cast to <code>T</code></li>
+</ol>
+<h2>Apply Activation Interception by Type</h2>
+<p>Let's say that in your system you have a marker interface or in this case an abstract class that exposes a single
+<code>Activate()</code> method to start up stateful, long-running services created within your container:</p>
+<pre><code class="language-csharp">
+    public abstract class Activateable
+    {
+        public bool Activated { get; set; }
+
+        public void Activate()
+        {
+            Activated = true;
+        }
+    }
+</code></pre>
+<p>An implementation of <code>Activateable</code> from StructureMap's unit tests is shown below:</p>
+<pre><code class="language-csharp">
+    public class AWidget : Activateable, IWidget
+    {
+    }
+</code></pre>
+<p>If you decide that you'd like StructureMap to call the <code>Activate()</code> method on any object it creates as
+part of its object creation and resolution process, we can register an interception policy in a <code>Registry</code>
+like this:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void activate_by_action()
+        {
+            var container = new Container(x =&gt;
+            {
+                x.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
+                x.For&lt;Activateable&gt;()
+                    .OnCreationForAll(&quot;Mark the object as activated&quot;, o =&gt; o.Activated = true);
+            });
+
+            container.GetInstance&lt;IWidget&gt;()
+                .ShouldBeOfType&lt;AWidget&gt;()
+                .Activated.ShouldBeTrue();
+        }
+</code></pre>
+<p>There are several overloads of <code>OnCreationForAll()</code> covering cases with and without <code>IContext</code></p>
+<h2>Apply Decoration across a Plugin Type</h2>
+<p>As shown above, you can use the <code>Registry.For&lt;T&gt;().DecorateAllWith&lt;TDecorator&gt;()</code> to apply decorators to all <code>Instance's</code>
+registered to a <code>Plugin Type</code>:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void decorate_with_type()
+        {
+            var container = new Container(x =&gt;
+            {
+                x.For&lt;IWidget&gt;().DecorateAllWith&lt;WidgetHolder&gt;();
+                x.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
+            });
+
+            container.GetInstance&lt;IWidget&gt;()
+                .ShouldBeOfType&lt;WidgetHolder&gt;()
+                .Inner
+                .ShouldBeOfType&lt;AWidget&gt;();
+        }
+</code></pre>
+<p>There are also several other overloads of <code>DecorateAllWith()</code> for user supplied expressions, filters, and descriptions. See the
+<a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Acceptance/interception_acceptance_tests.cs">acceptance tests for interception</a> in the StructureMap codebase for many more sample usages.</p>
+<h2>Add Interception to a Single Instance</h2>
+<p>You can also define interceptors directly to individual <code>Instance's</code> inside of a StructureMap <code>Registry</code> using the
+<code>OnCreation()</code> and <code>DecorateWith</code> methods or the more generic <code>Instance.AddInterceptor()</code> method. Here is some sample
+usage from StructureMap's unit tests on interception:</p>
+<pre><code class="language-csharp">
+            _container = new Container(r =&gt;
+            {
+                r.For&lt;ContextRecorder&gt;().Use(recorder);
+
+
+                r.For&lt;IService&gt;().AddInstances(x =&gt;
+                {
+                    x.Type&lt;ColorService&gt;()
+                        // Registers an activation action on this Instance
+                        .OnCreation(&quot;last service&quot;, s =&gt; _lastService = s)
+                        .Named(&quot;Intercepted&quot;)
+                        .Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;Red&quot;);
+
+                    x.Type&lt;ColorService&gt;()
+                        // Activation using IContext
+                        .OnCreation(&quot;last touched&quot;, (c, s) =&gt; c.GetInstance&lt;ContextRecorder&gt;().WasTouched = true)
+                        .Named(&quot;InterceptedWithContext&quot;)
+                        .Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;Red&quot;);
+
+                    x.Type&lt;ColorService&gt;()
+                        .Named(&quot;NotIntercepted&quot;)
+                        .Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;Blue&quot;);
+
+                    x.Object(new ColorService(&quot;Yellow&quot;))
+                        .Named(&quot;Yellow&quot;)
+                        .OnCreation(&quot;set the last service&quot;, s =&gt; _lastService = s);
+
+                    x.ConstructedBy(() =&gt; new ColorService(&quot;Purple&quot;)).Named(&quot;Purple&quot;)
+                        // Applies a decorator to this instance. Not sure *why*
+                        // you&#39;d want to do it this way
+                        .DecorateWith(s =&gt; new DecoratorService(s));
+
+                    x.ConstructedBy(() =&gt; new ColorService(&quot;Purple&quot;)).Named(&quot;DecoratedWithContext&quot;)
+                        // Fancier decorator
+                        .DecorateWith(&quot;decorated with context&quot;, (c, s) =&gt;
+                        {
+                            c.GetInstance&lt;ContextRecorder&gt;().WasTouched = true;
+                            return new DecoratorService(s);
+                        });
+
+                    x.Type&lt;ColorService&gt;().Named(&quot;Decorated&quot;).DecorateWith(
+                        s =&gt; new DecoratorService(s))
+                        .Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;Orange&quot;);
+
+                    x.Object(new ColorService(&quot;Yellow&quot;)).Named(&quot;Bad&quot;)
+                        .OnCreation(&quot;throw exception&quot;, obj =&gt; { throw new ApplicationException(&quot;Bad!&quot;); });
+                });
+</code></pre>
 
 
 			      	</div>
