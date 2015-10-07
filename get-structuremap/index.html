@@ -98,36 +98,14 @@
 <p>The current version of StructureMap will always be available on <a href="https://www.nuget.org/packages/structuremap/">Nuget</a>. See the <a href="/release-notes">Release Notes</a> for more information.</p>
 <h2>Supported Platforms</h2>
 <p>The original <code>StructureMap.dll</code> has been broken up into a couple pieces. The main assembly will be targeting PCL compliance thanks to the diligent efforts of <a href="https://twitter.com/fquednau">Frank Quednau</a>, and that means that anything to do with ASP.Net or falls outside of the PCL core has been devolved into separate assemblies and eventually into different Nuget packages. This means that StructureMap 3.* will <em>theoretically</em> support WP8 and other versions of .Net for the very first time.</p>
-<p>At this point StructureMap 3.* has been used on .Net 4, 4.5, and WP8. Nobody in the core StructureMap team is currently working with Xamarin mobile runtimes, but we are interested in verifying StructureMap on new platforms if any volunteers are interested.</p>
+<p>At this point StructureMap 3.* has been used on .Net 4, 4.5, WP8, and WP8.1. Nobody in the core StructureMap team is currently working with Xamarin mobile runtimes, but we are interested in verifying StructureMap on new platforms if any volunteers are interested in helping us out.</p>
 <h2>Binaries</h2>
 <p>Binaries of StructureMap are available via <a href="http://www.nuget.org/packages/structuremap/">NuGet</a>:</p>
 <pre><code>PM&gt; Install-Package StructureMap
 </code></pre>
 <h2>Source</h2>
 <p>StructureMap's source is hosted on <a href="https://github.com/structuremap/structuremap/">GitHub</a>. If you want to fix a bug or just want to tinker with an idea, we love receiving pull requests! Start by creating your own <a href="https://github.com/structuremap/structuremap/fork">fork</a> on Github.</p>
-<Section title="Building the Source" id="building-source">
-<p>StructureMap needs <a href="http://fubuworld.com/fuburake/">FubuRake</a> and <a href="http://fubuworld.com/ripple/">Ripple</a> for building the source. FubuRake is an OSS Ruby library to quickly stand up a fully functional, cross platform <a href="https://github.com/jimweirich/rake"><code>rake</code></a> script for a .Net codebase based on Fubu project standards. Ripple is a package manager that simplifies managing Nuget dependencies in your solution. Both dependencies are currently distributed through Ruby Gems and are part of the Fubu family. Before you continue you need to make sure that you have got Ruby installed.</p>
-<ol>
-<li>Clone the repository: <code>git clone git://github.com/structuremap/structuremap.git</code></li>
-<li>Now really make sure that you have got Ruby 1.9+ installed</li>
-<li>See the README in the source code for instructions on using gems to install rake and other gems</li>
-<li>In the root of the StructureMap Git repository, run <code>rake</code>.</li>
-<li>Open StructureMap.sln in VS2012 ('rake sln' from the root as well).</li>
-<li>Build.</li>
-</ol>
-<p><br/></p>
-<blockquote>
-<p><strong>Installing Ruby, Rake and RubyGems</strong></p>
-</blockquote>
-<blockquote>
-<p>Installing Ruby will give you RubyGems and Rake out of the box. You can find installation guidance at the official <a href="https://www.ruby-lang.org/en/installation/">Ruby language</a> website or you could install Ruby via <a href="http://chocolatey.org/">Chocolatey</a>:</p>
-</blockquote>
-<blockquote>
-<p><code>&gt; cinst ruby</code></p>
-</blockquote>
-<blockquote>
-<p>After you have Ruby, Rake and RubyGems installed you are good to go. The <code>rake</code> build file <code>rakefile.rb</code> (located in the root) will install al the other needed dependencies like <code>FubuRake</code> and <code>Ripple</code>, which are defined in the <code>Gemfile</code> (also located in the root). This file is used by another gem called <a href="http://bundler.io/"><code>bundler</code></a>. The <code>rake</code> build file will automatically install <code>bundler</code>, which does the same for all the dependencies listed in the <code>Gemfile</code>, but only if they weren't already installed on your machine.</p>
-</blockquote>
+<p>The StructureMap build tooling has recently changed. See the <a href="https://github.com/structuremap/structuremap/blob/master/README.markdown">GitHub README</a> for more information on how to build and work with the StructureMap codebase.</p>
 
 
 			      	</div>

@@ -46,8 +46,8 @@
 		        <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/registration/configuring-the-raw-model" title="Configuring the Raw Model">Previous</a></li>
-		      	<li><a href="/registration/attributes" title="Using Attributes for Configuration">Next</a></li>
+		      	<li><a href="/registration/constructor-selection" title="Constructor Selection">Previous</a></li>
+		      	<li><a href="/registration/clear-or-replace" title="Replace or Clear Out Previous Registrations">Next</a></li>
 		      </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
@@ -79,8 +79,8 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/registration/attributes">Using Attributes for Configuration</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/registration/configuring-the-raw-model">Configuring the Raw Model</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/registration/clear-or-replace">Replace or Clear Out Previous Registrations</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/registration/constructor-selection">Constructor Selection</a></p>
 
 		        </ul>
 		      </div><!--/left-->
@@ -94,7 +94,88 @@
 			      	<div id="main-pane">
 			      		<!--Title: Fallback Services-->
 <!--Url: fallback-services-->
-<p>TODO(Write some content!)</p>
+<p>The following is a technique that was stolen from <a href="http://github.com/darthfubumvc/fubumvc">FubuMVC</a> where we used
+the idea of default or &quot;fallback&quot; registrations to make it mechanically simple for the core framework to declare
+the default service registrations in the <code>Container</code> for what FubuMVC needed while allowing applications to happily
+override specific registrations <strong>without having to worry about the order in which the registrations were done</strong>.</p>
+<p>To see this in practice, say you have an application that will support client specific modularity that might allow
+business clients to override the base StructureMap registrations. This is a perfect use case for
+defining the application defaults with <code>UseIfNone()</code> as shown in this example below:</p>
+<pre><code class="language-csharp">
+        public class DefaultServices : Registry
+        {
+            public DefaultServices()
+            {
+                // If nobody else provides a default
+                // for IWidget, use AWidget
+                For&lt;IWidget&gt;().UseIfNone&lt;AWidget&gt;();
+            }
+        }
+
+        public class SpecificServices : Registry
+        {
+            public SpecificServices()
+            {
+                // Use BWidget for IWidget, period
+                For&lt;IWidget&gt;().Use&lt;BWidget&gt;();
+            }
+        }
+
+        [Test]
+        public void see_use_if_none_in_action()
+        {
+            var container1 = Container.For&lt;DefaultServices&gt;();
+
+            // No other registrations, so fallback
+            // to AWidget
+            container1.GetInstance&lt;IWidget&gt;()
+                .ShouldBeOfType&lt;AWidget&gt;();
+
+
+            var container2 = new Container(_ =&gt;
+            {
+                // add both registries above
+                // NOTE: the order does not matter for IWidget
+
+                _.IncludeRegistry&lt;SpecificServices&gt;();
+                _.IncludeRegistry&lt;DefaultServices&gt;();
+            });
+
+            // The registration in SpecificServices
+            // should win out
+            container2.GetInstance&lt;IWidget&gt;()
+                .ShouldBeOfType&lt;BWidget&gt;();
+        }
+</code></pre>
+<p>In application usage, you would add the default <code>UseIfNone()</code> registrations, and optionally pick
+up additional extension <code>Registry</code> objects from extension assemblies as shown in this example:</p>
+<pre><code class="language-csharp">
+        [AttributeUsage(AttributeTargets.Assembly)]
+        public class ProductModuleAttribute : Attribute { }
+
+        public class ApplicationRegistry : Registry
+        {
+            public ApplicationRegistry()
+            {
+                // Use the default services as fallbacks
+                IncludeRegistry&lt;DefaultServices&gt;();
+
+                // Dependending on what assemblies are present,
+                // this might find specific registrations that
+                // will take precedence over the UseIfNone() 
+                // registrations in DefaultServices
+                Scan(_ =&gt;
+                {
+                    _.AssembliesFromApplicationBaseDirectory(assem =&gt;
+                    {
+                        return assem.HasAttribute&lt;ProductModuleAttribute&gt;();
+                    });
+
+                    _.LookForRegistries();
+                });
+            }
+        }
+</code></pre>
 
 
 			      	</div>
@@ -103,12 +184,12 @@
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/registration/configuring-the-raw-model">Configuring the Raw Model</a>
+				        	<strong>Previous: </strong><a href="/registration/constructor-selection">Constructor Selection</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/registration/attributes">Using Attributes for Configuration</a>
+				        	<strong>Next: </strong><a href="/registration/clear-or-replace">Replace or Clear Out Previous Registrations</a>
 
 				        </span>
 			      	</nav>

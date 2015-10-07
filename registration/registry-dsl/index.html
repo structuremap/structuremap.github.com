@@ -135,6 +135,106 @@ instance of an <code>IWidget</code> interface:</p>
         }
 
 </code></pre>
+<h2><em>Use</em> versus <em>Add</em></h2>
+<p>Registrations in the Registry DSL can be done with either <code>Add()</code> or <code>Use()</code> methods, but they have
+a different semantic meaning to StructureMap. <code>Add()</code> means <em>add another Instance to this plugin type</em>
+while <code>Use()</code> means <em>this one is the default</em>.</p>
+<p>One of the things that is different about StructureMap is that if it has multiple registrations of any
+given plugin type, one of these registrations has to be explicitly marked as <strong>the</strong> default usage for that plugin type
+or StructureMap will blow up in the call to <code>Container.GetInstance()</code>. Other IoC tools will magically use
+the first registration or the last registration (and some even allow you to configure that behavior). We chose to
+make that determination be explicit.</p>
+<p>As of StructureMap 3.0, the <a href="/diagnostics/whatdoihave">WhatDoIHave()</a> output is part of any exception thrown by StructureMap when
+it cannot determine a default registration for a requested type if there is more than one registration for that
+type.</p>
+<p>If there are multiple calls to <code>Use()</code> for the same plugin type, the last one wins. For more control over this behavior in
+modularity scenarios, see <a href="/registration/fallback-services">Fallback Services</a> and <a href="/registration/clear-or-replace">Replace or Clear Out Previous Registrations</a>.</p>
+<h2>For().Use()</h2>
+<p>To register the default <code>Instance</code> of a type, the syntax is one of the <code>Registry.For().Use()</code> overloads shown below:</p>
+<pre><code class="language-csharp">
+    public class SettingDefaults : Registry
+    {
+        public SettingDefaults()
+        {
+            // If you know the plugin type and its a closed type
+            // you can use this syntax
+            For&lt;IWidget&gt;().Use&lt;DefaultWidget&gt;();
+
+            // By Lambda
+            For&lt;IWidget&gt;().Use(() =&gt; new DefaultWidget());
+
+            // Pre-existing object
+            For&lt;IWidget&gt;().Use(new AWidget());
+
+            // This is rare now, but still valid
+            For&lt;IWidget&gt;().Add&lt;AWidget&gt;().Named(&quot;A&quot;);
+            For&lt;IWidget&gt;().Add&lt;BWidget&gt;().Named(&quot;B&quot;);
+            For&lt;IWidget&gt;().Use(&quot;A&quot;); // makes AWidget the default
+
+            // Also rare, but you can supply an Instance object
+            // yourself for special needs
+            For&lt;IWidget&gt;().UseInstance(new MySpecialInstance());
+            
+            // If you&#39;re registering an open generic type
+            // or you just have Type objects, use this syntax
+            For(typeof (IService&lt;&gt;)).Use(typeof (Service&lt;&gt;));
+
+            // This is occasionally useful for generic types
+            For(typeof (IService&lt;&gt;)).Use(new MySpecialInstance());
+        }
+    }
+</code></pre>
+<h2>For().Add()</h2>
+<p>To register additional <code>Instance's</code> for a plugin type, use one of the overloads of <code>For().Add()</code>:</p>
+<pre><code class="language-csharp">
+    public class AdditionalRegistrations : Registry
+    {
+        public AdditionalRegistrations()
+        {
+            // If you know the plugin type and its a closed type
+            // you can Add this syntax
+            For&lt;IWidget&gt;().Add&lt;DefaultWidget&gt;();
+
+            // By Lambda
+            For&lt;IWidget&gt;().Add(() =&gt; new DefaultWidget());
+
+            // Pre-existing object
+            For&lt;IWidget&gt;().Add(new AWidget());
+
+            // Also rare, but you can supply an Instance object
+            // yourself for special needs
+            For&lt;IWidget&gt;().AddInstance(new MySpecialInstance());
+
+            // If you&#39;re registering an open generic type
+            // or you just have Type objects, Add this syntax
+            For(typeof(IService&lt;&gt;)).Add(typeof(Service&lt;&gt;));
+
+            // This is occasionally Addful for generic types
+            For(typeof(IService&lt;&gt;)).Add(new MySpecialInstance());
+        }
+    }
+</code></pre>
+<h2>Add Many Registrations with For().AddInstances()</h2>
+<p>If you need to add several <code>Instance's</code> to a single plugin type, the <code>AddInstances()</code> syntax
+shown below may be quicker and easier to use:</p>
+<pre><code class="language-csharp">
+
+                // registry is a StructureMap Registry object
+                registry.For&lt;IService&gt;().AddInstances(x =&gt;
+                {
+                    // Equivalent to For&lt;IService&gt;().Add&lt;ColorService&gt;().....
+                    x.Type&lt;ColorService&gt;().Named(&quot;Red&quot;).Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;Red&quot;);
+
+                    // Equivalent to For&lt;IService&gt;().Add(new ColorService(&quot;Yellow&quot;))......
+                    x.Object(new ColorService(&quot;Yellow&quot;)).Named(&quot;Yellow&quot;);
+
+                    // Equivalent to For&lt;IService&gt;().Use(() =&gt; new ColorService(&quot;Purple&quot;))....
+                    x.ConstructedBy(() =&gt; new ColorService(&quot;Purple&quot;)).Named(&quot;Purple&quot;);
+
+                    x.Type&lt;ColorService&gt;().Named(&quot;Decorated&quot;).Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;Orange&quot;);
+                });
+
+</code></pre>
 <h2>Named Instances</h2>
 <p>When you have multiple implementations of an interface, it can often be useful to
 name instances. To retrieve a specific implementation:</p>
