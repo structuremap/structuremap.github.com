@@ -312,7 +312,7 @@ you have to use NHibernate's <code>ISessionFactory</code> service:</p>
         {
             For&lt;ISessionFactory&gt;().Use(factory);
 
-
+            // Build ISession with a lambda:
             For&lt;ISession&gt;().Use(&quot;Build ISession from ISessionFactory&quot;, c =&gt;
             {
                 // To resolve ISession, I first pull out

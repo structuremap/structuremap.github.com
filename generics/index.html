@@ -539,6 +539,75 @@ IRepository&lt;String, Int32&gt;         StructureMap.Testing.Acceptance     Tra
 IRepository&lt;TDocument, TQuery&gt;     StructureMap.Testing.Acceptance     Transient     Build Repository&lt;T, T1&gt;() with RepositoryBuilder     (Default)
 ===================================================================================================================================================
 </pre>
+<h2>Example 3: Interception Policy against Generic Types</h2>
+<p>Several years ago I described an approach for <a href="http://codebetter.com/jeremymiller/2009/07/24/how-i-m-using-the-event-aggregator-pattern-in-storyteller/">using an Event Aggregator in a WPF application</a> that relied on StructureMap interception to register any object that
+StructureMap built with the active <a href="http://martinfowler.com/eaaDev/EventAggregator.html">EventAggregator</a> for the system <em>if that object was recognized as a listener to the event aggregator</em>. I thought that approach worked out quite well, so let's talk about how you could implement
+that same design with the improved interception model introduced by StructureMap 3.0 (the event aggregator and StructureMap interception worked out well,
+but I'm very happy now that I ditched the old WPF client and replaced it with a web application using React.js instead).</p>
+<p>First off, let's say that we're going to have this interface for our event aggregator:</p>
+<pre><code class="language-csharp">
+    public interface IEventAggregator
+    {
+        // Sending messages
+        void SendMessage&lt;T&gt;(T message);
+        void SendMessage&lt;T&gt;() where T : new();
+
+        // Explicit registration
+        void AddListener(object listener);
+        void RemoveListener(object listener);
+    }
+</code></pre>
+<p>To register a listener for a particular type of event notification, you would implement an interface called <code>IListener&lt;T&gt;</code> shown below
+and directly add that object to the <code>IEventAggregator</code>:</p>
+<pre><code class="language-csharp">
+    public interface IListener&lt;T&gt;
+    {
+        void Handle(T message);
+    }
+</code></pre>
+<p>In the application I'm describing, all of the listener objects were presenters or screen controls that were created by StructureMap, so it was convenient to allow StructureMap to register newly created objects with the <code>IEventAggregator</code> in an activation interceptor.</p>
+<p>What we want to do though is have an interception policy that only applies to any concrete type that implements some interface that
+closes <code>IListener&lt;T&gt;</code>:</p>
+<pre><code class="language-csharp">
+    public class EventListenerRegistration : IInterceptorPolicy
+    {
+        public string Description
+        {
+            get { return &quot;Adds the constructed object to the EventAggregator&quot;; }
+        }
+
+        public IEnumerable&lt;IInterceptor&gt; DetermineInterceptors(Type pluginType, Instance instance)
+        {
+            if (instance.ReturnedType.FindInterfacesThatClose(typeof (IListener&lt;&gt;)).Any())
+            {
+                Expression&lt;Action&lt;IContext, object&gt;&gt; register =
+                    (c, o) =&gt; c.GetInstance&lt;IEventAggregator&gt;().AddListener(o);
+                yield return new ActivatorInterceptor&lt;object&gt;(register);
+            }
+        }
+    }
+</code></pre>
+<p>To see our new interception policy in action, see <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Samples/Interception/Event_Aggregator_Registration.cs">this unit test from GitHub</a>:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void use_the_event_listener_registration()
+        {
+            var container = new Container(x =&gt;
+            {
+                x.Policies.Interceptors(new EventListenerRegistration());
+                x.For&lt;IEventAggregator&gt;().Use&lt;EventAggregator&gt;().Singleton();
+            });
+
+            var events = container.GetInstance&lt;IEventAggregator&gt;();
+            var listener = container.GetInstance&lt;BooMessageListener&gt;();
+
+            var message = new BooMessage();
+
+            events.SendMessage(message);
+
+            listener.Messages.Single().ShouldBeTheSameAs(message);
+        }
+</code></pre>
 
 
 			      	</div>
