@@ -153,6 +153,17 @@ the <code>IConfiguredInstance</code> interface is meant to support <a href="/reg
         /// Explicitly choose a constructor
         /// &lt;/summary&gt;
         ConstructorInfo Constructor { get; set; }
+
+        /// &lt;summary&gt;
+        /// Has a build plan already been created for this instance?
+        /// &lt;/summary&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        bool HasBuildPlan();
+
+        /// &lt;summary&gt;
+        /// Clears out any cached IBuildPlan for this Instance.
+        /// &lt;/summary&gt;
+        void ClearBuildPlan();
     }
 </code></pre>
 <h2>Changing the Instance Lifecycle</h2>

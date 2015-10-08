@@ -93,18 +93,31 @@
 
 			      	<div id="main-pane">
 			      		<!--Title: Integrating StructureMap into Common .Net Frameworks-->
-<p>I'm thinking that this page needs to cover:</p>
-<ul>
-<li>ASP.Net MVC &lt;= 5</li>
-<li>Web API</li>
-<li>NHibernate - not sure how popular this is anymore, but I had a question about it in the past couple weeks</li>
-<li>EF &lt;-- maybe the highest priority</li>
-<li>RavenDb</li>
-<li>MVC6</li>
-<li>NancyFx</li>
-<li>NServiceBus</li>
-<li>What else?</li>
-</ul>
+<p>Want to see more integrations or samples of how to integrate StructureMap with various .Net development tools? Let us know in Gitter or Github, or better yet, <strong>we take pull requests for documentation.</strong></p>
+<h2>ASP.Net MVC 5</h2>
+<p>The StructureMap team recommends the <a href="https://www.nuget.org/packages/StructureMap.MVC5/">StructureMap.MVC5</a> nuget for integrating
+StructureMap into pre-DNX ASP.Net MVC. The design is necessarily odd to work around ASP.Net limitations, but you do get the all
+important &quot;<a href="/the-container/nested-containers">nested container</a> per HTTP request&quot; pattern that we recommend.</p>
+<h2>Web API (pre-DNX)</h2>
+<p>The StructureMap team recommends the <a href="https://www.nuget.org/packages/StructureMap.WebApi2/">StructureMap.WebApi2</a> nuget package.
+The IoC integration in Web API is somewhat better designed than ASP.Net MVC's bolt on mechanism and the StructureMap integration
+is quite a bit cleaner.</p>
+<h2>DNX</h2>
+<p>See the <a href="https://github.com/structuremap/structuremap.dnx">StructureMap.DNX</a> project and Nuget for an early version of integration with DNX.</p>
+<h2>NServiceBus</h2>
+<p>Use the <a href="https://www.nuget.org/packages/NServiceBus.StructureMap/">NServiceBus StructureMap</a> nuget for integrating StructureMap 3 into
+NServiceBus.</p>
+<h2>NancyFx</h2>
+<p>NancyFx provides the <a href="https://www.nuget.org/packages/Nancy.BootStrappers.StructureMap/">Nancy.BootStrappers.StructureMap</a> nuget package. The early
+versions of the NancyFx integration with StructureMap were deeply flawed but improved in later versions, so do make sure that you are using the latest version of the bootstrapper.</p>
+<h2>MassTransit</h2>
+<p>Use the <a href="http://www.nuget.org/packages/MassTransit.StructureMap/">MassTransit.StructureMap</a> nuget package. <strong>Unfortunately</strong>, this package
+depends on the <a href="http://www.nuget.org/packages/structuremap-signed/">signed version of StructureMap</a>, so prepare yourself for version conflicts,
+binding redirects, and the fusion log viewer. See the <a href="http://docs.masstransit-project.com/en/latest/usage/containers/structuremap.html">MassTransit documentation on using StructureMap</a> for more information.</p>
+<h2>Entity Framework</h2>
+<p>The best example is <a href="https://lostechies.com/jimmybogard/2013/12/20/proper-sessiondbcontext-lifecycle-management/">this blog post from Jimmy Bogard</a>.</p>
+<h2>AutoMapper</h2>
+<p>See <a href="http://www.martijnburgers.net/post/2013/12/20/My-AutoMapper-setup-for-StructureMap.aspx">My AutoMapper setup for StructureMap</a> from Martijn Burgers.</p>
 
 
 			      	</div>
