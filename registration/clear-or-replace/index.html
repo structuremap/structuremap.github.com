@@ -93,6 +93,61 @@
 
 			      	<div id="main-pane">
 			      		<!--Title:Replace or Clear Out Previous Registrations-->
+<p>Several members of the StructureMap team were also very active in a now semi-defunct web framework called <a href="http://github.com/darthfubumvc/fubumvc">FubuMVC</a>
+that was built with quite a bit of extensibility in mind. One of the extensibility mechanisms that was successful in FubuMVC was the ability for applications or addon libraries to swap out the default services in the main StructureMap application container.</p>
+<p>The approach we took for this extensibility was what I flippantly call the &quot;Mongolian BBQ&quot; architecture. The framework should take the application specific registrations, the framework defaults, and all the discovered addons and figure out how to order the registrations to enforce the following levels of registration precedence:</p>
+<ol>
+<li>The application specific registrations should always win out</li>
+<li>Package or extension specific overrides</li>
+<li>Default framework service registrations</li>
+</ol>
+<p>To make this kind of modular and adaptive registration work, FubuMVC introduced a couple concepts that we've now pulled back into StructureMap:</p>
+<ol>
+<li>The <a href="/registration/fallback-services">Fallback Services</a> introduced in the previous topic where you can make a registration that effectively tells StructureMap to &quot;use this registration if nobody else tells you something differently&quot;.</li>
+<li>The new <code>Registry.For().ClearAll()</code> mechanism shown in this topic that tells StructureMap to &quot;disregard what everyone else said to use&quot;.</li>
+</ol>
+<p>Typically in FubuMVC, we would use <em>fallback service</em> registrations for most of the framework defaults and occasionally use the <code>ClearAll()</code> type mechanics down the line as an analogue to the CSS <code>!important</code> keyword to make a particular registration take precedence in the face of multiple registrations.</p>
+<p>In usage, let's say that our application needs some type of <code>IWidget</code> service to run. For an important client, they want to deploy our system with
+a special version, so we will create a new StructureMap <code>Registry</code> to apply their specific registrations using the <code>ClearAll()</code> mechanism to
+insure that the important client gets their way:</p>
+<pre><code class="language-csharp">
+        public class ImportantClientWidget : IWidget { }
+
+        public class ImportantClientServices : Registry
+        {
+            public ImportantClientServices()
+            {
+                For&lt;IWidget&gt;().ClearAll().Use&lt;ImportantClientWidget&gt;();
+            }
+        }
+</code></pre>
+<p>In usage, the <code>ClearAll()</code> stomps all over the default registration before adding their own:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void clear_all_in_action()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
+
+                
+                _.IncludeRegistry&lt;ImportantClientServices&gt;();
+            });
+
+            container.GetInstance&lt;IWidget&gt;()
+                .ShouldBeOfType&lt;ImportantClientWidget&gt;();
+
+            Debug.WriteLine(container.WhatDoIHave(pluginType:typeof(IWidget)));
+        }
+</code></pre>
+<p>If you were to check the <a href="/diagnostics/whatdoihave">WhatDoIHave()</a> view for <code>IWidget</code>, you would see only the <code>ImportantClientWidget</code>:</p>
+<pre style="overflow:scroll;word-break:normal;word-wrap:normal">
+==============================================================================================================================================
+PluginType     Namespace                           Lifecycle     Description                                                         Name     
+----------------------------------------------------------------------------------------------------------------------------------------------
+IWidget        StructureMap.Testing.Acceptance     Transient     StructureMap.Testing.Acceptance.clear_all+ImportantClientWidget     (Default)
+==============================================================================================================================================
+</pre>
 
 
 			      	</div>
