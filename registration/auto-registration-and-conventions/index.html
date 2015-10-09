@@ -94,10 +94,44 @@
 			      	<div id="main-pane">
 			      		<!--Title: Auto-Registration and Conventions-->
 <!--Url: auto-registration-and-conventions-->
-<p>StructureMap has rich support for registering types by scanning assemblies.
+<div class="alert alert-info" role="alert">The type scanning facilities were completely overhauled and greatly optimized for performance as part of the StructureMap 4.0 release. The mechanism for custom registration conventions is somewhat different from 2.5-3.* to 4.0.</div>
+<p>StructureMap has rich support for registering types by scanning assemblies and applying conventional registrations.
 Between scanning and default conventions, configurations are often just a few
 lines.</p>
 <p>Also see <a href="/diagnostics/type-scanning">Type Scanning Diagnostics</a> for help in understanding the assembly scanning behavior in your system.</p>
+<h2>Registry.Scan()</h2>
+<p>Assembly scanning operations are defined by the <code>Registry.Scan()</code> method demonstrated below:</p>
+<pre><code class="language-csharp">
+    public class BasicScanning : Registry
+    {
+        public BasicScanning()
+        {
+            Scan(_ =&gt;
+            {
+                // Declare which assemblies to scan
+                _.Assembly(&quot;StructureMap.Testing&quot;);
+                _.AssemblyContainingType&lt;IWidget&gt;();
+
+                // Filter types
+                _.Exclude(type =&gt; type.Name.Contains(&quot;Bad&quot;));
+
+                // A custom registration convention
+                _.Convention&lt;MySpecialRegistrationConvention&gt;();
+
+                // Built in registration conventions
+                _.AddAllTypesOf&lt;IWidget&gt;().NameBy(x =&gt; x.Name.Replace(&quot;Widget&quot;, &quot;&quot;));
+                _.WithDefaultConventions();
+            });
+        }
+    }
+</code></pre>
+<p>Please note (because I've been asked this several times over the years) that each call to <code>Registry.Scan()</code> is an entirely atomic operation that has no impact on previous or subsequent calls.</p>
+<p>Any given call to <code>Registry.Scan()</code> consists of three different things:</p>
+<ol>
+<li>One or more assemblies to scan for types</li>
+<li>One or more registration conventions</li>
+<li>Optionally, set filters to only include certain types or exclude other types from being processed by the scanning operation</li>
+</ol>
 <h2>Scan the Calling Assembly</h2>
 <p>One of the easiest ways to register types is by scanning the assembly your
 registry is placed in.</p>
@@ -113,6 +147,8 @@ find them.</p>
         }
 
 </code></pre>
+<p><strong>Note that this method is an extension method in the StructureMap.Net4 assembly and cannot be used
+if you target PCL compliance.</strong></p>
 <h2>Scan for Registries</h2>
 <p>StructureMap can automatically include other registries with the<code>LookForRegistries</code>
 method.</p>
@@ -130,8 +166,9 @@ method.</p>
         }
 
 </code></pre>
-<h2>Scan the File System</h2>
-<p>StructureMap provides facilities for registering types by path.</p>
+<p><strong>As of 4.0, this operation is now recursive and StructureMap has always been idempotent about adding Registry types</strong></p>
+<h2>Search for Assemblies on the File System</h2>
+<p>StructureMap provides facilities for registering types by finding assemblies in the application bin path:</p>
 <pre><code class="language-csharp">
         [Test]
         public void scan_all_assemblies_in_a_folder()
@@ -150,6 +187,16 @@ method.</p>
         }
 
 </code></pre>
+<p>Do be aware that while this technique is very powerful for extensibility, it's been extremely problematic for
+some folks in the past. The StructureMap team's recommendation for using this feature is to:</p>
+<ol>
+<li>Make sure you have some kind of filter on the assemblies scanned for performance and predictability reasons. Either a naming convention or filter
+by an assembly attribute to narrow where StructureMap looks</li>
+<li>Get familiar with the new <a href="/diagnostics/type-scanning">type scanning diagnostics</a> introduced in 4.0;-)</li>
+</ol>
+<p>Behind the scenes, StructureMap is using the <code>Assembly.GetExportedTypes()</code> method from the .Net CLR to find types and this
+mechanism is <strong>very</strong> sensitive to missing dependencies. Again, thanks to the new <a href="/diagnostics/type-scanning">type scanning diagnostics</a>,
+you now have some visibility into assembly loading failures that used to be silently swallowed internally.</p>
 <h2>Excluding Types</h2>
 <p>StructureMap also makes it easy to exclude types, either individually or by namespace.
 The following examples also show how StructureMap can register an assembly by providing
@@ -266,6 +313,107 @@ that it implements. You could then build a custom <code>IRegistrationConvention<
             container.GetInstance&lt;IBaz&gt;().ShouldBeOfType&lt;BusyGuy&gt;();
         }
 
+</code></pre>
+<h2>The Default ISomething/Something Convention</h2>
+<p>The &quot;default&quot; convention simply tries to connect concrete classes to interfaces using
+the I[Something]/[Something] naming convention as shown in this sample:</p>
+<pre><code class="language-csharp">
+        public interface ISpaceship { }
+        public class Spaceship : ISpaceship { }
+
+        public interface IRocket { }
+        public class Rocket : IRocket { }
+
+        [Test]
+        public void default_scanning_in_action()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.Scan(x =&gt;
+                {
+                    x.Assembly(&quot;StructureMap.Testing&quot;);
+                    x.WithDefaultConventions();
+                });
+            });
+
+            container.GetInstance&lt;ISpaceship&gt;().ShouldBeOfType&lt;Spaceship&gt;();
+            container.GetInstance&lt;IRocket&gt;().ShouldBeOfType&lt;Rocket&gt;();
+        }
+</code></pre>
+<p><em>The StructureMap team contains some VB6 veterans who hate Hungarian Notation, but can't shake the &quot;I&quot; nomenclature.</em></p>
+<h2>Registering the Single Implementation of an Interface</h2>
+<p>To tell StructureMap to automatically register any interface that only has one concrete implementation, use this method:</p>
+<pre><code class="language-csharp">
+        public interface ISong { }
+        public class TheOnlySong : ISong { }
+
+        [Test]
+        public void only_implementation()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.Scan(x =&gt;
+                {
+                    x.TheCallingAssembly();
+                    x.SingleImplementationsOfInterface();
+                });
+            });
+
+            container.GetInstance&lt;ISong&gt;()
+                .ShouldBeOfType&lt;TheOnlySong&gt;();
+        }
+</code></pre>
+<h2>Register all Concrete Types of an Interface</h2>
+<p>To add all concrete types that can be cast to a named plugin type, use this syntax:</p>
+<pre><code class="language-csharp">
+        public interface IFantasySeries { }
+        public class WheelOfTime : IFantasySeries { }
+        public class GameOfThrones : IFantasySeries { }
+        public class BlackCompany : IFantasySeries { }
+
+
+        [Test]
+        public void register_all_types_of_an_interface()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.Scan(x =&gt;
+                {
+                    x.TheCallingAssembly();
+
+                    x.AddAllTypesOf&lt;IFantasySeries&gt;();
+
+                    // or
+
+                    x.AddAllTypesOf(typeof (IFantasySeries))
+                        .NameBy(type =&gt; type.Name.ToLower());
+                });
+            });
+
+            container.Model.For&lt;IFantasySeries&gt;()
+                .Instances.Select(x =&gt; x.ReturnedType)
+                .OrderBy(x =&gt; x.Name)
+                .ShouldHaveTheSameElementsAs(typeof(BlackCompany), typeof(GameOfThrones), typeof(WheelOfTime));
+        }
+</code></pre>
+<p><strong>Note, &quot;T&quot; does not have to be an interface, it's all based on the ability to cast a concrete type to the &quot;T&quot;</strong></p>
+<h2>Generic Types</h2>
+<p>See <a href="/generics">Generic Types</a> for an example of using the <code>ConnectImplementationsToTypesClosing</code>
+mechanism for generic types.</p>
+<h2>Register Concrete Types against the First Interface</h2>
+<p>The last built in registration convention is a mechanism to register all concrete types
+that implement at least one interface against the first interface that they implement.</p>
+<pre><code class="language-csharp">
+            container = new Container(x =&gt;
+            {
+                x.Scan(o =&gt;
+                {
+                    o.TheCallingAssembly();
+                    o.RegisterConcreteTypesAgainstTheFirstInterface();
+
+                    o.Exclude(t =&gt; t.CanBeCastTo(typeof (IGateway)));
+                });
+            });
 </code></pre>
 
 
