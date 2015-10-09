@@ -383,7 +383,7 @@ made a singleton:</p>
                 .ShouldBeTheSameAs(container.GetInstance&lt;IWidgets&gt;());
 
             // Now that the policy has executed, we 
-            // can verify that WidgetCache is a singleton
+            // can verify that WidgetCache is a SingletonThing
             container.Model.For&lt;IWidgets&gt;().Default
                 .Lifecycle.ShouldBeOfType&lt;SingletonLifecycle&gt;();
         }

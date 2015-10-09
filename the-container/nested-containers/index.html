@@ -196,7 +196,7 @@ ASP.Net MVC through the <a href="https://www.nuget.org/packages/StructureMap.MVC
 
             var singleton = container.GetInstance&lt;IColorCache&gt;();
 
-            // Singleton&#39;s are resolved from the parent container
+            // SingletonThing&#39;s are resolved from the parent container
             using (var nested = container.GetNestedContainer())
             {
                 nested.GetInstance&lt;IColorCache&gt;()
@@ -320,7 +320,7 @@ below:</p>
         {
             var container = new Container(_ =&gt;
             {
-                // A singleton scoped service
+                // A SingletonThing scoped service
                 _.ForSingletonOf&lt;IColorCache&gt;().Use&lt;ColorCache&gt;();
 
                 // A transient scoped service
@@ -333,7 +333,7 @@ below:</p>
 
             using (var nested = container.GetNestedContainer())
             {
-                // Singleton&#39;s are really built by the parent
+                // SingletonThing&#39;s are really built by the parent
                 singleton = nested.GetInstance&lt;IColorCache&gt;()
                     .ShouldBeOfType&lt;ColorCache&gt;();
 

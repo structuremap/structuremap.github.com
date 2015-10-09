@@ -119,7 +119,7 @@ resolve to the same singleton object instance of <code>StatefulCache</code>.</p>
         {
             var container = new Container(_ =&gt;
             {
-                // Let&#39;s make StatefulCache a singleton in the container
+                // Let&#39;s make StatefulCache a SingletonThing in the container
                 _.ForConcreteType&lt;StatefulCache&gt;().Configure.Singleton();
 
                 _.Forward&lt;StatefulCache, IReader&gt;();
@@ -139,7 +139,7 @@ here's how to effect the same registration with <a href="/the-container/lambdas"
         {
             var container = new Container(_ =&gt;
             {
-                // Let&#39;s make StatefulCache a singleton in the container
+                // Let&#39;s make StatefulCache a SingletonThing in the container
                 _.ForConcreteType&lt;StatefulCache&gt;().Configure.Singleton();
 
                 _.For&lt;IReader&gt;().Use(c =&gt; c.GetInstance&lt;StatefulCache&gt;());

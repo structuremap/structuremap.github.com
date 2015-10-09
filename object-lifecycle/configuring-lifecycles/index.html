@@ -129,7 +129,7 @@
             container.Model.For&lt;Rule&gt;().Lifecycle.ShouldBeOfType&lt;SingletonLifecycle&gt;();
             container.Model.For&lt;Rule&gt;().Find(&quot;C&quot;).Lifecycle.ShouldBeOfType&lt;SingletonLifecycle&gt;();
 
-            // &#39;C&#39; is the default lifecycle for Rule (Singleton)
+            // &#39;C&#39; is the default lifecycle for Rule (SingletonThing)
             container.GetInstance&lt;Rule&gt;(&quot;C&quot;)
                 .ShouldBeTheSameAs(container.GetInstance&lt;Rule&gt;(&quot;C&quot;));
 
@@ -146,6 +146,18 @@
         }
 
 </code></pre>
+<h2>Using Attributes</h2>
+<p>New in StructureMap 4.0 are some simple attributes to mark either a complete <em>Plugin Type</em> or a single <em>Instance</em> as either
+a singleton or using the always unique lifecycle:</p>
+<p>The usage is shown below:</p>
+<pre><code class="language-csharp">
+    [AlwaysUnique]
+    public interface IShouldBeUnique { }
+
+    [Singleton] // because the most wonderful thing about Tiggers is that I&#39;m the only one....
+    public class Tigger { }
+</code></pre>
+<p>See <a href="/registration/attributes">Using Attributes for Configuration</a> for information about adding your own custom attibutes for other lifecycles.</p>
 
 
 			      	</div>
