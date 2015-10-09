@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta charset="utf-8">
+        <meta name="generator" content="Bootply" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>StructureMap - Lazy Resolution</title>
+		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
+		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+		
+        
+
+        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
+
+
+        <!-- CSS code from Bootply.com editor -->
+        <link href="/content/affix.css" rel="stylesheet" type="text/css" />
+    </head>
+    
+    <!-- HTML code from Bootply.com editor -->
+    
+    <body  >
+
+<a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
+        
+        <nav class="navbar navbar-default navbar-fixed-top" role="banner">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a href="/" class="navbar-brand">StructureMap</a>
+		    </div>
+		    <nav class="collapse navbar-collapse" role="navigation">
+		      <ul class="nav navbar-nav pull-right">
+            <li>
+              <a href="/quickstart">A Gentle Quickstart</a>
+            </li>
+		        <li>
+		          <a href="/documentation">Documentation</a>
+		        </li>
+            <li>
+              <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
+            </li>
+		        <li>
+<a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
+		        </li>
+		      	<li><a href="/the-container/handling-missing-named-instances" title="Handling Missing Named Instances">Previous</a></li>
+		      	<li><a href="/the-container/primitives" title="Working with Primitive Types">Next</a></li>
+		      </ul>
+      <div class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input id="search" type="search" class="form-control" placeholder="Search">
+        </div>
+      </div>
+
+		    </nav>
+
+		  </div>
+		</nav>
+
+		  <div class="container">
+		  	<nav class="navbar-inverse">
+		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/the-container">The Container</a></li><li class="active">Lazy Resolution</li></ol>
+		  	</nav>
+		  </div>
+
+		<!--main-->
+		<div class="container">
+			<div class="row">
+		      <!--left-->
+		      
+		      <div class="col-md-3" id="leftCol">
+		      	<h3>StructureMap 4.0.0</h3>
+		      	<br />
+
+				<ul class="nav nav-stacked affix" id="sidebar">
+
+		        </ul>
+
+		        	<h3 class="no-margin">Next</h3><p><a href="/the-container/primitives">Working with Primitive Types</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/the-container/handling-missing-named-instances">Handling Missing Named Instances</a></p>
+
+		        </ul>
+		      </div><!--/left-->
+		      
+		      <!--right-->
+		      <div class="col-md-9">
+			      	<h1>Lazy Resolution</h1>
+			      
+			      	<hr />
+
+			      	<div id="main-pane">
+			      		<!--Title:Lazy Resolution-->
+<p>StructureMap has some built in functionality for &quot;lazy&quot; resolved dependencies, so that instead of your
+application service taking a direct dependency on <code>IExpensiveToBuildService</code> that might not be necessary,
+you could instead have StructureMap fulfil a dependency on <code>Lazy&lt;IExpensiveToBuildService&gt;</code> or <code>Func&lt;IExpensiveToBuildService&gt;</code>
+that could be used to retrieve that expensive service only when it is needed from whatever <code>Container</code> originally created
+the parent object.</p>
+<p>Do note that the <code>Lazy&lt;T&gt;</code> and <code>Func&lt;T&gt;</code> approaches respect the lifecycle of the underlying registration rather than
+automatically building a unique object instance.</p>
+<p>Also note that <code>Lazy&lt;T&gt;</code> or <code>Func&lt;T&gt;</code> is your best (only) viable approach if you wish to have StructureMap inject bi-directional
+relationships.</p>
+<h2>Lazy&lt;T&gt;</h2>
+<p>Assuming that StructureMap either has an existing configuration for <code>T</code> or can
+derive a way to build <code>T</code>, you can just declare a dependency on <code>Lazy&lt;T&gt;</code> like this sample:</p>
+<pre><code class="language-csharp">
+        public class WidgetLazyUser
+        {
+            private readonly Lazy&lt;IWidget&gt; _widget;
+
+            public WidgetLazyUser(Lazy&lt;IWidget&gt; widget)
+            {
+                _widget = widget;
+            }
+
+            public IWidget Widget
+            {
+                get { return _widget.Value; }
+            }
+        }
+
+        [Test]
+        public void lazy_resolution_in_action()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
+            });
+
+            container.GetInstance&lt;WidgetLazyUser&gt;()
+                .Widget.ShouldBeOfType&lt;AWidget&gt;();
+        }
+</code></pre>
+<h2>Func&lt;T&gt;</h2>
+<p>Likewise, you can also declare a dependency on <code>Func&lt;T&gt;</code> with very similar mechanics:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void build_a_func_that_returns_a_singleton()
+        {
+            var container = new Container(x =&gt;
+            {
+                x.ForSingletonOf&lt;IWidget&gt;().Use&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;green&quot;);
+            });
+
+            var func = container.GetInstance&lt;Func&lt;IWidget&gt;&gt;();
+            var w1 = func();
+            var w2 = func();
+            var w3 = func();
+
+            w1.ShouldBeOfType&lt;ColorWidget&gt;().Color.ShouldBe(&quot;green&quot;);
+
+            w1.ShouldBeTheSameAs(w2);
+            w1.ShouldBeTheSameAs(w3);
+            w2.ShouldBeTheSameAs(w3);
+        }
+</code></pre>
+<p><em>This functionality predates the introduction of the Lazy type to .Net</em></p>
+<h2>Func&lt;string, T&gt;</h2>
+<p>Finally, you can also declare a dependency on <code>Func&lt;string, T&gt;</code> that will allow you to lazily
+resolve a dependency of <code>T</code> by name:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void build_a_func_by_string()
+        {
+            var container = new Container(x =&gt;
+            {
+                x.For&lt;IWidget&gt;().Add&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;green&quot;).Named(&quot;green&quot;);
+                x.For&lt;IWidget&gt;().Add&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;blue&quot;).Named(&quot;blue&quot;);
+                x.For&lt;IWidget&gt;().Add&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;red&quot;).Named(&quot;red&quot;);
+            });
+
+            var func = container.GetInstance&lt;Func&lt;string, IWidget&gt;&gt;();
+            func(&quot;green&quot;).ShouldBeOfType&lt;ColorWidget&gt;().Color.ShouldBe(&quot;green&quot;);
+        }
+</code></pre>
+<h2>Bi-relational Dependency Workaround</h2>
+<p><strong>StructureMap does not directly support bi-directional dependency relationships</strong> -- but will happily tell you in an exception when
+you accidentally manage to create one without cratering your AppDomain with a <code>StackOverflowException</code>.</p>
+<p>Either <code>Func&lt;T&gt;</code> or <code>Lazy&lt;T&gt;</code> can be used as a workaround for purposeful bi-directional dependencies between types. The
+following is an example of using this strategy:</p>
+<pre><code class="language-csharp">
+
+        [Singleton]
+        public class Thing1 
+        {
+            private readonly Lazy&lt;Thing2&gt; _thing2;
+
+            public Thing1(Lazy&lt;Thing2&gt; thing2)
+            {
+                _thing2 = thing2;
+            }
+
+            public Thing2 Thing2
+            {
+                get { return _thing2.Value; }
+            }
+        }
+
+        [Singleton]
+        public class Thing2 
+        {
+            public Thing1 Thing1 { get; set; }
+
+            public Thing2(Thing1 thing1)
+            {
+                Thing1 = thing1;
+            }
+        }
+
+        [Test]
+        public void use_lazy_as_workaround_for_bi_directional_dependency()
+        {
+            var container = new Container();
+            var thing1 = container.GetInstance&lt;Thing1&gt;();
+            var thing2 = container.GetInstance&lt;Thing2&gt;();
+
+            thing1.Thing2.ShouldBeSameAs(thing2);
+            thing2.Thing1.ShouldBeSameAs(thing1);
+        }
+</code></pre>
+
+
+			      	</div>
+
+			      	<hr />
+
+			      	<nav>
+				        <span>
+				        	<strong>Previous: </strong><a href="/the-container/handling-missing-named-instances">Handling Missing Named Instances</a>
+
+				        </span>
+				        <span class="pull-right">
+
+				        	<strong>Next: </strong><a href="/the-container/primitives">Working with Primitive Types</a>
+
+				        </span>
+			      	</nav>
+
+		      </div><!--/right-->
+		  	</div><!--/row-->
+		</div><!--/container-->
+
+
+    </body>
+
+
+    <foot>
+        <script type='text/javascript' src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type='text/javascript' src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="/content/embed.js"></script>
+        <script type="text/javascript" src="/content/prism.js"></script>
+        <script type="text/javascript" src="/content/sidebar.js"></script>
+        <script type="text/javascript" src="/content/affix.js"></script>
+
+<script>
+$('#search').keyup(function(e){
+  if(e.keyCode == 13) {
+    var search = $('#search').val();
+
+    var url = 'https://www.google.com/#q=site:structuremap.github.io ' + search;
+    url = encodeURI(url);
+
+    //alert(url);
+
+    window.location.href = url;
+
+    e.stopPropagation();
+    if (e.cancelBubble!=null) e.cancelBubble = true;
+    return false;
+  }
+
+
+
+}); 
+
+</script>
+    </foot>
+</html>
+
