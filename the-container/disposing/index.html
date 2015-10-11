@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>StructureMap - Object Lifecycles</title>
+		<title>StructureMap - StructureMap and IDisposable</title>
 		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
 		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
 		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
@@ -46,8 +46,8 @@
 		        <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
 		        </li>
-		      	<li><a href="/the-container" title="The Container">Previous</a></li>
-		      	<li><a href="/object-lifecycle/supported-lifecycles" title="Supported Lifecycles">Next</a></li>
+		      	<li><a href="/the-container/lazy-resolution" title="Lazy Resolution">Previous</a></li>
+		      	<li><a href="/the-container/primitives" title="Working with Primitive Types">Next</a></li>
 		      </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
@@ -62,7 +62,7 @@
 
 		  <div class="container">
 		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li class="active">Object Lifecycles</li></ol>
+		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/the-container">The Container</a></li><li class="active">StructureMap and IDisposable</li></ol>
 		  	</nav>
 		  </div>
 
@@ -79,79 +79,21 @@
 
 		        </ul>
 
-		        	<h3 class="no-margin">Next</h3><p><a href="/object-lifecycle/supported-lifecycles">Supported Lifecycles</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/the-container">The Container</a></p>
+		        	<h3 class="no-margin">Next</h3><p><a href="/the-container/primitives">Working with Primitive Types</a></p>
+		        	<h3 class="no-margin">Previous</h3><a href="/the-container/lazy-resolution">Lazy Resolution</a></p>
 
 		        </ul>
 		      </div><!--/left-->
 		      
 		      <!--right-->
 		      <div class="col-md-9">
-			      	<h1>Object Lifecycles</h1>
+			      	<h1>StructureMap and IDisposable</h1>
 			      
 			      	<hr />
 
 			      	<div id="main-pane">
-			      		<!--Title: Object Lifecycles-->
-<!--Url: object-lifecycle-->
-<p>One of the most valuable functions of using an IoC container tool is its ability to manage the object <em>lifecycle</em> (creating and disposing objects) and <em>scoping</em> (shared objects)
-of your system's services so you can focus on the actual functionality instead of busy work.</p>
-<p>Some services like data cache's and <a href="http://martinfowler.com/eaaDev/EventAggregator.html">event aggregators</a> in your system will need to be shared across requests, screens, and handlers.
-Other services should be created new every time you ask the container for one.  Another set of services need to be <em>scoped</em> to an HTTP request or a logical transaction such that
-every request to the container for a service originating within the context of a single HTTP request gets the same object instance.</p>
-<p>In all the cases above, StructureMap will assemble object graphs for you using the correct scoping of each dependency.  Likewise, <strong>in some cases</strong>, StructureMap can help you
-with object cleanup by calling <code>IDisposable.Dispose()</code> as appropriate when an object lifecyle is completed.</p>
-<div class="alert alert-info" role="alert">StructureMap isn't magic, you'll still need to be cognizant of the need for object cleanup.  See the section on <linkto:best-practices]> for more guidance.</div>
-<h2>Motivation for Container Managed Scope</h2>
-<p>In the bad old days, we used the infamous <a href="http://c2.com/cgi/wiki?SingletonPattern">Singleton pattern</a>
-as shown below for objects that really needed to be scoped as one single instance for the entire system:</p>
-<pre><code class="language-csharp">
-    public class EvilSingleton
-    {
-        public static readonly EvilSingleton Instance = new EvilSingleton();
-
-        private EvilSingleton()
-        {
-        }
-
-        public void DoSomething()
-        {
-            // do something with the static data here
-        }
-    }
-
-
-    public class EvilSingletonUser
-    {
-        public void DoWork()
-        {
-            EvilSingleton.Instance.DoSomething();
-        }
-    }
-
-</code></pre>
-<p>The code above isn't terribly difficult to write or understand, but using a Singleton has some negative effects on your code as explained in <a href="http://c2.com/cgi/wiki?SingletonsAreEvil">Singletons are Evil</a> and my own writing at <a href="http://codebetter.com/jeremymiller/2005/08/04/chill-out-on-the-singleton-fetish">Chill out on the Singleton Fetish</a>.</p>
-<p>Instead, let's just use StructureMap to handle the singleton scoping instead and rewrite the code sample above as:</p>
-<pre><code class="language-csharp">
-    public class SingletonService { }
-
-    public class SingletonUser
-    {
-        public SingletonUser(SingletonService singleton)
-        {
-        }
-    }
-
-    public class SingletonScopeRegistry : Registry
-    {
-        public SingletonScopeRegistry()
-        {
-            For&lt;SingletonService&gt;().Singleton();
-        }
-    }
-</code></pre>
-<p>The big advantage to the second, StructureMap-managed singleton scoping is that my <code>DependencyUser</code> class does not have to have any knowledge of
-how the <code>ISingletonDependency</code> object is built and certainly no coupling to the hard Singleton mechanics from the first sample that was so harmful in the past.</p>
+			      		<!--Title:StructureMap and IDisposable-->
+<p>STUFF HERE.</p>
 
 
 			      	</div>
@@ -160,12 +102,12 @@ how the <code>ISingletonDependency</code> object is built and certainly no coupl
 
 			      	<nav>
 				        <span>
-				        	<strong>Previous: </strong><a href="/the-container">The Container</a>
+				        	<strong>Previous: </strong><a href="/the-container/lazy-resolution">Lazy Resolution</a>
 
 				        </span>
 				        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/object-lifecycle/supported-lifecycles">Supported Lifecycles</a>
+				        	<strong>Next: </strong><a href="/the-container/primitives">Working with Primitive Types</a>
 
 				        </span>
 			      	</nav>
