@@ -94,7 +94,42 @@
 			      	<div id="main-pane">
 			      		<!--Title: Best Practices-->
 <!--Url: best-practices-->
-<p>TODO(Write some content!)</p>
+<p>All of these recommendations are the opinions and sole responsiblity of one <a href="http://jeremydmiller.com">Jeremy D. Miller</a>. The single best advice I can give you
+about using StructureMap is to avoid being too clever with your usage.</p>
+<h2>Use Nested Containers for Per Transaction/Request/Message Scoping</h2>
+<p>In idiomatic StructureMap usage, I strongly recommend using a <a href="/the-container/nested-containers">nested container</a> for short lived operations like:</p>
+<ol>
+<li>An HTTP request</li>
+<li>Handling a single service bus message</li>
+<li>Short lived transactions</li>
+</ol>
+<h2>Avoid the Legacy ASP.Net Lifecycles</h2>
+<p>To repeat the section above, I strongly recommend using nested containers instead of the legacy ASP.Net lifecycles to scope
+services per HTTP request.</p>
+<h2>Avoid Container.Configure() on the Root Container</h2>
+<p>Unfortunately, the <code>Container.Configure()</code> method is potentially an expensive operation
+and can result in some container-wide locks if you change any kind of interception or construction policy. Avoid this mechanism at runtime. If you need
+to inject services at runtime, try to do those overrides in an isolated <a href="/the-container/nested-containers">nested container</a> for that
+particular request or transaction to avoid hitting any kind of shared lock.</p>
+<h2>Avoid <code>Container.TryGetInstance()</code></h2>
+<p>Use the container to resolve your dependency relationships or don't. In my opinion, using <code>TryGetInstance()</code> results in unnecessary complexity in your application. My recommendation is to use <em><a href="https://en.wikipedia.org/wiki/Null_Object_pattern">nullo objects</a></em> as stand-ins or to use &quot;modular registration&quot; strategies instead (See <a href="/registration/fallback-services">Fallback Services</a> and <a href="/registration/clear-or-replace">Replace or Clear Out Previous Registrations</a> for more information). The ASP.Net team requires this usage for all of their IoC container integrations and you can't fight city hall, so StructureMap 4.0 includes some performance optimizations specifically for the heavy <code>TryGetInstance()</code> usage that I never anticipated.</p>
+<h2>Favor Constructor Injection over Setter Injection</h2>
+<p>I believe that constructor injection is less error prone than setter injection and is more easily traceable later. Setter injection is occasionally easier
+to use (in inheritance relationships for an example), but is mostly available in StructureMap as a workaround for code that was not built with dependency
+injection in mind (or popular frameworks that were built around Spring.Net usage <em>cough</em> NServiceBus <em>cough</em>).</p>
+<h2>Use Child Containers for Test Isolation</h2>
+<p>See <a href="/the-container/profiles-and-child-containers">Profiles and Child Containers</a> for more information.</p>
+<h2>Use Registry Classes</h2>
+<p>While you can completely set up a <code>Container</code> object through its constructor function and repeated calls to <code>Container.Configure()</code>, we suggest that you
+express any configurations in <a href="/registration">Registry objects</a> for repeatable configuration later in tests and for a cleaner expression
+of the configuration.</p>
+<p>Do consider breaking your configuration across separate <code>Registry</code> objects for different subsystems if the StructureMap configuration gets complicated.</p>
+<h2>Onion Architecture Assembly Coupling</h2>
+<p>If your choice is between making a direct dependency from one assembly to another strictly to make the StructureMap configuration easy and less error prone or using dynamic assembly loading and configuration strategies with type scanning to comply with the <em>Onion Architecture</em>, <strong>I very strongly recommend you favor the less error prone, direct assembly dependencies</strong>.</p>
+<h2>Favor Build Policies over Fancy Runtime Decision Making</h2>
+<p>While there are many powerful things you can do with StructureMap at runtime for conditional object resolution with <a href="/the-container/working-with-the-icontext-at-build-time">lambdas and IContext</a>,
+I recommend trying to &quot;bake in&quot; building decisions upfront with <a href="/registration/policies">build policies</a> for more efficient object resolution and so that
+the container behavior is surfaced through diagnostics like the <a href="/diagnostics/build-plans">build plan visualization</a>.</p>
 
 
 			      	</div>
