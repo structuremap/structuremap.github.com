@@ -94,7 +94,174 @@
 			      	<div id="main-pane">
 			      		<!--Title: Profiles and Child Containers-->
 <!--Url: profiles-and-child-containers-->
-<p>TODO(Write some content!)</p>
+<div class="alert alert-info" role="alert"><i>Child Containers</i> are <b>not</b> interchangeable with <i>Nested Containers</i>. See <linkto:the-container/nested-containers]> for more information on nested containers.</div>
+<p>The single best source for information about the particulars of child container behavior is to look through the acceptance tests for <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Acceptance/child_containers.cs">child containers</a> and
+<a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Configuration/DSL/profiles_acceptance_tester.cs">profiles</a>.
+from the code in GitHub.</p>
+<h2>Child Containers</h2>
+<p>The easiest way to explain a child container is to just show it in action:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void show_a_child_container_in_action()
+        {
+            var parent = new Container(_ =&gt;
+            {
+                _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
+                _.For&lt;IService&gt;().Use&lt;AService&gt;();
+            });
+
+            // Create a child container and override the
+            // IService registration
+            var child = parent.CreateChildContainer();
+            child.Configure(_ =&gt;
+            {
+                _.For&lt;IService&gt;().Use&lt;ChildSpecialService&gt;();
+            });
+
+            // The child container has a specific registration
+            // for IService, so use that one
+            child.GetInstance&lt;IService&gt;()
+                .ShouldBeOfType&lt;ChildSpecialService&gt;();
+
+            // The child container does not have any
+            // override of IWidget, so it uses its parent&#39;s
+            // configuration to resolve IWidget
+            child.GetInstance&lt;IWidget&gt;()
+                .ShouldBeOfType&lt;AWidget&gt;();
+        }
+</code></pre>
+<p><em>Child Container's</em> are a mechanism to make a completely new <code>Container</code> that can override some of the parent <code>Container's</code> registrations but still
+fall back to the parent <code>Container</code> to fulfil any request that is not explicitly configured to the child container. The behavior of a child container
+in how it resolves services and allows you to override the parent container is very similar to a <a href="/the-container/nested-containers">nested container</a>, but the crucial difference is in how the two concepts handle lifecycles and <a href="/the-container/disposing">calling IDisposable.Dispose()</a>.</p>
+<p>A couple salient facts about child containers that <strong>should</strong> (knock on wood) dispel the confusion about when and why to use them versus a nested container:</p>
+<ol>
+<li>Child Containers do <strong>not</strong> change how the <a href="/object-lifecycle/supported-lifecycles">default   transient lifecycle behaves</a>.</li>
+<li>Child Containers (and Profiles) were intended to be used to establish different service resolutions for different subsystems of the running system or
+to isolate registration overrides for specific types of users or customers (multi-tenancy).</li>
+</ol>
+<h2>Profiles</h2>
+<p><strong>Profiles were completely redesigned as part of the big 3.0 release</strong>.</p>
+<p><em>Profiles</em> are just named child containers that may be configured upfront through <code>Registry</code> configurations.
+Profiles are one of the oldest features that date back to the very beginning of StructureMap. Originally profile's were conceived of as
+a way to vary StructureMap registrations by development environment as the code moved from running locally on a developer's box to testing
+servers to production. While that usage is still valid, it is probably more common to use profiles to define overrides for how StructureMap
+should resolve services in different modes of the application (connected vs offline) or different types of system users.</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void Add_default_instance_with_concrete_type()
+        {
+            IContainer container = new Container(registry =&gt;
+            {
+                registry.Profile(&quot;something&quot;, p =&gt;
+                {
+                    p.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
+                    p.For&lt;Rule&gt;().Use&lt;DefaultRule&gt;();
+                });
+            });
+
+            var profile = container.GetProfile(&quot;something&quot;);
+
+            profile.GetInstance&lt;IWidget&gt;().ShouldBeOfType&lt;AWidget&gt;();
+            profile.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;DefaultRule&gt;();
+        }
+</code></pre>
+<h2>Child Containers and Singletons</h2>
+<p>If you register a new <code>Instance</code> directly to a child container, that registration is really scoped as a
+singleton within the usage of that particular child container:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void singletons_to_child_container_are_isolated()
+        {
+            var parentContainer = new Container(_ =&gt;
+            {
+                _.For&lt;IDependency&gt;().Use&lt;Dependency&gt;();
+            });
+
+            var child1 = parentContainer.CreateChildContainer();
+            child1.Configure(x =&gt;
+            {
+                x.ForSingletonOf&lt;IRoot&gt;().Use&lt;Root&gt;();
+            });
+
+            var child2 = parentContainer.CreateChildContainer();
+            child2.Configure(x =&gt;
+            {
+                x.ForSingletonOf&lt;IRoot&gt;().Use&lt;Root&gt;();
+            });
+
+            // IRoot is a &quot;singleton&quot; within child1 usage
+            child1.GetInstance&lt;IRoot&gt;().ShouldBeSameAs(child1.GetInstance&lt;IRoot&gt;());
+
+            // IRoot is a &quot;singleton&quot; within child2 usage
+            child2.GetInstance&lt;IRoot&gt;().ShouldBeSameAs(child2.GetInstance&lt;IRoot&gt;());
+
+            // but, child1 and child2 both have a different IRoot
+            child1.GetInstance&lt;IRoot&gt;()
+                .ShouldNotBeTheSameAs(child2);
+        }
+</code></pre>
+<h2>Creating a Nested Container from a Child Container</h2>
+<p>It is perfectly valid to create a nested container from a child container for short-lived requests or transactions:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void nested_container_from_child()
+        {
+            var parent = new Container(_ =&gt;
+            {
+                _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
+                _.For&lt;IService&gt;().Use&lt;AService&gt;();
+            });
+
+            // Create a child container and override the
+            // IService registration
+            var child = parent.CreateChildContainer();
+            child.Configure(_ =&gt;
+            {
+                _.For&lt;IService&gt;().Use&lt;ChildSpecialService&gt;();
+            });
+
+            using (var nested = child.GetNestedContainer())
+            {
+                nested.GetInstance&lt;IService&gt;()
+                    .ShouldBeOfType&lt;ChildSpecialService&gt;();
+            }
+        }
+</code></pre>
+<h2>Example: Child Containers in Automated Testing</h2>
+<p>My shop has been somewhat successful in writing automated integration tests in a <a href="https://en.wikipedia.org/wiki/White-box_testing">whitebox testing style</a>
+where we happily &quot;swap out&quot; a handful of external services with a <a href="https://en.wikipedia.org/wiki/Method_stub">stubbed service</a> that we can happily control
+to either setup system state or measure the interaction of our system with the stub (outgoing emails etc) -- with the canonical
+example being a web service that our biggest application has to call for authentication purposes that is frequently unavailable during
+our development efforts and not quite reliable even when it is available:.</p>
+<p>That's great, and the stubs certainly help the testing efforts be more productive. Until the stateful stubs we inject in one test end up bleeding into
+another test as de facto shared state and making those tests fail in ways that were very difficult to diagnose. To combat this problem of test isolation,
+we've introduced the idea of using a clean child container per integration test so that the test harness tools can happily
+swap in stubs without impacting other tests in the test suite.</p>
+<p>In action, that usage looks something like this:</p>
+<pre><code class="language-csharp">
+        public class TheRealService : IService { }
+
+        public class StubbedService : IService { }
+
+        [Test]
+        public void in_testing()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.For&lt;IService&gt;().Use&lt;TheRealService&gt;();
+            });
+
+            // Create a new child container for only this test
+            var testContainer = container.CreateChildContainer();
+
+            // Override a service with a stub that&#39;s easier to control
+            var stub = new StubbedService();
+            testContainer.Inject&lt;IService&gt;(stub);
+
+            // Now, continue with the test resolving application
+            // services through the new child container....
+        }
+</code></pre>
 
 
 			      	</div>
