@@ -94,7 +94,20 @@
 			      	<div id="main-pane">
 			      		<!--Title: Try Geting an Optional Service by Plugin Type and Name-->
 <!--Url: try-geting-an-optional-service-by-plugin-type-and-name-->
-<p>TODO(Write some content!)</p>
+<p>Just use the <code>IContainer.TryGetInstance&lt;T&gt;(name)</code> or <code>IContainer.TryGetInstance(Type pluginType, string name)</code> method as shown below:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void TryGetInstanceViaNameAndGeneric_ReturnsInstance_WhenTypeFound()
+        {
+            addColorInstance(&quot;Red&quot;);
+            addColorInstance(&quot;Orange&quot;);
+            addColorInstance(&quot;Blue&quot;);
+
+            // &quot;Orange&quot; exists, so an object should be returned
+            var instance = _container.TryGetInstance&lt;Rule&gt;(&quot;Orange&quot;);
+            instance.ShouldBeOfType(typeof (ColorRule));
+        }
+</code></pre>
 
 
 			      	</div>

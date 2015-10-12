@@ -94,7 +94,21 @@
 			      	<div id="main-pane">
 			      		<!--Title: Interpreting Exceptions-->
 <!--Url: interpreting-exceptions-->
-<p>TODO(Write some content!)</p>
+<p>Improving the exception messages was one of the primary goals of the big StructureMap 3.0 release. StructureMap exceptions should
+show a &quot;StructureMap-specific stacktrace&quot; describing where in the object graph StructureMap was when an exception occurred, while
+trying hard not to obscure the actual problems. In some cases, StructureMap will append <a href="/diagnostics">diagnostic views</a>
+to the exception output. <strong>If you are still using StructureMap 2.5-2.6, the better exception messages alone are a justification for upgrading.</strong></p>
+<p>StructureMap throws a couple custom exceptions, all of which implement a base <code>StructureMapException</code> type:</p>
+<ol>
+<li><code>StructureMapBuildException</code> -- a failure was detected during an attempt to build or resolve a requested object or dependency, but outside of
+StructureMap code. This exception wraps the actual exception and adds StructureMap-specific contextual information. <strong>Always check the inner
+exception</strong> when this exception is thrown.</li>
+<li><code>StructureMapInterceptorException</code> -- a configured interceptor failed during object construction. See the inner exception.</li>
+<li><code>StructureMapBuildPlanException</code> -- StructureMap is missing some kind of configuration or needs more explicit registrations in order to
+build an <code>Instance</code>. In a few cases, this exception will be thrown if StructureMap cannot create and compile a <code>Func</code> internally for the
+<code>Instance.</code></li>
+<li><code>StructureMapConfigurationException</code> -- thrown by the <a href="/diagnostics/validating-container-configuration">container validation mechanism</a></li>
+</ol>
 
 
 			      	</div>
