@@ -138,6 +138,11 @@ to use the <code>ConfiguredInstancePolicy</code> base class as a convenience:</p
 <pre><code class="language-csharp">
     public abstract class ConfiguredInstancePolicy : IInstancePolicy
     {
+        /// &lt;summary&gt;
+        /// Applies explicit configuration to an IConfiguredInstance
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;
+        /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;
         public void Apply(Type pluginType, Instance instance)
         {
             var configured = instance as IConfiguredInstance;
@@ -147,8 +152,12 @@ to use the <code>ConfiguredInstancePolicy</code> base class as a convenience:</p
             }
         }
 
-        // This method is called against any Instance that implements 
-        // the IConfiguredInstance interface
+        /// &lt;summary&gt;
+        /// This method is called against any Instance that implements the
+        /// IConfiguredInstance interface
+        /// &lt;/summary&gt;
+        /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;
+        /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;
         protected abstract void apply(Type pluginType, IConfiguredInstance instance);
     }
 </code></pre>
