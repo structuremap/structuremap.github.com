@@ -93,7 +93,136 @@
 
 			      	<div id="main-pane">
 			      		<!--Title:StructureMap and IDisposable-->
-<p>STUFF HERE.</p>
+<h2>Singletons</h2>
+<p>This one is easy, any object marked as the <em>Singleton</em> lifecycle that implements <code>IDisposable</code> is disposed when the root container is
+disposed:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void singletons_are_disposed_when_the_container_is_disposed()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.ForSingletonOf&lt;DisposableSingleton&gt;();
+            });
+
+            // As a singleton-scoped object, every request for DisposableSingleton
+            // will return the same object
+            var singleton = container.GetInstance&lt;DisposableSingleton&gt;();
+            singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());
+            singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());
+            singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());
+            singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());
+
+            singleton.WasDisposed.ShouldBeFalse();
+
+            // now, dispose the Container
+            container.Dispose();
+
+            // the SingletonThing scoped object should be disposed
+            singleton.WasDisposed.ShouldBeTrue();
+        }
+</code></pre>
+<p><em>Ejecting</em> a singleton-scoped object will also force it to be disposed. See <a href="/diagnostics/using-the-container-model">Using the Container Model</a> for more information on how to eject singletons
+from a running <code>Container</code>.</p>
+<h2>Nested Containers</h2>
+<p>As discussed in <a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a>, any transient or container-scoped object that implements <code>IDisposable</code> and is created
+by a nested container will be disposed as the nested container is disposed:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void nested_container_disposal()
+        {
+            var container = new Container(_ =&gt;
+            {
+                // A SingletonThing scoped service
+                _.ForSingletonOf&lt;IColorCache&gt;().Use&lt;ColorCache&gt;();
+
+                // A transient scoped service
+                _.For&lt;IColor&gt;().Use&lt;Green&gt;();
+            });
+
+            ColorCache singleton = null;
+            Green nestedGreen = null;
+            Blue nestedBlue = null;
+
+            using (var nested = container.GetNestedContainer())
+            {
+                // SingletonThing&#39;s are really built by the parent
+                singleton = nested.GetInstance&lt;IColorCache&gt;()
+                    .ShouldBeOfType&lt;ColorCache&gt;();
+
+                nestedGreen = nested.GetInstance&lt;IColor&gt;()
+                    .ShouldBeOfType&lt;Green&gt;();
+
+
+                nestedBlue = nested.GetInstance&lt;Blue&gt;();
+            }
+
+            // Transients created by the Nested Container
+            // are disposed, but no other lifecycle is
+            // disposed
+            nestedGreen.WasDisposed.ShouldBeTrue();
+            nestedBlue.WasDisposed.ShouldBeTrue();
+
+            // NOT disposed because it&#39;s owned by
+            // the parent container
+            singleton.WasDisposed.ShouldBeFalse();
+        }
+
+</code></pre>
+<h2>Transients</h2>
+<p><strong>Regardless of the new tracking/release mode, the StructureMap team still strongly recommends using a nested container per HTTP request or service
+bus message handling session or logical transaction to deal with disposing transient objects.</strong></p>
+<p>By default, StructureMap will <strong>not</strong> hang on to any transient-scoped objects created by the root or child containers. Dealing with
+<code>IDisposable</code> is completely up to the user in this case. The StructureMap team has long believed that trying to track transient disposables with
+an explicit <code>Release(object)</code> mode as other IoC containers behave would do more harm than good (memory leaks from forgetting to call Release(), more work on the user).</p>
+<p>That all being said, in order to comply with the new ASP.Net vNext compliance behavior, StructureMap 4.0 introduces a new opt-in transient tracking mode with the prerequisite <code>Release(object)</code> method:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void release_transient_created_by_root_container()
+        {
+            var container = new Container(_ =&gt; _.TransientTracking = TransientTracking.ExplicitReleaseMode);
+
+            container.TransientTracking.ShouldBeOfType&lt;TrackingTransientCache&gt;();
+
+            var transient1 = container.GetInstance&lt;DisposableGuy&gt;();
+            var transient2 = container.GetInstance&lt;DisposableGuy&gt;();
+
+            transient1.WasDisposed.ShouldBeFalse();
+            transient2.WasDisposed.ShouldBeFalse();
+        
+            // release ONLY transient2
+            container.Release(transient2);
+
+
+            transient1.WasDisposed.ShouldBeFalse();
+            transient2.WasDisposed.ShouldBeTrue();
+
+            // transient2 should no longer be 
+            // tracked by the container
+            container.TransientTracking.Tracked
+                .Single()
+                .ShouldBeTheSameAs(transient1);
+        }
+
+        [Test]
+        public void disposing_the_container_disposes_tracked_transients()
+        {
+            var container = new Container(_ =&gt; _.TransientTracking = TransientTracking.ExplicitReleaseMode);
+
+            var transient1 = container.GetInstance&lt;DisposableGuy&gt;();
+            var transient2 = container.GetInstance&lt;DisposableGuy&gt;();
+
+            transient1.WasDisposed.ShouldBeFalse();
+            transient2.WasDisposed.ShouldBeFalse();
+
+            container.Dispose();
+
+            transient1.WasDisposed.ShouldBeTrue();
+            transient2.WasDisposed.ShouldBeTrue();
+        }
+</code></pre>
+<p><strong>As of right now, StructureMap will only track the top level object requested from a <code>Container</code> and not all the other <code>IDisposable</code> objects that may
+have been created as part of the main object graph.</strong></p>
 
 
 			      	</div>

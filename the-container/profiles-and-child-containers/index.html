@@ -131,7 +131,7 @@ from the code in GitHub.</p>
         }
 </code></pre>
 <p><em>Child Container's</em> are a mechanism to make a completely new <code>Container</code> that can override some of the parent <code>Container's</code> registrations but still
-fall back to the parent <code>Container</code> to fulfil any request that is not explicitly configured to the child container. The behavior of a child container
+fall back to the parent <code>Container</code> to fulfill any request that is not explicitly configured to the child container. The behavior of a child container
 in how it resolves services and allows you to override the parent container is very similar to a <a href="/the-container/nested-containers">nested container</a>, but the crucial difference is in how the two concepts handle lifecycles and <a href="/the-container/disposing">calling IDisposable.Dispose()</a>.</p>
 <p>A couple salient facts about child containers that <strong>should</strong> (knock on wood) dispel the confusion about when and why to use them versus a nested container:</p>
 <ol>

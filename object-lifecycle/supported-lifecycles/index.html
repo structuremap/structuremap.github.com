@@ -106,10 +106,7 @@
 causes some confusion with ASP.Net HTTP scoping.  The easiest way to think of <em>Transient</em> is that a single object instance will be created for each top level
 call to <code>Container.GetInstance()</code> (or any other object resolution method on the <code>IContainer</code> interface). <em>Transient</em> objects resolved from a nested container, <em>Transient's</em> are scoped to the lifecycle
 of the nested container itself. See <a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a> for more information.</p>
-<div class="alert alert-info" role="alert">Transient lifecycle objects are <b>only</b> tracked and disposed if created by nested containers. If you resolve a transient object from the main application container,
-it will not track the object created. While that behavior avoids the manual <i>Release()</i> method and potential memory leak found in other IoC containers like Windsor, it
-puts the onus for disposing those objects on the user. The StructureMap team strongly recommends using nested containers for short
-lived operations if disposing transient objects created by the Container is important.</div>
+<p><strong>StructureMap's behavior for transient objects that implement <code>IDisposable</code> changed in 4.0 to introduce an &quot;opt-in&quot; tracking mode.</strong> Please see <a href="/the-container/disposing">StructureMap and IDisposable</a> for the details.</p>
 <p>The following unit test demonstrates how <em>Transient</em> lifecycles work in both root and nested containers.</p>
 <pre><code class="language-csharp">
         [Test]
