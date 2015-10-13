@@ -328,6 +328,68 @@ implement the <code>IDisposable</code> interface:</p>
         }
 
 </code></pre>
+<h2>ContainerScoped</h2>
+<p>New in StructureMap 4.0 is the <em>ContainerScoped</em> lifecycle that was designed specifically for compliance with the new ASP.Net DNX adapter model.
+<em>ContainerScoped</em> in this case means that a registration will be built once per <code>Container</code>, such that the root container, any child or profile
+container, and every single nested container will build its own object instance.</p>
+<p>The acceptance test for <code>ContainerScoped</code> is shown below:</p>
+<pre><code class="language-csharp">
+        [Test]
+        public void container_scoping_with_root_child_and_nested_container()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.ForConcreteType&lt;Disposable&gt;().Configure.ContainerScoped();
+            });
+
+            var child = container.CreateChildContainer();
+
+            var nested = container.GetNestedContainer();
+
+            // Always the same object when requested from the root container
+            var mainDisposable = container.GetInstance&lt;Disposable&gt;();
+            mainDisposable
+                .ShouldBeTheSameAs(container.GetInstance&lt;Disposable&gt;());
+
+            // Always the same object when requested from a child container
+            var childDisposable = child.GetInstance&lt;Disposable&gt;();
+            childDisposable
+                .ShouldBeTheSameAs(child.GetInstance&lt;Disposable&gt;());
+
+            // Always the same object when requested from a nested container
+            var nestedDisposable = nested.GetInstance&lt;Disposable&gt;();
+            nestedDisposable
+                .ShouldBeTheSameAs(nested.GetInstance&lt;Disposable&gt;());
+
+            // It should be a different object instance for
+            // all three containers
+            mainDisposable
+                .ShouldNotBeTheSameAs(childDisposable);
+
+            mainDisposable
+                .ShouldNotBeTheSameAs(nestedDisposable);
+
+            childDisposable
+                .ShouldNotBeTheSameAs(nestedDisposable);
+
+            // When the nested container is disposed,
+            // it should dispose all the container scoped objects,
+            // but not impact the other containers
+            nested.Dispose();
+            nestedDisposable.WasDisposed.ShouldBeTrue();
+            childDisposable.WasDisposed.ShouldBeFalse();
+            mainDisposable.WasDisposed.ShouldBeFalse();
+
+            // Same for the child container
+            child.Dispose();
+            childDisposable.WasDisposed.ShouldBeTrue();
+            mainDisposable.WasDisposed.ShouldBeFalse();
+
+            // Same for the main container
+            container.Dispose();
+            mainDisposable.WasDisposed.ShouldBeTrue();
+        }
+</code></pre>
 <h2>ThreadLocal</h2>
 <p>The ThreadLocalStorage based lifecycle is seldom used, but the easiest example of using it and explanation is the integration test:</p>
 <pre><code class="language-csharp">
