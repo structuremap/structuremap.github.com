@@ -187,7 +187,7 @@ ASP.Net MVC through the <a href="https://www.nuget.org/packages/StructureMap.MVC
         }
 
 </code></pre>
-<p><code>Instance's</code> scoped to anything but <code>Transient</code> are resolved as normal, but <strong>through the parent container</strong>:</p>
+<p><code>Instance's</code> scoped to anything but <code>Transient</code> or <code>AlwaysUnique</code> are resolved as normal, but <strong>through the parent container</strong>:</p>
 <pre><code class="language-csharp">
         [Test]
         public void nested_container_usage_of_singletons()
@@ -208,7 +208,7 @@ ASP.Net MVC through the <a href="https://www.nuget.org/packages/StructureMap.MVC
 <p>See &lt;linkto:object-lifecycle]&gt; for more information on supported object lifecycles.</p>
 <h2>Overriding Services from the Parent</h2>
 <p>A nested container is a new Container object that still retains access to the parent container that created it so that it can
-efficiently share registrations, policies, and cached <em>build plan's</em>. You can, however, register register services into the nested container that override the parent container.</p>
+efficiently share registrations, policies, and cached <em>build plan's</em>. You can, however, register services into the nested container that override the parent container.</p>
 <div class="alert alert-info" role="alert">There is no need to recreate registrations from the parent container
 into the nested container and doing so makes StructureMap work less efficiently.</div>
 <p>The <a href="http://fubuworld.com/fubumvc">FubuMVC web framework</a> uses a nested container per HTTP request. During an HTTP request, FubuMVC injects services
@@ -325,11 +325,15 @@ below:</p>
 
                 // A transient scoped service
                 _.For&lt;IColor&gt;().Use&lt;Green&gt;();
+
+                // An AlwaysUnique scoped service
+                _.For&lt;Purple&gt;().AlwaysUnique();
             });
 
             ColorCache singleton = null;
             Green nestedGreen = null;
             Blue nestedBlue = null;
+            Purple nestedPurple = null;
 
             using (var nested = container.GetNestedContainer())
             {
@@ -342,13 +346,19 @@ below:</p>
 
 
                 nestedBlue = nested.GetInstance&lt;Blue&gt;();
+
+                nestedPurple = nested.GetInstance&lt;Purple&gt;();
             }
 
             // Transients created by the Nested Container
-            // are disposed, but no other lifecycle is
-            // disposed
+            // are disposed
             nestedGreen.WasDisposed.ShouldBeTrue();
             nestedBlue.WasDisposed.ShouldBeTrue();
+
+            // Unique&#39;s created by the Nested Container
+            // are disposed
+            nestedPurple.WasDisposed.ShouldBeTrue();
+
 
             // NOT disposed because it&#39;s owned by
             // the parent container
@@ -365,6 +375,8 @@ below:</p>
     public class Red : IColor
     {
     }
+
+    public class Purple : Blue  {  }
 
     public class Blue : IColor, IDisposable
     {

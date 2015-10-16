@@ -125,7 +125,7 @@ disposed:</p>
 <p><em>Ejecting</em> a singleton-scoped object will also force it to be disposed. See <a href="/diagnostics/using-the-container-model">Using the Container Model</a> for more information on how to eject singletons
 from a running <code>Container</code>.</p>
 <h2>Nested Containers</h2>
-<p>As discussed in <a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a>, any transient or container-scoped object that implements <code>IDisposable</code> and is created
+<p>As discussed in <a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a>, any transient, <em>AlwaysUnique</em> (as of 4.0), or container-scoped object that implements <code>IDisposable</code> and is created
 by a nested container will be disposed as the nested container is disposed:</p>
 <pre><code class="language-csharp">
         [Test]
@@ -138,11 +138,15 @@ by a nested container will be disposed as the nested container is disposed:</p>
 
                 // A transient scoped service
                 _.For&lt;IColor&gt;().Use&lt;Green&gt;();
+
+                // An AlwaysUnique scoped service
+                _.For&lt;Purple&gt;().AlwaysUnique();
             });
 
             ColorCache singleton = null;
             Green nestedGreen = null;
             Blue nestedBlue = null;
+            Purple nestedPurple = null;
 
             using (var nested = container.GetNestedContainer())
             {
@@ -155,13 +159,19 @@ by a nested container will be disposed as the nested container is disposed:</p>
 
 
                 nestedBlue = nested.GetInstance&lt;Blue&gt;();
+
+                nestedPurple = nested.GetInstance&lt;Purple&gt;();
             }
 
             // Transients created by the Nested Container
-            // are disposed, but no other lifecycle is
-            // disposed
+            // are disposed
             nestedGreen.WasDisposed.ShouldBeTrue();
             nestedBlue.WasDisposed.ShouldBeTrue();
+
+            // Unique&#39;s created by the Nested Container
+            // are disposed
+            nestedPurple.WasDisposed.ShouldBeTrue();
+
 
             // NOT disposed because it&#39;s owned by
             // the parent container
