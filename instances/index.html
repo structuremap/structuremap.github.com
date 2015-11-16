@@ -115,6 +115,12 @@ subclass <code>LambdaInstance</code> as shown below:</p>
 <p>If neither of these approaches will easily work for your custom <code>Instance</code>, you may want to contact the StructureMap team
 via the gitter link above and we can help walk you through a custom subclass of <code>Instance</code> -- or more likely, talk you out
 of it somehow.</p>
+<h2>Missing Name Instance Template</h2>
+<p>New to StructureMap 4.0 is the <code>Instance.ToNamedClone(name)</code> method that is used behind the scenes by the <a href="/the-container/handling-missing-named-instances">Handling Missing Named Instances</a> feature.</p>
+<pre><code class="language-csharp">
+        public virtual Instance ToNamedClone(string name)
+</code></pre>
+<p>Custom Instance types can override this method to provide a brand new Instance for a name. This functionality may be useful for multi-tenancy situations.</p>
 
 
 			      	</div>
