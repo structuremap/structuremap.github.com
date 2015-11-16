@@ -96,15 +96,15 @@
 <!--Url: roadmap-->
 <p>StructureMap 3.0 released in early 2014 marked a huge change in the StructureMap internals and public API's.</p>
 <p>The ongoing work for version 4.0 is a much smaller release that primarily improves type scanning,
-diagnostics, and performance. The only breaking changes from 3 to 4 are in custom type scanning conventions.</p>
+diagnostics, and performance. The only breaking changes from 3 to 4 are in custom type scanning conventions, the removal of <code>ObjectFactory</code>, and
+the elimination of some obscure configuration API's.</p>
 <p>Please log any suspected bugs or feature requests on <a href="https://github.com/structuremap/structuremap">StructureMap's GitHub page</a>.</p>
-<p>After 4.0 is released, the StructureMap team will finally focus on the new DNX platform and officially support a <a href="https://github.com/structuremap/structuremap.dnx">StructureMap adapter for DNX</a>.</p>
 <h2>Ongoing and upcoming work</h2>
 <ol>
 <li>The 4.0 work can be browsed from the <a href="https://github.com/structuremap/structuremap/milestones/4.0">GitHub issue list</a>.</li>
 <li>A new package called <em>StructureMap.DynamicInterception</em> for adding support for AOP with Castle.Core dynamic proxies to StructureMap</li>
-<li>The StructureMap.DNX package for DNX integration (an early version is already available on Nuget.org)</li>
-<li>Sometime in 2016 StructureMap <strong>will</strong> support the CoreCLR</li>
+<li>The StructureMap.AutoFactory library is being rewritten based on Castle Dynamic Proxy to add more robust capabilities similar to what Windsor has</li>
+<li>The <a href="https://github.com/structuremap/structuremap.dnx">StructureMap.DNX</a> package for DNX integration (an early version is already available on Nuget.org)</li>
 </ol>
 
 

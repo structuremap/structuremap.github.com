@@ -95,6 +95,27 @@
 			      		<!--Title: Release Notes-->
 <!--Url: release-notes-->
 <p>StructureMap is attempting to follow a strict <a href="http://semver.org">SemVer</a> versioning policy.</p>
+<h2>Release Nodes 4.0</h2>
+<p>4.0 is a medium sized release that largely builds on the existing 3.0 architecture with significant improvements to conventional
+registration via type scanning and several performance improvements as well as some bug fixes.</p>
+<p>The highlights:</p>
+<ol>
+<li>We <strong>believe</strong> that the documentation is finally comprehensive in regards to StructureMap behavior and features</li>
+<li>The type scanning model (<code>Registry.Scan()</code>) was completely rebuilt to make the model easier to extend and to
+<em>optimize application bootstrapping</em> in systems that heavily rely on StructureMap type scanning. See <a href="/registration/auto-registration-and-conventions">Auto-Registration and Conventions</a> for more information.</li>
+<li>New diagnostic method specifically for troubleshooting type scanning problems. See <a href="/diagnostics/type-scanning">Type Scanning Diagnostics</a> for more information.</li>
+<li>New concept of a &quot;build time Instance convention&quot; to apply much more powerful policies and conventions against your StructureMap registrations
+as a whole. See <a href="/registration/policies">Construction Policies</a> for more information.</li>
+<li>Runtime performance improvements</li>
+<li>Hardened StructureMap for multi-threaded usage</li>
+<li>Performance improvements specifically targeted at usage from within ASP.Net MVC and its particular manner of using IoC tools.</li>
+<li>Removed the static <code>ObjectFactory</code> facade over the application <code>Container</code> altogether.</li>
+<li>Enhanced lifecycle support for compliance with ASP.Net MVC6. Nested containers track and dispose <em>AlwaysUnique</em> objects, the new <em>ContainerScoped</em>
+lifecyle, and an optional mode to make the root or child containers track <em>Transient</em> disposable objects. See <a href="/object-lifecycle">Object Lifecycles</a> and <a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a> for more information.</li>
+<li><code>Registry.For&lt;T&gt;().ClearAll()</code> and <code>Registry.For(Type).ClearAll()</code> methods for removing all previous registrations for a type. See
+<a href="/registration/clear-or-replace">Replace or Clear Out Previous Registrations</a> for more information.</li>
+</ol>
+<p>See also <a href="https://github.com/structuremap/structuremap/issues?q=milestone%3A4.0+is%3Aclosed">the complete list of changes and issues</a> for StructureMap 4.0.</p>
 <h2>3.1.*</h2>
 <p>Click on any release version to see the list of closed GitHub issues related to any of the 3.1 releases.</p>
 <ul>
