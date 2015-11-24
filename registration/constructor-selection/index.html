@@ -119,6 +119,11 @@ in that subset of constructors.</p>
                 Attribute = attribute;
                 Value = value;
             }
+
+            public GreaterThanRule(IWidget widget, Rule rule)
+            {
+                
+            }
         }
 
         [Test]
@@ -136,6 +141,46 @@ in that subset of constructors.</p>
             rule.Value.ShouldBe(42);
         }
 
+</code></pre>
+<p><strong>New in StructureMap 4.0</strong>, the &quot;greediest constructor selection&quot; will bypass any constructor function that requires &quot;simple&quot; arguments
+like strings, numbers, or enumeration values that are not explicitly configured for the instance.</p>
+<p>You can see this behavior shown below:</p>
+<pre><code class="language-csharp">
+        public class DbContext
+        {
+            public string ConnectionString { get; set; }
+
+            public DbContext(string connectionString)
+            {
+                ConnectionString = connectionString;
+            }
+
+            public DbContext() : this(&quot;default value&quot;)
+            {
+                
+            }
+        }
+
+        [Test]
+        public void should_bypass_ctor_with_unresolvable_simple_args()
+        {
+            var container = new Container();
+            container.GetInstance&lt;DbContext&gt;()
+                .ConnectionString.ShouldBe(&quot;default value&quot;);
+        }
+
+        [Test]
+        public void should_use_greediest_ctor_that_has_all_of_simple_dependencies()
+        {
+            var container = new Container(_ =&gt;
+            {
+                _.ForConcreteType&lt;DbContext&gt;().Configure
+                    .Ctor&lt;string&gt;(&quot;connectionString&quot;).Is(&quot;not the default&quot;);
+            });
+
+            container.GetInstance&lt;DbContext&gt;()
+                .ConnectionString.ShouldBe(&quot;not the default&quot;);
+        }
 </code></pre>
 <h2>Explicitly Selecting a Constructor</h2>
 <p>To override the constructor selection explicitly on a case by case basis, you
@@ -263,7 +308,7 @@ the constructor behavior for only subclasses of <code>BaseThing</code>:</p>
 <pre><code class="language-csharp">
     public class ThingCtorRule : IConstructorSelector
     {
-        public ConstructorInfo Find(Type pluggedType)
+        public ConstructorInfo Find(Type pluggedType, DependencyCollection dependencies, PluginGraph graph)
         {
             // if this rule does not apply to the pluggedType,
             // just return null to denote &quot;not applicable&quot;
