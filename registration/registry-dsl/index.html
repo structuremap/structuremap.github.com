@@ -1,96 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>StructureMap - Registry DSL</title>
-		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
-		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+        <title>StructureMap - Registry DSL</title>
+        <link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/content/prism.css" rel="stylesheet" type="text/css" />
+        <link href="/content/theme.css" rel="stylesheet" type="text/css" />
 
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
-
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="icon" type="image/x-icon" href="/content/images/structuremap-logo.ico">
+        <link rel="icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="72x72" href="/content/images/structuremap-logo-72x72.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="114x114" href="/content/images/structuremap-logo-114x114.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="144x144" href="/content/images/structuremap-logo-144x144.png">
 
         <!-- CSS code from Bootply.com editor -->
         <link href="/content/affix.css" rel="stylesheet" type="text/css" />
     </head>
-    
+
     <!-- HTML code from Bootply.com editor -->
-    
+
     <body  >
 
 <a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-        
+
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
-		  <div class="container">
-		    <div class="navbar-header">
-		      <a href="/" class="navbar-brand">StructureMap</a>
-		    </div>
-		    <nav class="collapse navbar-collapse" role="navigation">
-		      <ul class="nav navbar-nav pull-right">
+          <div class="container">
+            <div class="navbar-header">
+              <a href="/" class="navbar-brand">StructureMap</a>
+            </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+              <ul class="nav navbar-nav pull-right">
             <li>
               <a href="/quickstart">A Gentle Quickstart</a>
             </li>
-		        <li>
-		          <a href="/documentation">Documentation</a>
-		        </li>
+                <li>
+                  <a href="/documentation">Documentation</a>
+                </li>
             <li>
               <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
             </li>
-		        <li>
+                <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-		        </li>
-		      	<li><a href="/registration" title="Registration">Previous</a></li>
-		      	<li><a href="/registration/inline-dependencies" title="Inline Dependencies">Next</a></li>
-		      </ul>
+                </li>
+                  <li><a href="/registration" title="Registration">Previous</a></li>
+                  <li><a href="/registration/inline-dependencies" title="Inline Dependencies">Next</a></li>
+              </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
           <input id="search" type="search" class="form-control" placeholder="Search">
         </div>
       </div>
 
-		    </nav>
+            </nav>
 
-		  </div>
-		</nav>
+          </div>
+        </nav>
 
-		  <div class="container">
-		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/registration">Registration</a></li><li class="active">Registry DSL</li></ol>
-		  	</nav>
-		  </div>
+          <div class="container">
+              <nav class="navbar-inverse">
+                  <ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/registration">Registration</a></li><li class="active">Registry DSL</li></ol>
+              </nav>
+          </div>
 
-		<!--main-->
-		<div class="container">
-			<div class="row">
-		      <!--left-->
-		      
-		      <div class="col-md-3" id="leftCol">
-		      	<h3>StructureMap 4.1.0</h3>
-		      	<br />
+        <!--main-->
+        <div class="container">
+            <div class="row">
+              <!--left-->
 
-				<ul class="nav nav-stacked affix" id="sidebar">
+              <div class="col-md-3" id="leftCol">
+                <ul class="nav nav-stacked affix" id="sidebar">
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3 class="no-margin">Next</h3><p><a href="/registration/inline-dependencies">Inline Dependencies</a></p></li>
+                    <li><h3 class="no-margin">Previous</h3><a href="/registration">Registration</a></p></li>
+                </ul>
 
-		        </ul>
-		        	<h3 class="no-margin">Next</h3><p><a href="/registration/inline-dependencies">Inline Dependencies</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/registration">Registration</a></p>
+              </div><!--/left-->
 
-		        </ul>
-		      </div><!--/left-->
-		      
-		      <!--right-->
-		      <div class="col-md-9">
-			      	<h1>Registry DSL <a href="https://github.com/structuremap/structuremap/blob/master/documentation/registration/registry-dsl.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
-			      
-			      	<hr />
+              <!--right-->
+              <div class="col-md-9">
+                      <h1>Registry DSL <a href="https://github.com/structuremap/structuremap/blob/master/documentation/registration/registry-dsl.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
 
-			      	<div id="main-pane">
-			      		<!--Title: Registry DSL-->
+                      <hr />
+
+                      <div id="main-pane">
+                          <!--Title: Registry DSL-->
 <!--Url: registry-dsl-->
 <p>Creating <code>Registry</code> classes is the recommended way of using the Registry DSL.</p>
 <p>The Registry DSL is mostly a <a href="http://martinfowler.com/bliki/FluentInterface.html">fluent interface</a> with some nested <a href="http://en.wikipedia.org/wiki/Closure_%28computer_programming%29">closure</a>
@@ -118,7 +116,7 @@ instance of an <code>IWidget</code> interface:</p>
 <p>When you set up a <code>Container</code>, you need to simply direct the
 <code>Container</code> to use the configuration in that <code>Registry</code> class:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void include_a_registry()
         {
             var registry = new Registry();
@@ -172,7 +170,7 @@ modularity scenarios, see <a href="/registration/fallback-services">Fallback Ser
             // Also rare, but you can supply an Instance object
             // yourself for special needs
             For&lt;IWidget&gt;().UseInstance(new MySpecialInstance());
-            
+
             // If you&#39;re registering an open generic type
             // or you just have Type objects, use this syntax
             For(typeof (IService&lt;&gt;)).Use(typeof (Service&lt;&gt;));
@@ -183,7 +181,7 @@ modularity scenarios, see <a href="/registration/fallback-services">Fallback Ser
     }
 </code></pre>
 <h2>For().Add()</h2>
-<p>To register additional <code>Instance's</code> for a plugin type, use one of the overloads of <code>For().Add()</code>:</p>
+<p>To register additional <code>Instances</code> for a plugin type, use one of the overloads of <code>For().Add()</code>:</p>
 <pre><code class="language-csharp">
     public class AdditionalRegistrations : Registry
     {
@@ -213,7 +211,7 @@ modularity scenarios, see <a href="/registration/fallback-services">Fallback Ser
     }
 </code></pre>
 <h2>Add Many Registrations with For().AddInstances()</h2>
-<p>If you need to add several <code>Instance's</code> to a single plugin type, the <code>AddInstances()</code> syntax
+<p>If you need to add several <code>Instances</code> to a single plugin type, the <code>AddInstances()</code> syntax
 shown below may be quicker and easier to use:</p>
 <pre><code class="language-csharp">
 
@@ -237,19 +235,19 @@ shown below may be quicker and easier to use:</p>
 <p>When you have multiple implementations of an interface, it can often be useful to
 name instances. To retrieve a specific implementation:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void SimpleCaseWithNamedInstance()
         {
             container = new Container(x =&gt; { x.For&lt;IWidget&gt;().Add&lt;AWidget&gt;().Named(&quot;MyInstance&quot;); });
             // retrieve an instance by name
-            var widget = (AWidget) container.GetInstance&lt;IWidget&gt;(&quot;MyInstance&quot;);
+            var widget = (AWidget)container.GetInstance&lt;IWidget&gt;(&quot;MyInstance&quot;);
             widget.ShouldNotBeNull();
         }
 
 </code></pre>
 <p>You can also register named instances with the following shorthand:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void A_concrete_type_is_available_by_name_when_it_is_added_by_the_shorthand_mechanism()
         {
             IContainer container = new Container(r =&gt; r.For&lt;IAddTypes&gt;().AddInstances(x =&gt;
@@ -268,25 +266,25 @@ name instances. To retrieve a specific implementation:</p>
 </code></pre>
 
 
-			      	</div>
+                      </div>
 
-			      	<hr />
+                      <hr />
 
-			      	<nav>
-				        <span>
-				        	<strong>Previous: </strong><a href="/registration">Registration</a>
+                      <nav>
+                        <span>
+                            <strong>Previous: </strong><a href="/registration">Registration</a>
 
-				        </span>
-				        <span class="pull-right">
+                        </span>
+                        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/registration/inline-dependencies">Inline Dependencies</a>
+                            <strong>Next: </strong><a href="/registration/inline-dependencies">Inline Dependencies</a>
 
-				        </span>
-			      	</nav>
+                        </span>
+                      </nav>
 
-		      </div><!--/right-->
-		  	</div><!--/row-->
-		</div><!--/container-->
+              </div><!--/right-->
+              </div><!--/row-->
+        </div><!--/container-->
 
 
     </body>
@@ -320,7 +318,7 @@ $('#search').keyup(function(e){
 
 
 
-}); 
+});
 
 </script>
     </foot>

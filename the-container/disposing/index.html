@@ -1,101 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>StructureMap - StructureMap and IDisposable</title>
-		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
-		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+        <title>StructureMap - StructureMap and IDisposable</title>
+        <link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/content/prism.css" rel="stylesheet" type="text/css" />
+        <link href="/content/theme.css" rel="stylesheet" type="text/css" />
 
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
-
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="icon" type="image/x-icon" href="/content/images/structuremap-logo.ico">
+        <link rel="icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="72x72" href="/content/images/structuremap-logo-72x72.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="114x114" href="/content/images/structuremap-logo-114x114.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="144x144" href="/content/images/structuremap-logo-144x144.png">
 
         <!-- CSS code from Bootply.com editor -->
         <link href="/content/affix.css" rel="stylesheet" type="text/css" />
     </head>
-    
+
     <!-- HTML code from Bootply.com editor -->
-    
+
     <body  >
 
 <a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-        
+
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
-		  <div class="container">
-		    <div class="navbar-header">
-		      <a href="/" class="navbar-brand">StructureMap</a>
-		    </div>
-		    <nav class="collapse navbar-collapse" role="navigation">
-		      <ul class="nav navbar-nav pull-right">
+          <div class="container">
+            <div class="navbar-header">
+              <a href="/" class="navbar-brand">StructureMap</a>
+            </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+              <ul class="nav navbar-nav pull-right">
             <li>
               <a href="/quickstart">A Gentle Quickstart</a>
             </li>
-		        <li>
-		          <a href="/documentation">Documentation</a>
-		        </li>
+                <li>
+                  <a href="/documentation">Documentation</a>
+                </li>
             <li>
               <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
             </li>
-		        <li>
+                <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-		        </li>
-		      	<li><a href="/the-container/lazy-resolution" title="Lazy Resolution">Previous</a></li>
-		      	<li><a href="/the-container/primitives" title="Working with Primitive Types">Next</a></li>
-		      </ul>
+                </li>
+                  <li><a href="/the-container/lazy-resolution" title="Lazy Resolution">Previous</a></li>
+                  <li><a href="/the-container/primitives" title="Working with Primitive Types">Next</a></li>
+              </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
           <input id="search" type="search" class="form-control" placeholder="Search">
         </div>
       </div>
 
-		    </nav>
+            </nav>
 
-		  </div>
-		</nav>
+          </div>
+        </nav>
 
-		  <div class="container">
-		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/the-container">The Container</a></li><li class="active">StructureMap and IDisposable</li></ol>
-		  	</nav>
-		  </div>
+          <div class="container">
+              <nav class="navbar-inverse">
+                  <ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/the-container">The Container</a></li><li class="active">StructureMap and IDisposable</li></ol>
+              </nav>
+          </div>
 
-		<!--main-->
-		<div class="container">
-			<div class="row">
-		      <!--left-->
-		      
-		      <div class="col-md-3" id="leftCol">
-		      	<h3>StructureMap 4.1.0</h3>
-		      	<br />
+        <!--main-->
+        <div class="container">
+            <div class="row">
+              <!--left-->
 
-				<ul class="nav nav-stacked affix" id="sidebar">
+              <div class="col-md-3" id="leftCol">
+                <ul class="nav nav-stacked affix" id="sidebar">
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3 class="no-margin">Next</h3><p><a href="/the-container/primitives">Working with Primitive Types</a></p></li>
+                    <li><h3 class="no-margin">Previous</h3><a href="/the-container/lazy-resolution">Lazy Resolution</a></p></li>
+                </ul>
 
-		        </ul>
-		        	<h3 class="no-margin">Next</h3><p><a href="/the-container/primitives">Working with Primitive Types</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/the-container/lazy-resolution">Lazy Resolution</a></p>
+              </div><!--/left-->
 
-		        </ul>
-		      </div><!--/left-->
-		      
-		      <!--right-->
-		      <div class="col-md-9">
-			      	<h1>StructureMap and IDisposable <a href="https://github.com/structuremap/structuremap/blob/master/documentation/the-container/disposing.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
-			      
-			      	<hr />
+              <!--right-->
+              <div class="col-md-9">
+                      <h1>StructureMap and IDisposable <a href="https://github.com/structuremap/structuremap/blob/master/documentation/the-container/disposing.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
 
-			      	<div id="main-pane">
-			      		<!--Title:StructureMap and IDisposable-->
+                      <hr />
+
+                      <div id="main-pane">
+                          <!--Title:StructureMap and IDisposable-->
 <h2>Singletons</h2>
 <p>This one is easy, any object marked as the <em>Singleton</em> lifecycle that implements <code>IDisposable</code> is disposed when the root container is
 disposed:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void singletons_are_disposed_when_the_container_is_disposed()
         {
             var container = new Container(_ =&gt;
@@ -119,6 +117,7 @@ disposed:</p>
             // the SingletonThing scoped object should be disposed
             singleton.WasDisposed.ShouldBeTrue();
         }
+
 </code></pre>
 <p><em>Ejecting</em> a singleton-scoped object will also force it to be disposed. See <a href="/diagnostics/using-the-container-model">Using the Container Model</a> for more information on how to eject singletons
 from a running <code>Container</code>.</p>
@@ -126,7 +125,7 @@ from a running <code>Container</code>.</p>
 <p>As discussed in <a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a>, any transient, <em>AlwaysUnique</em> (as of 4.0), or container-scoped object that implements <code>IDisposable</code> and is created
 by a nested container will be disposed as the nested container is disposed:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void nested_container_disposal()
         {
             var container = new Container(_ =&gt;
@@ -155,7 +154,6 @@ by a nested container will be disposed as the nested container is disposed:</p>
                 nestedGreen = nested.GetInstance&lt;IColor&gt;()
                     .ShouldBeOfType&lt;Green&gt;();
 
-
                 nestedBlue = nested.GetInstance&lt;Blue&gt;();
 
                 nestedPurple = nested.GetInstance&lt;Purple&gt;();
@@ -169,7 +167,6 @@ by a nested container will be disposed as the nested container is disposed:</p>
             // Unique&#39;s created by the Nested Container
             // are disposed
             nestedPurple.WasDisposed.ShouldBeTrue();
-
 
             // NOT disposed because it&#39;s owned by
             // the parent container
@@ -185,7 +182,7 @@ bus message handling session or logical transaction to deal with disposing trans
 an explicit <code>Release(object)</code> mode as other IoC containers behave would do more harm than good (memory leaks from forgetting to call Release(), more work on the user).</p>
 <p>That all being said, in order to comply with the new ASP.Net vNext compliance behavior, StructureMap 4.0 introduces a new opt-in transient tracking mode with the prerequisite <code>Release(object)</code> method:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void release_transient_created_by_root_container()
         {
             var container = new Container(_ =&gt; _.TransientTracking = TransientTracking.ExplicitReleaseMode);
@@ -197,22 +194,21 @@ an explicit <code>Release(object)</code> mode as other IoC containers behave wou
 
             transient1.WasDisposed.ShouldBeFalse();
             transient2.WasDisposed.ShouldBeFalse();
-        
+
             // release ONLY transient2
             container.Release(transient2);
-
 
             transient1.WasDisposed.ShouldBeFalse();
             transient2.WasDisposed.ShouldBeTrue();
 
-            // transient2 should no longer be 
+            // transient2 should no longer be
             // tracked by the container
             container.TransientTracking.Tracked
                 .Single()
                 .ShouldBeTheSameAs(transient1);
         }
 
-        [Test]
+        [Fact]
         public void disposing_the_container_disposes_tracked_transients()
         {
             var container = new Container(_ =&gt; _.TransientTracking = TransientTracking.ExplicitReleaseMode);
@@ -228,30 +224,31 @@ an explicit <code>Release(object)</code> mode as other IoC containers behave wou
             transient1.WasDisposed.ShouldBeTrue();
             transient2.WasDisposed.ShouldBeTrue();
         }
+
 </code></pre>
 <p><strong>As of right now, StructureMap will only track the top level object requested from a <code>Container</code> and not all the other <code>IDisposable</code> objects that may
 have been created as part of the main object graph.</strong></p>
 
 
-			      	</div>
+                      </div>
 
-			      	<hr />
+                      <hr />
 
-			      	<nav>
-				        <span>
-				        	<strong>Previous: </strong><a href="/the-container/lazy-resolution">Lazy Resolution</a>
+                      <nav>
+                        <span>
+                            <strong>Previous: </strong><a href="/the-container/lazy-resolution">Lazy Resolution</a>
 
-				        </span>
-				        <span class="pull-right">
+                        </span>
+                        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/the-container/primitives">Working with Primitive Types</a>
+                            <strong>Next: </strong><a href="/the-container/primitives">Working with Primitive Types</a>
 
-				        </span>
-			      	</nav>
+                        </span>
+                      </nav>
 
-		      </div><!--/right-->
-		  	</div><!--/row-->
-		</div><!--/container-->
+              </div><!--/right-->
+              </div><!--/row-->
+        </div><!--/container-->
 
 
     </body>
@@ -285,7 +282,7 @@ $('#search').keyup(function(e){
 
 
 
-}); 
+});
 
 </script>
     </foot>

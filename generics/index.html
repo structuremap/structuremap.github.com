@@ -1,96 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>StructureMap - Generic Types</title>
-		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
-		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+        <title>StructureMap - Generic Types</title>
+        <link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/content/prism.css" rel="stylesheet" type="text/css" />
+        <link href="/content/theme.css" rel="stylesheet" type="text/css" />
 
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
-
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="icon" type="image/x-icon" href="/content/images/structuremap-logo.ico">
+        <link rel="icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="72x72" href="/content/images/structuremap-logo-72x72.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="114x114" href="/content/images/structuremap-logo-114x114.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="144x144" href="/content/images/structuremap-logo-144x144.png">
 
         <!-- CSS code from Bootply.com editor -->
         <link href="/content/affix.css" rel="stylesheet" type="text/css" />
     </head>
-    
+
     <!-- HTML code from Bootply.com editor -->
-    
+
     <body  >
 
 <a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-        
+
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
-		  <div class="container">
-		    <div class="navbar-header">
-		      <a href="/" class="navbar-brand">StructureMap</a>
-		    </div>
-		    <nav class="collapse navbar-collapse" role="navigation">
-		      <ul class="nav navbar-nav pull-right">
+          <div class="container">
+            <div class="navbar-header">
+              <a href="/" class="navbar-brand">StructureMap</a>
+            </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+              <ul class="nav navbar-nav pull-right">
             <li>
               <a href="/quickstart">A Gentle Quickstart</a>
             </li>
-		        <li>
-		          <a href="/documentation">Documentation</a>
-		        </li>
+                <li>
+                  <a href="/documentation">Documentation</a>
+                </li>
             <li>
               <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
             </li>
-		        <li>
+                <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-		        </li>
-		      	<li><a href="/object-lifecycle" title="Object Lifecycles">Previous</a></li>
-		      	<li><a href="/interception-and-decorators" title="Interception and Decorators">Next</a></li>
-		      </ul>
+                </li>
+                  <li><a href="/object-lifecycle" title="Object Lifecycles">Previous</a></li>
+                  <li><a href="/interception-and-decorators" title="Interception and Decorators">Next</a></li>
+              </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
           <input id="search" type="search" class="form-control" placeholder="Search">
         </div>
       </div>
 
-		    </nav>
+            </nav>
 
-		  </div>
-		</nav>
+          </div>
+        </nav>
 
-		  <div class="container">
-		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li class="active">Generic Types</li></ol>
-		  	</nav>
-		  </div>
+          <div class="container">
+              <nav class="navbar-inverse">
+                  <ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li class="active">Generic Types</li></ol>
+              </nav>
+          </div>
 
-		<!--main-->
-		<div class="container">
-			<div class="row">
-		      <!--left-->
-		      
-		      <div class="col-md-3" id="leftCol">
-		      	<h3>StructureMap 4.1.0</h3>
-		      	<br />
+        <!--main-->
+        <div class="container">
+            <div class="row">
+              <!--left-->
 
-				<ul class="nav nav-stacked affix" id="sidebar">
+              <div class="col-md-3" id="leftCol">
+                <ul class="nav nav-stacked affix" id="sidebar">
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3 class="no-margin">Next</h3><p><a href="/interception-and-decorators">Interception and Decorators</a></p></li>
+                    <li><h3 class="no-margin">Previous</h3><a href="/object-lifecycle">Object Lifecycles</a></p></li>
+                </ul>
 
-		        </ul>
-		        	<h3 class="no-margin">Next</h3><p><a href="/interception-and-decorators">Interception and Decorators</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/object-lifecycle">Object Lifecycles</a></p>
+              </div><!--/left-->
 
-		        </ul>
-		      </div><!--/left-->
-		      
-		      <!--right-->
-		      <div class="col-md-9">
-			      	<h1>Generic Types <a href="https://github.com/structuremap/structuremap/blob/master/documentation/generics.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
-			      
-			      	<hr />
+              <!--right-->
+              <div class="col-md-9">
+                      <h1>Generic Types <a href="https://github.com/structuremap/structuremap/blob/master/documentation/generics.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
 
-			      	<div id="main-pane">
-			      		<!--Title:Generic Types-->
+                      <hr />
+
+                      <div id="main-pane">
+                          <!--Title:Generic Types-->
 <p>StructureMap comes with some power abilities to exploit <a href="https://msdn.microsoft.com/en-us/library/ms172334(v=vs.110).aspx">open generic types</a> in .Net for extensibility
 and flexible handling within your system.</p>
 <h2>Example 1: Visualizing an Activity Log</h2>
@@ -126,13 +124,13 @@ this topic to find and apply the correct HTML rendering strategy for each type o
 <pre><code class="language-csharp">
             var logs = new object[]
             {
-                new IssueCreated(), 
-                new TaskAssigned(), 
-                new Comment(), 
+                new IssueCreated(),
+                new TaskAssigned(),
+                new Comment(),
                 new IssueResolved()
             };
 
-            // SAMPLE: using-visualizer-knowning-the-type   
+            // SAMPLE: using-visualizer-knowning-the-type
             // Just setting up a Container and ILogVisualizer
             var container = Container.For&lt;VisualizationRegistry&gt;();
             var visualizer = container.GetInstance&lt;ILogVisualizer&gt;();
@@ -167,28 +165,25 @@ On top of that, many of the log types were simple and could just as easily be re
 <h2>Registering Open Generic Types</h2>
 <p>Let's say to begin with all we want to do is to always use the <code>DefaultVisualizer</code> for each log type. We can do that with code like this below:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void register_open_generic_type()
         {
             var container = new Container(_ =&gt;
             {
-                _.For(typeof (IVisualizer&lt;&gt;)).Use(typeof (DefaultVisualizer&lt;&gt;));
+                _.For(typeof(IVisualizer&lt;&gt;)).Use(typeof(DefaultVisualizer&lt;&gt;));
             });
 
-            
-            Debug.WriteLine(container.WhatDoIHave(@namespace:&quot;StructureMap.Testing.Acceptance.Visualization&quot;));
-            
+            Debug.WriteLine(container.WhatDoIHave(@namespace: &quot;StructureMap.Testing.Acceptance.Visualization&quot;));
 
             container.GetInstance&lt;IVisualizer&lt;IssueCreated&gt;&gt;()
                 .ShouldBeOfType&lt;DefaultVisualizer&lt;IssueCreated&gt;&gt;();
 
             Debug.WriteLine(container.WhatDoIHave(@namespace: &quot;StructureMap.Testing.Acceptance.Visualization&quot;));
-            
-
 
             container.GetInstance&lt;IVisualizer&lt;IssueResolved&gt;&gt;()
                 .ShouldBeOfType&lt;DefaultVisualizer&lt;IssueResolved&gt;&gt;();
         }
+
 </code></pre>
 <p>With the configuration above, there are no specific registrations for <code>IVisualizer&lt;IssueCreated&gt;</code>. At the first request for that
 interface, StructureMap will run through its &quot;<a href="/registration/on-missing-family-policies">missing family policies</a>&quot;, one of which is
@@ -219,7 +214,7 @@ users to register a &quot;fallback&quot; registration otherwise. In the case of 
 special HTML rendering while others can happily be rendered with the default visualization strategy. This behavior is demonstrated by
 the following code sample:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void generic_defaults()
         {
             var container = new Container(_ =&gt;
@@ -231,7 +226,6 @@ the following code sample:</p>
                 _.For&lt;IVisualizer&lt;IssueCreated&gt;&gt;().Use&lt;IssueCreatedVisualizer&gt;();
             });
 
-
             // We have a specific visualizer for IssueCreated
             container.GetInstance&lt;IVisualizer&lt;IssueCreated&gt;&gt;()
                 .ShouldBeOfType&lt;IssueCreatedVisualizer&gt;();
@@ -241,6 +235,7 @@ the following code sample:</p>
             container.GetInstance&lt;IVisualizer&lt;TaskAssigned&gt;&gt;()
                 .ShouldBeOfType&lt;DefaultVisualizer&lt;TaskAssigned&gt;&gt;();
         }
+
 </code></pre>
 <h2>Connecting Generic Implementations with Type Scanning</h2>
 <div class="alert alert-info" role="alert">It's generally harmful in software projects to have a single code file that has to be frequently edited to for unrelated changes,
@@ -314,7 +309,7 @@ IVisualizer&lt;TLog&gt;              StructureMap.Testing.Acceptance.Visualizati
 <p>The following sample shows the <code>VisualizationRegistry</code> in action to combine the type scanning registration plus the default fallback behavior for
 log types that do not have any special visualization logic:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void visualization_registry()
         {
             var container = Container.For&lt;VisualizationRegistry&gt;();
@@ -332,6 +327,7 @@ log types that do not have any special visualization logic:</p>
             container.GetInstance&lt;IVisualizer&lt;TaskAssigned&gt;&gt;()
                 .ShouldBeOfType&lt;DefaultVisualizer&lt;TaskAssigned&gt;&gt;();
         }
+
 </code></pre>
 <h2>Building Closed Types with ForGenericType() and ForObject()</h2>
 <p>Working with generic types and the common <code>IHandler&lt;T&gt;</code> pattern can be a little bit tricky if all you have is an object that is declared as an <code>object</code>. Fortunately,
@@ -429,8 +425,8 @@ your persistent domain:</p>
 <pre><code class="language-csharp">
     public interface IRepository&lt;TDocument, TQuery&gt;
     {
-
     }
+
 </code></pre> 
 <p>Great, StructureMap handles generic types just fine, so you can just register the various closed types and off you go. Except you can't because the way that your
 persistence tooling works requires you to create the <code>IRepository&lt;,&gt;</code> objects with a static builder class like this one below:</p>
@@ -442,6 +438,7 @@ persistence tooling works requires you to create the <code>IRepository&lt;,&gt;<
             return new Repository&lt;TDocument, TQuery&gt;();
         }
     }
+
 </code></pre>
 <p>StructureMap has an admittedly non-obvious way to handle this situation by creating a new subclass of <code>Instance</code> that will &quot;know&quot; how to create the real <code>Instance</code> for a closed
 type of <code>IRepository&lt;,&gt;</code>.</p>
@@ -464,6 +461,7 @@ build our repository type with the static <code>RepositoryBuilder</code> class:<
             }
         }
     }
+
 </code></pre>
 <p>As you've probably surmised, the custom <code>RepositoryInstance</code> above is itself an open generic type and cannot be used directly until it has been closed. You <strong>could</strong> use this class directly if you have a very few document types like this:</p>
 <pre><code class="language-csharp">
@@ -489,7 +487,7 @@ to build the specific closed types of <code>IRepository&lt;,&gt;</code> at runti
             // StructureMap will cache the object built out of this,
             // so the expensive Reflection hit only happens
             // once
-            var instanceType = typeof (RepositoryInstance&lt;,&gt;).MakeGenericType(types);
+            var instanceType = typeof(RepositoryInstance&lt;,&gt;).MakeGenericType(types);
             return Activator.CreateInstance(instanceType).As&lt;Instance&gt;();
         }
 
@@ -506,26 +504,28 @@ to build the specific closed types of <code>IRepository&lt;,&gt;</code> at runti
 
         public override Type ReturnedType
         {
-            get { return typeof (Repository&lt;,&gt;); }
+            get { return typeof(Repository&lt;,&gt;); }
         }
     }
+
 </code></pre>
 <p>The key part of the class above is the <code>CloseType(Type[] types)</code> method. At that point, we can determine the right type of <code>RepositoryInstance&lt;,&gt;</code> to build the requested type of <code>IRepository&lt;,&gt;</code>, then use some reflection to create and return that custom <code>Instance</code>.</p>
 <p>Here's a unit test that exercises and demonstrates this functionality from end to end:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void show_the_workaround_for_generic_builders()
         {
             var container = new Container(_ =&gt;
             {
-                _.For(typeof (IRepository&lt;,&gt;)).Use(new RepositoryInstanceFactory());
+                _.For(typeof(IRepository&lt;,&gt;)).Use(new RepositoryInstanceFactory());
             });
 
             container.GetInstance&lt;IRepository&lt;string, int&gt;&gt;()
                 .ShouldBeOfType&lt;Repository&lt;string, int&gt;&gt;();
 
-            Debug.WriteLine(container.WhatDoIHave(assembly:Assembly.GetExecutingAssembly()));
+            Debug.WriteLine(container.WhatDoIHave(assembly: GetType().GetAssembly()));
         }
+
 </code></pre>
 <p>After requesting <code>IRepository&lt;string, int&gt;</code> for the first time, the container configuration from <a href="/diagnostics/whatdoihave">Container.WhatDoIHave()</a> is:</p>
 <pre style="overflow:scroll;word-break:normal;word-wrap:normal">
@@ -548,12 +548,15 @@ but I'm very happy now that I ditched the old WPF client and replaced it with a 
     {
         // Sending messages
         void SendMessage&lt;T&gt;(T message);
+
         void SendMessage&lt;T&gt;() where T : new();
 
         // Explicit registration
         void AddListener(object listener);
+
         void RemoveListener(object listener);
     }
+
 </code></pre>
 <p>To register a listener for a particular type of event notification, you would implement an interface called <code>IListener&lt;T&gt;</code> shown below
 and directly add that object to the <code>IEventAggregator</code>:</p>
@@ -562,6 +565,7 @@ and directly add that object to the <code>IEventAggregator</code>:</p>
     {
         void Handle(T message);
     }
+
 </code></pre>
 <p>In the application I'm describing, all of the listener objects were presenters or screen controls that were created by StructureMap, so it was convenient to allow StructureMap to register newly created objects with the <code>IEventAggregator</code> in an activation interceptor.</p>
 <p>What we want to do though is have an interception policy that only applies to any concrete type that implements some interface that
@@ -576,7 +580,7 @@ closes <code>IListener&lt;T&gt;</code>:</p>
 
         public IEnumerable&lt;IInterceptor&gt; DetermineInterceptors(Type pluginType, Instance instance)
         {
-            if (instance.ReturnedType.FindInterfacesThatClose(typeof (IListener&lt;&gt;)).Any())
+            if (instance.ReturnedType.FindInterfacesThatClose(typeof(IListener&lt;&gt;)).Any())
             {
                 Expression&lt;Action&lt;IContext, object&gt;&gt; register =
                     (c, o) =&gt; c.GetInstance&lt;IEventAggregator&gt;().AddListener(o);
@@ -584,10 +588,11 @@ closes <code>IListener&lt;T&gt;</code>:</p>
             }
         }
     }
+
 </code></pre>
 <p>To see our new interception policy in action, see <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Samples/Interception/Event_Aggregator_Registration.cs">this unit test from GitHub</a>:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void use_the_event_listener_registration()
         {
             var container = new Container(x =&gt;
@@ -605,28 +610,29 @@ closes <code>IListener&lt;T&gt;</code>:</p>
 
             listener.Messages.Single().ShouldBeTheSameAs(message);
         }
+
 </code></pre>
 
 
-			      	</div>
+                      </div>
 
-			      	<hr />
+                      <hr />
 
-			      	<nav>
-				        <span>
-				        	<strong>Previous: </strong><a href="/object-lifecycle">Object Lifecycles</a>
+                      <nav>
+                        <span>
+                            <strong>Previous: </strong><a href="/object-lifecycle">Object Lifecycles</a>
 
-				        </span>
-				        <span class="pull-right">
+                        </span>
+                        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/interception-and-decorators">Interception and Decorators</a>
+                            <strong>Next: </strong><a href="/interception-and-decorators">Interception and Decorators</a>
 
-				        </span>
-			      	</nav>
+                        </span>
+                      </nav>
 
-		      </div><!--/right-->
-		  	</div><!--/row-->
-		</div><!--/container-->
+              </div><!--/right-->
+              </div><!--/row-->
+        </div><!--/container-->
 
 
     </body>
@@ -660,7 +666,7 @@ $('#search').keyup(function(e){
 
 
 
-}); 
+});
 
 </script>
     </foot>

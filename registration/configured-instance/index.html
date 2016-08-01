@@ -1,96 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>StructureMap - Working with IConfiguredInstance</title>
-		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
-		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+        <title>StructureMap - Working with IConfiguredInstance</title>
+        <link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/content/prism.css" rel="stylesheet" type="text/css" />
+        <link href="/content/theme.css" rel="stylesheet" type="text/css" />
 
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
-
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="icon" type="image/x-icon" href="/content/images/structuremap-logo.ico">
+        <link rel="icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="72x72" href="/content/images/structuremap-logo-72x72.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="114x114" href="/content/images/structuremap-logo-114x114.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="144x144" href="/content/images/structuremap-logo-144x144.png">
 
         <!-- CSS code from Bootply.com editor -->
         <link href="/content/affix.css" rel="stylesheet" type="text/css" />
     </head>
-    
+
     <!-- HTML code from Bootply.com editor -->
-    
+
     <body  >
 
 <a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-        
+
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
-		  <div class="container">
-		    <div class="navbar-header">
-		      <a href="/" class="navbar-brand">StructureMap</a>
-		    </div>
-		    <nav class="collapse navbar-collapse" role="navigation">
-		      <ul class="nav navbar-nav pull-right">
+          <div class="container">
+            <div class="navbar-header">
+              <a href="/" class="navbar-brand">StructureMap</a>
+            </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+              <ul class="nav navbar-nav pull-right">
             <li>
               <a href="/quickstart">A Gentle Quickstart</a>
             </li>
-		        <li>
-		          <a href="/documentation">Documentation</a>
-		        </li>
+                <li>
+                  <a href="/documentation">Documentation</a>
+                </li>
             <li>
               <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
             </li>
-		        <li>
+                <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-		        </li>
-		      	<li><a href="/registration/auto-registration-and-conventions" title="Auto-Registration and Conventions">Previous</a></li>
-		      	<li><a href="/registration/policies" title="Construction Policies">Next</a></li>
-		      </ul>
+                </li>
+                  <li><a href="/registration/auto-registration-and-conventions" title="Auto-Registration and Conventions">Previous</a></li>
+                  <li><a href="/registration/policies" title="Construction Policies">Next</a></li>
+              </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
           <input id="search" type="search" class="form-control" placeholder="Search">
         </div>
       </div>
 
-		    </nav>
+            </nav>
 
-		  </div>
-		</nav>
+          </div>
+        </nav>
 
-		  <div class="container">
-		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/registration">Registration</a></li><li class="active">Working with IConfiguredInstance</li></ol>
-		  	</nav>
-		  </div>
+          <div class="container">
+              <nav class="navbar-inverse">
+                  <ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/registration">Registration</a></li><li class="active">Working with IConfiguredInstance</li></ol>
+              </nav>
+          </div>
 
-		<!--main-->
-		<div class="container">
-			<div class="row">
-		      <!--left-->
-		      
-		      <div class="col-md-3" id="leftCol">
-		      	<h3>StructureMap 4.1.0</h3>
-		      	<br />
+        <!--main-->
+        <div class="container">
+            <div class="row">
+              <!--left-->
 
-				<ul class="nav nav-stacked affix" id="sidebar">
+              <div class="col-md-3" id="leftCol">
+                <ul class="nav nav-stacked affix" id="sidebar">
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3 class="no-margin">Next</h3><p><a href="/registration/policies">Construction Policies</a></p></li>
+                    <li><h3 class="no-margin">Previous</h3><a href="/registration/auto-registration-and-conventions">Auto-Registration and Conventions</a></p></li>
+                </ul>
 
-		        </ul>
-		        	<h3 class="no-margin">Next</h3><p><a href="/registration/policies">Construction Policies</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/registration/auto-registration-and-conventions">Auto-Registration and Conventions</a></p>
+              </div><!--/left-->
 
-		        </ul>
-		      </div><!--/left-->
-		      
-		      <!--right-->
-		      <div class="col-md-9">
-			      	<h1>Working with IConfiguredInstance <a href="https://github.com/structuremap/structuremap/blob/master/documentation/registration/configured-instance.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
-			      
-			      	<hr />
+              <!--right-->
+              <div class="col-md-9">
+                      <h1>Working with IConfiguredInstance <a href="https://github.com/structuremap/structuremap/blob/master/documentation/registration/configured-instance.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
 
-			      	<div id="main-pane">
-			      		<!--Title:Working with IConfiguredInstance-->
+                      <hr />
+
+                      <div id="main-pane">
+                          <!--Title:Working with IConfiguredInstance-->
 <p>The most common way for StructureMap to build or resolve a requested object is to build a concrete type directly by calling a
 public constructor function and optionally filling values in public setter properties. For this type of object construction,
 StructureMap exposes the <code>IConfiguredInstance</code> interface as a means of querying and modifying how a concrete type will be
@@ -175,7 +173,7 @@ type of <code>ILifecycle</code> or an <code>ILifecycle</code> object. As a quick
             instance.Singleton();
 
             // or supply an ILifecycle type
-            instance.SetLifecycleTo&lt;HttpContextLifecycle&gt;();
+            instance.SetLifecycleTo&lt;ThreadLocalStorageLifecycle&gt;();
 
             // or supply an ILifecycle object
             instance.SetLifecycleTo(new Lifecycles_Samples.MyCustomLifecycle());
@@ -193,17 +191,17 @@ type of <code>ILifecycle</code> or an <code>ILifecycle</code> object. As a quick
             }
         }
 
-        [Test]
+        [Fact]
         public void reflecting_over_constructor_args()
         {
             IConfiguredInstance instance = new SmartInstance&lt;GuyWithArguments&gt;()
                 // I&#39;m just forcing it to assign the constructor function
                 .SelectConstructor(() =&gt; new GuyWithArguments(null, null));
 
-
             instance.Constructor.GetParameters().Select(x =&gt; x.Name)
                 .ShouldHaveTheSameElementsAs(&quot;widget&quot;, &quot;rule&quot;);
         }
+
 </code></pre>
 <p><strong>The <a href="/registration/constructor-selection">constructor function selection</a> process takes place as the very first step in creating a <a href="/diagnostics/build-plans">build plan</a> and will be
 available in any kind of <a href="/registration/policies">construction policy</a> or <a href="/registration/attributes">configuration attribute</a> on
@@ -218,15 +216,16 @@ that StructureMap can work with as shown below:</p>
             public Rule Rule { get; private set; }
         }
 
-        [Test]
+        [Fact]
         public void get_settable_properties()
         {
-            IConfiguredInstance instance 
+            IConfiguredInstance instance
                 = new ConfiguredInstance(typeof(GuyWithProperties));
 
             instance.SettableProperties()
                 .Single().Name.ShouldBe(&quot;Widget&quot;);
         }
+
 </code></pre>
 <h2>Working with Dependencies</h2>
 <p>The <code>IConfiguredInstance.Dependencies</code> property is a collection of <code>Argument</code> objects that model inline dependencies. A
@@ -255,10 +254,10 @@ methods for constructor parameters and setter properties shown in the following 
 that can be cast to the property type or an Instance object that returns a type that can be cast to the property type.</p>
 <p>With a value:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void dependency_with_setter_with_value()
         {
-            var instance 
+            var instance
                 = new ConfiguredInstance(typeof(GuyWithProperties));
             var prop = instance.PluggedType.GetProperty(&quot;Widget&quot;);
 
@@ -270,10 +269,11 @@ that can be cast to the property type or an Instance object that returns a type 
             container.GetInstance&lt;GuyWithProperties&gt;(instance)
                 .Widget.ShouldBeTheSameAs(myWidget);
         }
+
 </code></pre>
 <p>With an Instance for the dependency value:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void dependency_with_setter_with_instance()
         {
             var instance
@@ -288,6 +288,7 @@ that can be cast to the property type or an Instance object that returns a type 
             container.GetInstance&lt;GuyWithProperties&gt;(instance)
                 .Widget.ShouldBeOfType&lt;AWidget&gt;();
         }
+
 </code></pre>
 <h2>Add a Dependency for a Constructor Parameter</h2>
 <p>Likewise, you can add a dependency for a specific constructor parameter as either the actual value or an Instance object with the <code>AddForConstructorParameter</code> helper method:</p>
@@ -302,7 +303,7 @@ that can be cast to the property type or an Instance object that returns a type 
             }
         }
 
-        [Test]
+        [Fact]
         public void specify_dependency_by_constructor_parameter()
         {
             var instance = ConstructorInstance
@@ -311,16 +312,16 @@ that can be cast to the property type or an Instance object that returns a type 
             var parameter = instance.Constructor.GetParameters().Single();
             parameter.Name.ShouldBe(&quot;connectionString&quot;);
 
-            var connString = 
+            var connString =
                 &quot;I haven&#39;t used sql server in years and I don&#39;t remember what connection strings look like&quot;;
 
             instance.Dependencies.AddForConstructorParameter(parameter, connString);
-
 
             var guy = new Container().GetInstance&lt;GuyWithDatabaseConnection&gt;(instance);
 
             guy.ConnectionString.ShouldBe(connString);
         }
+
 </code></pre>
 <h2>Adding Interceptors</h2>
 <p>You can add interceptors directly to a single <code>IConfiguredInstance</code> with code like this:</p>
@@ -336,10 +337,10 @@ that can be cast to the property type or an Instance object that returns a type 
             }
         }
 
-        [Test]
+        [Fact]
         public void add_interceptor()
         {
-            var interceptor = 
+            var interceptor =
                 new ActivatorInterceptor&lt;SimpleWidget&gt;(w =&gt; w.Intercept());
             var instance = new SmartInstance&lt;SimpleWidget&gt;();
 
@@ -348,29 +349,30 @@ that can be cast to the property type or an Instance object that returns a type 
             new Container().GetInstance&lt;SimpleWidget&gt;(instance)
                 .WasIntercepted.ShouldBeTrue();
         }
+
 </code></pre>
 <p>See <a href="/interception-and-decorators">Interception and Decorators</a> for more information.</p>
 
 
-			      	</div>
+                      </div>
 
-			      	<hr />
+                      <hr />
 
-			      	<nav>
-				        <span>
-				        	<strong>Previous: </strong><a href="/registration/auto-registration-and-conventions">Auto-Registration and Conventions</a>
+                      <nav>
+                        <span>
+                            <strong>Previous: </strong><a href="/registration/auto-registration-and-conventions">Auto-Registration and Conventions</a>
 
-				        </span>
-				        <span class="pull-right">
+                        </span>
+                        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/registration/policies">Construction Policies</a>
+                            <strong>Next: </strong><a href="/registration/policies">Construction Policies</a>
 
-				        </span>
-			      	</nav>
+                        </span>
+                      </nav>
 
-		      </div><!--/right-->
-		  	</div><!--/row-->
-		</div><!--/container-->
+              </div><!--/right-->
+              </div><!--/row-->
+        </div><!--/container-->
 
 
     </body>
@@ -404,7 +406,7 @@ $('#search').keyup(function(e){
 
 
 
-}); 
+});
 
 </script>
     </foot>

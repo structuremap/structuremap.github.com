@@ -1,96 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>StructureMap - Profiles and Child Containers</title>
-		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
-		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+        <title>StructureMap - Profiles and Child Containers</title>
+        <link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/content/prism.css" rel="stylesheet" type="text/css" />
+        <link href="/content/theme.css" rel="stylesheet" type="text/css" />
 
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
-
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="icon" type="image/x-icon" href="/content/images/structuremap-logo.ico">
+        <link rel="icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="72x72" href="/content/images/structuremap-logo-72x72.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="114x114" href="/content/images/structuremap-logo-114x114.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="144x144" href="/content/images/structuremap-logo-144x144.png">
 
         <!-- CSS code from Bootply.com editor -->
         <link href="/content/affix.css" rel="stylesheet" type="text/css" />
     </head>
-    
+
     <!-- HTML code from Bootply.com editor -->
-    
+
     <body  >
 
 <a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-        
+
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
-		  <div class="container">
-		    <div class="navbar-header">
-		      <a href="/" class="navbar-brand">StructureMap</a>
-		    </div>
-		    <nav class="collapse navbar-collapse" role="navigation">
-		      <ul class="nav navbar-nav pull-right">
+          <div class="container">
+            <div class="navbar-header">
+              <a href="/" class="navbar-brand">StructureMap</a>
+            </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+              <ul class="nav navbar-nav pull-right">
             <li>
               <a href="/quickstart">A Gentle Quickstart</a>
             </li>
-		        <li>
-		          <a href="/documentation">Documentation</a>
-		        </li>
+                <li>
+                  <a href="/documentation">Documentation</a>
+                </li>
             <li>
               <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
             </li>
-		        <li>
+                <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-		        </li>
-		      	<li><a href="/the-container/forwarding-requests-for-a-type-to-another-type" title="Registering a Single Instance Against Multiple PluginType's">Previous</a></li>
-		      	<li><a href="/the-container/nested-containers" title="Nested Containers (Per Request/Transaction)">Next</a></li>
-		      </ul>
+                </li>
+                  <li><a href="/the-container/forwarding-requests-for-a-type-to-another-type" title="Registering a Single Instance Against Multiple PluginType's">Previous</a></li>
+                  <li><a href="/the-container/nested-containers" title="Nested Containers (Per Request/Transaction)">Next</a></li>
+              </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
           <input id="search" type="search" class="form-control" placeholder="Search">
         </div>
       </div>
 
-		    </nav>
+            </nav>
 
-		  </div>
-		</nav>
+          </div>
+        </nav>
 
-		  <div class="container">
-		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/the-container">The Container</a></li><li class="active">Profiles and Child Containers</li></ol>
-		  	</nav>
-		  </div>
+          <div class="container">
+              <nav class="navbar-inverse">
+                  <ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/the-container">The Container</a></li><li class="active">Profiles and Child Containers</li></ol>
+              </nav>
+          </div>
 
-		<!--main-->
-		<div class="container">
-			<div class="row">
-		      <!--left-->
-		      
-		      <div class="col-md-3" id="leftCol">
-		      	<h3>StructureMap 4.1.0</h3>
-		      	<br />
+        <!--main-->
+        <div class="container">
+            <div class="row">
+              <!--left-->
 
-				<ul class="nav nav-stacked affix" id="sidebar">
+              <div class="col-md-3" id="leftCol">
+                <ul class="nav nav-stacked affix" id="sidebar">
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3 class="no-margin">Next</h3><p><a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a></p></li>
+                    <li><h3 class="no-margin">Previous</h3><a href="/the-container/forwarding-requests-for-a-type-to-another-type">Registering a Single Instance Against Multiple PluginType's</a></p></li>
+                </ul>
 
-		        </ul>
-		        	<h3 class="no-margin">Next</h3><p><a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/the-container/forwarding-requests-for-a-type-to-another-type">Registering a Single Instance Against Multiple PluginType's</a></p>
+              </div><!--/left-->
 
-		        </ul>
-		      </div><!--/left-->
-		      
-		      <!--right-->
-		      <div class="col-md-9">
-			      	<h1>Profiles and Child Containers <a href="https://github.com/structuremap/structuremap/blob/master/documentation/the-container/profiles-and-child-containers.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
-			      
-			      	<hr />
+              <!--right-->
+              <div class="col-md-9">
+                      <h1>Profiles and Child Containers <a href="https://github.com/structuremap/structuremap/blob/master/documentation/the-container/profiles-and-child-containers.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
 
-			      	<div id="main-pane">
-			      		<!--Title: Profiles and Child Containers-->
+                      <hr />
+
+                      <div id="main-pane">
+                          <!--Title: Profiles and Child Containers-->
 <!--Url: profiles-and-child-containers-->
 <div class="alert alert-info" role="alert"><i>Child Containers</i> are <b>not</b> interchangeable with <i>Nested Containers</i>. See <linkto:the-container/nested-containers]> for more information on nested containers.</div>
 <p>The single best source for information about the particulars of child container behavior is to look through the acceptance tests for <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Acceptance/child_containers.cs">child containers</a> and
@@ -99,7 +97,7 @@ from the code in GitHub.</p>
 <h2>Child Containers</h2>
 <p>The easiest way to explain a child container is to just show it in action:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void show_a_child_container_in_action()
         {
             var parent = new Container(_ =&gt;
@@ -127,6 +125,7 @@ from the code in GitHub.</p>
             child.GetInstance&lt;IWidget&gt;()
                 .ShouldBeOfType&lt;AWidget&gt;();
         }
+
 </code></pre>
 <p><em>Child Container's</em> are a mechanism to make a completely new <code>Container</code> that can override some of the parent <code>Container's</code> registrations but still
 fall back to the parent <code>Container</code> to fulfill any request that is not explicitly configured to the child container. The behavior of a child container
@@ -145,7 +144,7 @@ a way to vary StructureMap registrations by development environment as the code 
 servers to production. While that usage is still valid, it is probably more common to use profiles to define overrides for how StructureMap
 should resolve services in different modes of the application (connected vs offline) or different types of system users.</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void Add_default_instance_with_concrete_type()
         {
             IContainer container = new Container(registry =&gt;
@@ -162,12 +161,13 @@ should resolve services in different modes of the application (connected vs offl
             profile.GetInstance&lt;IWidget&gt;().ShouldBeOfType&lt;AWidget&gt;();
             profile.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;DefaultRule&gt;();
         }
+
 </code></pre>
 <h2>Child Containers and Singletons</h2>
 <p>If you register a new <code>Instance</code> directly to a child container, that registration is really scoped as a
 singleton within the usage of that particular child container:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void singletons_to_child_container_are_isolated()
         {
             var parentContainer = new Container(_ =&gt;
@@ -195,13 +195,14 @@ singleton within the usage of that particular child container:</p>
 
             // but, child1 and child2 both have a different IRoot
             child1.GetInstance&lt;IRoot&gt;()
-                .ShouldNotBeTheSameAs(child2);
+                .ShouldNotBeTheSameAs(child2.GetInstance&lt;IRoot&gt;());
         }
+
 </code></pre>
 <h2>Creating a Nested Container from a Child Container</h2>
 <p>It is perfectly valid to create a nested container from a child container for short-lived requests or transactions:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void nested_container_from_child()
         {
             var parent = new Container(_ =&gt;
@@ -224,6 +225,7 @@ singleton within the usage of that particular child container:</p>
                     .ShouldBeOfType&lt;ChildSpecialService&gt;();
             }
         }
+
 </code></pre>
 <h2>Example: Child Containers in Automated Testing</h2>
 <p>My shop has been somewhat successful in writing automated integration tests in a <a href="https://en.wikipedia.org/wiki/White-box_testing">whitebox testing style</a>
@@ -241,7 +243,7 @@ swap in stubs without impacting other tests in the test suite.</p>
 
         public class StubbedService : IService { }
 
-        [Test]
+        [Fact]
         public void in_testing()
         {
             var container = new Container(_ =&gt;
@@ -259,28 +261,29 @@ swap in stubs without impacting other tests in the test suite.</p>
             // Now, continue with the test resolving application
             // services through the new child container....
         }
+
 </code></pre>
 
 
-			      	</div>
+                      </div>
 
-			      	<hr />
+                      <hr />
 
-			      	<nav>
-				        <span>
-				        	<strong>Previous: </strong><a href="/the-container/forwarding-requests-for-a-type-to-another-type">Registering a Single Instance Against Multiple PluginType's</a>
+                      <nav>
+                        <span>
+                            <strong>Previous: </strong><a href="/the-container/forwarding-requests-for-a-type-to-another-type">Registering a Single Instance Against Multiple PluginType's</a>
 
-				        </span>
-				        <span class="pull-right">
+                        </span>
+                        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a>
+                            <strong>Next: </strong><a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a>
 
-				        </span>
-			      	</nav>
+                        </span>
+                      </nav>
 
-		      </div><!--/right-->
-		  	</div><!--/row-->
-		</div><!--/container-->
+              </div><!--/right-->
+              </div><!--/row-->
+        </div><!--/container-->
 
 
     </body>
@@ -314,7 +317,7 @@ $('#search').keyup(function(e){
 
 
 
-}); 
+});
 
 </script>
     </foot>

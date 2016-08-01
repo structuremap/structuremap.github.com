@@ -1,96 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>StructureMap - Interception and Decorators</title>
-		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
-		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+        <title>StructureMap - Interception and Decorators</title>
+        <link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/content/prism.css" rel="stylesheet" type="text/css" />
+        <link href="/content/theme.css" rel="stylesheet" type="text/css" />
 
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
-
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="icon" type="image/x-icon" href="/content/images/structuremap-logo.ico">
+        <link rel="icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="72x72" href="/content/images/structuremap-logo-72x72.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="114x114" href="/content/images/structuremap-logo-114x114.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="144x144" href="/content/images/structuremap-logo-144x144.png">
 
         <!-- CSS code from Bootply.com editor -->
         <link href="/content/affix.css" rel="stylesheet" type="text/css" />
     </head>
-    
+
     <!-- HTML code from Bootply.com editor -->
-    
+
     <body  >
 
 <a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-        
+
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
-		  <div class="container">
-		    <div class="navbar-header">
-		      <a href="/" class="navbar-brand">StructureMap</a>
-		    </div>
-		    <nav class="collapse navbar-collapse" role="navigation">
-		      <ul class="nav navbar-nav pull-right">
+          <div class="container">
+            <div class="navbar-header">
+              <a href="/" class="navbar-brand">StructureMap</a>
+            </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+              <ul class="nav navbar-nav pull-right">
             <li>
               <a href="/quickstart">A Gentle Quickstart</a>
             </li>
-		        <li>
-		          <a href="/documentation">Documentation</a>
-		        </li>
+                <li>
+                  <a href="/documentation">Documentation</a>
+                </li>
             <li>
               <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
             </li>
-		        <li>
+                <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-		        </li>
-		      	<li><a href="/generics" title="Generic Types">Previous</a></li>
-		      	<li><a href="/interpreting-exceptions" title="Interpreting Exceptions">Next</a></li>
-		      </ul>
+                </li>
+                  <li><a href="/generics" title="Generic Types">Previous</a></li>
+                  <li><a href="/interpreting-exceptions" title="Interpreting Exceptions">Next</a></li>
+              </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
           <input id="search" type="search" class="form-control" placeholder="Search">
         </div>
       </div>
 
-		    </nav>
+            </nav>
 
-		  </div>
-		</nav>
+          </div>
+        </nav>
 
-		  <div class="container">
-		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li class="active">Interception and Decorators</li></ol>
-		  	</nav>
-		  </div>
+          <div class="container">
+              <nav class="navbar-inverse">
+                  <ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li class="active">Interception and Decorators</li></ol>
+              </nav>
+          </div>
 
-		<!--main-->
-		<div class="container">
-			<div class="row">
-		      <!--left-->
-		      
-		      <div class="col-md-3" id="leftCol">
-		      	<h3>StructureMap 4.1.0</h3>
-		      	<br />
+        <!--main-->
+        <div class="container">
+            <div class="row">
+              <!--left-->
 
-				<ul class="nav nav-stacked affix" id="sidebar">
+              <div class="col-md-3" id="leftCol">
+                <ul class="nav nav-stacked affix" id="sidebar">
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3 class="no-margin">Next</h3><p><a href="/interpreting-exceptions">Interpreting Exceptions</a></p></li>
+                    <li><h3 class="no-margin">Previous</h3><a href="/generics">Generic Types</a></p></li>
+                </ul>
 
-		        </ul>
-		        	<h3 class="no-margin">Next</h3><p><a href="/interpreting-exceptions">Interpreting Exceptions</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/generics">Generic Types</a></p>
+              </div><!--/left-->
 
-		        </ul>
-		      </div><!--/left-->
-		      
-		      <!--right-->
-		      <div class="col-md-9">
-			      	<h1>Interception and Decorators <a href="https://github.com/structuremap/structuremap/blob/master/documentation/interception-and-decorators.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
-			      
-			      	<hr />
+              <!--right-->
+              <div class="col-md-9">
+                      <h1>Interception and Decorators <a href="https://github.com/structuremap/structuremap/blob/master/documentation/interception-and-decorators.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
 
-			      	<div id="main-pane">
-			      		<!--Title: Interception and Decorators-->
+                      <hr />
+
+                      <div id="main-pane">
+                          <!--Title: Interception and Decorators-->
 <!--Url: interception-and-decorators-->
 <p>All of the samples from this topic are part of the <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Acceptance/interception_acceptance_tests.cs">user acceptance tests</a> in the main codebase. There is also another example of using an interception policy with
 open generic types at the bottom of <a href="/generics">Generic Types</a></p>
@@ -149,10 +147,11 @@ acceptance tests:</p>
             get { return _inner; }
         }
     }
+
 </code></pre>
 <p>Now, to see the decorator mechanism in action:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void decorator_example()
         {
             var container = new Container(_ =&gt;
@@ -168,6 +167,7 @@ acceptance tests:</p>
                 .ShouldBeOfType&lt;WidgetHolder&gt;()
                 .Inner.ShouldBeOfType&lt;AWidget&gt;();
         }
+
 </code></pre>
 <p>In effect, doing a decorator this way has the same effect (and build plan) as:</p>
 <pre><code class="language-csharp">
@@ -226,18 +226,19 @@ like this one:</p>
 
         public IEnumerable&lt;IInterceptor&gt; DetermineInterceptors(Type pluginType, Instance instance)
         {
-            if (pluginType == typeof (IWidget))
+            if (pluginType == typeof(IWidget))
             {
                 // DecoratorInterceptor is the simple case of wrapping one type with another
                 // concrete type that takes the first as a dependency
-                yield return new DecoratorInterceptor(typeof (IWidget), typeof (WidgetHolder));
+                yield return new DecoratorInterceptor(typeof(IWidget), typeof(WidgetHolder));
             }
         }
     }
+
 </code></pre>
 <p>To use this custom interception policy, use the <code>Policies.Interceptor()</code> methods like this example:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void use_a_custom_interception_policy()
         {
             var container = new Container(x =&gt;
@@ -251,6 +252,7 @@ like this one:</p>
                 .ShouldBeOfType&lt;WidgetHolder&gt;()
                 .Inner.ShouldBeOfType&lt;AWidget&gt;();
         }
+
 </code></pre>
 <p>As a helper for creating your own interception policies, you can also use the <code>InterceptorPolicy&lt;T&gt;</code> base class
 to conventionally apply some sort of <code>IInterceptor</code> to any number of <code>Instance's</code>:</p>
@@ -259,7 +261,7 @@ to conventionally apply some sort of <code>IInterceptor</code> to any number of 
 </code></pre>
 <p>Here's an example of <code>InterceptorPolicy&lt;T&gt;</code> in usage from the acceptance tests:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void apply_policy_selectively_with_a_func()
         {
             var activator1 = new ActivatorInterceptor&lt;ITarget&gt;(x =&gt; x.Activate());
@@ -301,6 +303,7 @@ to conventionally apply some sort of <code>IInterceptor</code> to any number of 
                 throw new NotImplementedException();
             }
         }
+
 </code></pre>
 <p>Some quick things to note:</p>
 <ol>
@@ -321,18 +324,20 @@ cast to <code>T</code></li>
             Activated = true;
         }
     }
+
 </code></pre>
 <p>An implementation of <code>Activateable</code> from StructureMap's unit tests is shown below:</p>
 <pre><code class="language-csharp">
     public class AWidget : Activateable, IWidget
     {
     }
+
 </code></pre>
 <p>If you decide that you'd like StructureMap to call the <code>Activate()</code> method on any object it creates as
 part of its object creation and resolution process, we can register an interception policy in a <code>Registry</code>
 like this:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void activate_by_action()
         {
             var container = new Container(x =&gt;
@@ -346,13 +351,14 @@ like this:</p>
                 .ShouldBeOfType&lt;AWidget&gt;()
                 .Activated.ShouldBeTrue();
         }
+
 </code></pre>
 <p>There are several overloads of <code>OnCreationForAll()</code> covering cases with and without <code>IContext</code></p>
 <h2>Apply Decoration across a Plugin Type</h2>
 <p>As shown above, you can use the <code>Registry.For&lt;T&gt;().DecorateAllWith&lt;TDecorator&gt;()</code> to apply decorators to all <code>Instance's</code>
 registered to a <code>Plugin Type</code>:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void decorate_with_type()
         {
             var container = new Container(x =&gt;
@@ -366,6 +372,7 @@ registered to a <code>Plugin Type</code>:</p>
                 .Inner
                 .ShouldBeOfType&lt;AWidget&gt;();
         }
+
 </code></pre>
 <p>There are also several other overloads of <code>DecorateAllWith()</code> for user supplied expressions, filters, and descriptions. See the
 <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Acceptance/interception_acceptance_tests.cs">acceptance tests for interception</a> in the StructureMap codebase for many more sample usages.</p>
@@ -377,7 +384,6 @@ usage from StructureMap's unit tests on interception:</p>
             _container = new Container(r =&gt;
             {
                 r.For&lt;ContextRecorder&gt;().Use(recorder);
-
 
                 r.For&lt;IService&gt;().AddInstances(x =&gt;
                 {
@@ -419,30 +425,30 @@ usage from StructureMap's unit tests on interception:</p>
                         .Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;Orange&quot;);
 
                     x.Object(new ColorService(&quot;Yellow&quot;)).Named(&quot;Bad&quot;)
-                        .OnCreation(&quot;throw exception&quot;, obj =&gt; { throw new ApplicationException(&quot;Bad!&quot;); });
+                        .OnCreation(&quot;throw exception&quot;, obj =&gt; { throw new Exception(&quot;Bad!&quot;); });
                 });
 </code></pre>
 
 
-			      	</div>
+                      </div>
 
-			      	<hr />
+                      <hr />
 
-			      	<nav>
-				        <span>
-				        	<strong>Previous: </strong><a href="/generics">Generic Types</a>
+                      <nav>
+                        <span>
+                            <strong>Previous: </strong><a href="/generics">Generic Types</a>
 
-				        </span>
-				        <span class="pull-right">
+                        </span>
+                        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/interpreting-exceptions">Interpreting Exceptions</a>
+                            <strong>Next: </strong><a href="/interpreting-exceptions">Interpreting Exceptions</a>
 
-				        </span>
-			      	</nav>
+                        </span>
+                      </nav>
 
-		      </div><!--/right-->
-		  	</div><!--/row-->
-		</div><!--/container-->
+              </div><!--/right-->
+              </div><!--/row-->
+        </div><!--/container-->
 
 
     </body>
@@ -476,7 +482,7 @@ $('#search').keyup(function(e){
 
 
 
-}); 
+});
 
 </script>
     </foot>

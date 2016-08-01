@@ -1,96 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>StructureMap - Working with Enumerable Types</title>
-		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
-		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+        <title>StructureMap - Working with Enumerable Types</title>
+        <link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/content/prism.css" rel="stylesheet" type="text/css" />
+        <link href="/content/theme.css" rel="stylesheet" type="text/css" />
 
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
-
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="icon" type="image/x-icon" href="/content/images/structuremap-logo.ico">
+        <link rel="icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="72x72" href="/content/images/structuremap-logo-72x72.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="114x114" href="/content/images/structuremap-logo-114x114.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="144x144" href="/content/images/structuremap-logo-144x144.png">
 
         <!-- CSS code from Bootply.com editor -->
         <link href="/content/affix.css" rel="stylesheet" type="text/css" />
     </head>
-    
+
     <!-- HTML code from Bootply.com editor -->
-    
+
     <body  >
 
 <a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-        
+
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
-		  <div class="container">
-		    <div class="navbar-header">
-		      <a href="/" class="navbar-brand">StructureMap</a>
-		    </div>
-		    <nav class="collapse navbar-collapse" role="navigation">
-		      <ul class="nav navbar-nav pull-right">
+          <div class="container">
+            <div class="navbar-header">
+              <a href="/" class="navbar-brand">StructureMap</a>
+            </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+              <ul class="nav navbar-nav pull-right">
             <li>
               <a href="/quickstart">A Gentle Quickstart</a>
             </li>
-		        <li>
-		          <a href="/documentation">Documentation</a>
-		        </li>
+                <li>
+                  <a href="/documentation">Documentation</a>
+                </li>
             <li>
               <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
             </li>
-		        <li>
+                <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-		        </li>
-		      	<li><a href="/the-container/nested-containers" title="Nested Containers (Per Request/Transaction)">Previous</a></li>
-		      	<li><a href="/the-container/handling-missing-named-instances" title="Handling Missing Named Instances">Next</a></li>
-		      </ul>
+                </li>
+                  <li><a href="/the-container/nested-containers" title="Nested Containers (Per Request/Transaction)">Previous</a></li>
+                  <li><a href="/the-container/handling-missing-named-instances" title="Handling Missing Named Instances">Next</a></li>
+              </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
           <input id="search" type="search" class="form-control" placeholder="Search">
         </div>
       </div>
 
-		    </nav>
+            </nav>
 
-		  </div>
-		</nav>
+          </div>
+        </nav>
 
-		  <div class="container">
-		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/the-container">The Container</a></li><li class="active">Working with Enumerable Types</li></ol>
-		  	</nav>
-		  </div>
+          <div class="container">
+              <nav class="navbar-inverse">
+                  <ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/the-container">The Container</a></li><li class="active">Working with Enumerable Types</li></ol>
+              </nav>
+          </div>
 
-		<!--main-->
-		<div class="container">
-			<div class="row">
-		      <!--left-->
-		      
-		      <div class="col-md-3" id="leftCol">
-		      	<h3>StructureMap 4.1.0</h3>
-		      	<br />
+        <!--main-->
+        <div class="container">
+            <div class="row">
+              <!--left-->
 
-				<ul class="nav nav-stacked affix" id="sidebar">
+              <div class="col-md-3" id="leftCol">
+                <ul class="nav nav-stacked affix" id="sidebar">
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3 class="no-margin">Next</h3><p><a href="/the-container/handling-missing-named-instances">Handling Missing Named Instances</a></p></li>
+                    <li><h3 class="no-margin">Previous</h3><a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a></p></li>
+                </ul>
 
-		        </ul>
-		        	<h3 class="no-margin">Next</h3><p><a href="/the-container/handling-missing-named-instances">Handling Missing Named Instances</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a></p>
+              </div><!--/left-->
 
-		        </ul>
-		      </div><!--/left-->
-		      
-		      <!--right-->
-		      <div class="col-md-9">
-			      	<h1>Working with Enumerable Types <a href="https://github.com/structuremap/structuremap/blob/master/documentation/the-container/working-with-enumerable-types.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
-			      
-			      	<hr />
+              <!--right-->
+              <div class="col-md-9">
+                      <h1>Working with Enumerable Types <a href="https://github.com/structuremap/structuremap/blob/master/documentation/the-container/working-with-enumerable-types.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
 
-			      	<div id="main-pane">
-			      		<!--Title: Working with Enumerable Types-->
+                      <hr />
+
+                      <div id="main-pane">
+                          <!--Title: Working with Enumerable Types-->
 <!--Url: working-with-enumerable-types-->
 <p>While you can certainly use <em>any</em> <code>IEnumerable</code> type as a plugin type with your own explicit configuration,
 StructureMap has <em>some</em> built in support for these specific enumerable types:</p>
@@ -108,10 +106,10 @@ of <code>IWidget</code> <strong>in the exact order that the registrations were m
 <p>Note, if there are not any registrations for whatever <code>T</code> is, you'll get an empty enumeration.</p>
 <p>Here's an acceptance test from the StructureMap codebase that demonstrates this:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void collection_types_are_all_possible_by_default()
         {
-            // NOTE that we do NOT make any explicit registration of 
+            // NOTE that we do NOT make any explicit registration of
             // IList&lt;IWidget&gt;, IEnumerable&lt;IWidget&gt;, ICollection&lt;IWidget&gt;, or IWidget[]
             var container = new Container(_ =&gt;
             {
@@ -123,23 +121,23 @@ of <code>IWidget</code> <strong>in the exact order that the registrations were m
             // IList&lt;T&gt;
             container.GetInstance&lt;IList&lt;IWidget&gt;&gt;()
                 .Select(x =&gt; x.GetType())
-                .ShouldHaveTheSameElementsAs(typeof (AWidget), typeof (BWidget), typeof (CWidget));
+                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
 
             // ICollection&lt;T&gt;
             container.GetInstance&lt;ICollection&lt;IWidget&gt;&gt;()
                 .Select(x =&gt; x.GetType())
-                .ShouldHaveTheSameElementsAs(typeof (AWidget), typeof (BWidget), typeof (CWidget));
+                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
 
             // Array of T
             container.GetInstance&lt;IWidget[]&gt;()
                 .Select(x =&gt; x.GetType())
-                .ShouldHaveTheSameElementsAs(typeof (AWidget), typeof (BWidget), typeof (CWidget));
+                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
         }
 
 </code></pre>
 <p>And another showing how you can override this behavior with explicit configuration:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void override_enumeration_behavior()
         {
             var container = new Container(_ =&gt;
@@ -150,12 +148,13 @@ of <code>IWidget</code> <strong>in the exact order that the registrations were m
 
                 // Explicit registration should have precedence over the default
                 // behavior
-                _.For&lt;IWidget[]&gt;().Use(new IWidget[] {new DefaultWidget()});
+                _.For&lt;IWidget[]&gt;().Use(new IWidget[] { new DefaultWidget() });
             });
 
             container.GetInstance&lt;IWidget[]&gt;()
                 .Single().ShouldBeOfType&lt;DefaultWidget&gt;();
         }
+
 </code></pre>
 <h2>Sample Usage: Validation Rules</h2>
 <p>One of the ways that I have used the built in <code>IEnumerable</code> handling is for extensible validation rules. Say that we are
@@ -182,13 +181,13 @@ series of rules that we might model with the <code>IWidgetValidator</code> inter
                 var validationMessages = _validators.SelectMany(x =&gt; x.Validate(widget))
                     .ToArray();
 
-
                 if (validationMessages.Any())
                 {
                     // don&#39;t process the widget
                 }
             }
         }
+
 </code></pre>
 <p>We <em>could</em> simply configure all of the <code>IWidgetValidator</code> rules in one place with an explicit registration of <code>IEnumerable&lt;IWidgetValidator&gt;</code>,
 but what if we need to have an extensibility to add more validation rules later? What if we want to add these additional rules in addon packages? Or we
@@ -196,25 +195,25 @@ just don't want to continuously break into the centralized <code>Registry</code>
 <p>By relying on StructureMap's <code>IEnumerable</code> behavior, we're able to split our <code>IWidgetValidatior</code> registration across multiple <code>Registry</code> classes and that's not infrequently useful to do.</p>
 
 
-			      	</div>
+                      </div>
 
-			      	<hr />
+                      <hr />
 
-			      	<nav>
-				        <span>
-				        	<strong>Previous: </strong><a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a>
+                      <nav>
+                        <span>
+                            <strong>Previous: </strong><a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a>
 
-				        </span>
-				        <span class="pull-right">
+                        </span>
+                        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/the-container/handling-missing-named-instances">Handling Missing Named Instances</a>
+                            <strong>Next: </strong><a href="/the-container/handling-missing-named-instances">Handling Missing Named Instances</a>
 
-				        </span>
-			      	</nav>
+                        </span>
+                      </nav>
 
-		      </div><!--/right-->
-		  	</div><!--/row-->
-		</div><!--/container-->
+              </div><!--/right-->
+              </div><!--/row-->
+        </div><!--/container-->
 
 
     </body>
@@ -248,7 +247,7 @@ $('#search').keyup(function(e){
 
 
 
-}); 
+});
 
 </script>
     </foot>

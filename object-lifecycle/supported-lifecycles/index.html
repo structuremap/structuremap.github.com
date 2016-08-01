@@ -1,96 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
         <meta name="generator" content="Bootply" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-		<title>StructureMap - Supported Lifecycles</title>
-		<link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-		<link href="/content/prism.css" rel="stylesheet" type="text/css" />
-		<link href="/content/theme.css" rel="stylesheet" type="text/css" />
+        <title>StructureMap - Supported Lifecycles</title>
+        <link href="/content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="/content/prism.css" rel="stylesheet" type="text/css" />
+        <link href="/content/theme.css" rel="stylesheet" type="text/css" />
 
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
-        <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
-
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="icon" type="image/x-icon" href="/content/images/structuremap-logo.ico">
+        <link rel="icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" href="/content/images/structuremap-logo-60x60.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="72x72" href="/content/images/structuremap-logo-72x72.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="114x114" href="/content/images/structuremap-logo-114x114.png">
+        <link rel="apple-touch-icon" type="image/png" sizes="144x144" href="/content/images/structuremap-logo-144x144.png">
 
         <!-- CSS code from Bootply.com editor -->
         <link href="/content/affix.css" rel="stylesheet" type="text/css" />
     </head>
-    
+
     <!-- HTML code from Bootply.com editor -->
-    
+
     <body  >
 
 <a href="https://github.com/structuremap/structuremap"><img style="z-index: 5000; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>
-        
+
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
-		  <div class="container">
-		    <div class="navbar-header">
-		      <a href="/" class="navbar-brand">StructureMap</a>
-		    </div>
-		    <nav class="collapse navbar-collapse" role="navigation">
-		      <ul class="nav navbar-nav pull-right">
+          <div class="container">
+            <div class="navbar-header">
+              <a href="/" class="navbar-brand">StructureMap</a>
+            </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+              <ul class="nav navbar-nav pull-right">
             <li>
               <a href="/quickstart">A Gentle Quickstart</a>
             </li>
-		        <li>
-		          <a href="/documentation">Documentation</a>
-		        </li>
+                <li>
+                  <a href="/documentation">Documentation</a>
+                </li>
             <li>
               <a href="https://groups.google.com/forum/#!forum/structuremap-users">Google Group</a>
             </li>
-		        <li>
+                <li>
 <a href="https://gitter.im/structuremap/structuremap?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://camo.githubusercontent.com/da2edb525cde1455a622c58c0effc3a90b9a181c/68747470733a2f2f6261646765732e6769747465722e696d2f4a6f696e253230436861742e737667" alt="Join the chat at https://gitter.im/structuremap/structuremap" data-canonical-src="https://badges.gitter.im/Join%20Chat.svg" style="max-width:100%;"></a>
-		        </li>
-		      	<li><a href="/object-lifecycle" title="Object Lifecycles">Previous</a></li>
-		      	<li><a href="/object-lifecycle/configuring-lifecycles" title="Configuring Lifecycles">Next</a></li>
-		      </ul>
+                </li>
+                  <li><a href="/object-lifecycle" title="Object Lifecycles">Previous</a></li>
+                  <li><a href="/object-lifecycle/configuring-lifecycles" title="Configuring Lifecycles">Next</a></li>
+              </ul>
       <div class="navbar-form navbar-left" role="search">
         <div class="form-group">
           <input id="search" type="search" class="form-control" placeholder="Search">
         </div>
       </div>
 
-		    </nav>
+            </nav>
 
-		  </div>
-		</nav>
+          </div>
+        </nav>
 
-		  <div class="container">
-		  	<nav class="navbar-inverse">
-		  		<ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/object-lifecycle">Object Lifecycles</a></li><li class="active">Supported Lifecycles</li></ol>
-		  	</nav>
-		  </div>
+          <div class="container">
+              <nav class="navbar-inverse">
+                  <ol class="breadcrumb"><li><a href="/">StructureMap</a></li><li><a href="/object-lifecycle">Object Lifecycles</a></li><li class="active">Supported Lifecycles</li></ol>
+              </nav>
+          </div>
 
-		<!--main-->
-		<div class="container">
-			<div class="row">
-		      <!--left-->
-		      
-		      <div class="col-md-3" id="leftCol">
-		      	<h3>StructureMap 4.1.0</h3>
-		      	<br />
+        <!--main-->
+        <div class="container">
+            <div class="row">
+              <!--left-->
 
-				<ul class="nav nav-stacked affix" id="sidebar">
+              <div class="col-md-3" id="leftCol">
+                <ul class="nav nav-stacked affix" id="sidebar">
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3 class="no-margin">Next</h3><p><a href="/object-lifecycle/configuring-lifecycles">Configuring Lifecycles</a></p></li>
+                    <li><h3 class="no-margin">Previous</h3><a href="/object-lifecycle">Object Lifecycles</a></p></li>
+                </ul>
 
-		        </ul>
-		        	<h3 class="no-margin">Next</h3><p><a href="/object-lifecycle/configuring-lifecycles">Configuring Lifecycles</a></p>
-		        	<h3 class="no-margin">Previous</h3><a href="/object-lifecycle">Object Lifecycles</a></p>
+              </div><!--/left-->
 
-		        </ul>
-		      </div><!--/left-->
-		      
-		      <!--right-->
-		      <div class="col-md-9">
-			      	<h1>Supported Lifecycles <a href="https://github.com/structuremap/structuremap/blob/master/documentation/object-lifecycle/supported-lifecycles.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
-			      
-			      	<hr />
+              <!--right-->
+              <div class="col-md-9">
+                      <h1>Supported Lifecycles <a href="https://github.com/structuremap/structuremap/blob/master/documentation/object-lifecycle/supported-lifecycles.md"  class="text-muted small pull-right fa fa-github" style="margin-top: 10px"> Edit on GitHub</a></h1>
 
-			      	<div id="main-pane">
-			      		<!--Title: Supported Lifecycles-->
+                      <hr />
+
+                      <div id="main-pane">
+                          <!--Title: Supported Lifecycles-->
 <!--Url: supported-lifecycles-->
 <p>Out of the box, the core StructureMap assembly supports these lifecycles:</p>
 <ul>
@@ -108,7 +106,7 @@ of the nested container itself. See <a href="/the-container/nested-containers">N
 <p><strong>StructureMap's behavior for transient objects that implement <code>IDisposable</code> changed in 4.0 to introduce an &quot;opt-in&quot; tracking mode.</strong> Please see <a href="/the-container/disposing">StructureMap and IDisposable</a> for the details.</p>
 <p>The following unit test demonstrates how <em>Transient</em> lifecycles work in both root and nested containers.</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void Transient()
         {
             var c = new Container(x =&gt; { x.For&lt;IService&gt;().Use&lt;Service&gt;().Transient(); });
@@ -120,7 +118,7 @@ of the nested container itself. See <a href="/the-container/nested-containers">N
                 .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;())
                 .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;());
 
-            // Within a nested container, &#39;Transient&#39; now 
+            // Within a nested container, &#39;Transient&#39; now
             // means within the Nested Container.
             // A nested container is effectively one request
             using (var nested = c.GetNestedContainer())
@@ -178,24 +176,24 @@ object graph with various objects that all need to apply some work to a shared <
             }
         }
 
-        [Test]
+        [Fact]
         public void transient_scoped_Instance_is_built_once_per_resolution_to_the_Container()
         {
             var container = new Container(_ =&gt; { _.For&lt;IUnitOfWork&gt;().Use&lt;DefaultUnitOfWork&gt;(); });
 
-            var cooridinator = container.GetInstance&lt;WorkerCoordinator&gt;();
+            var coordinator = container.GetInstance&lt;WorkerCoordinator&gt;();
 
             // The IUnitOfWork object instance is the same for
             // all the objects in the object graph that had
             // a constructor dependency on IUnitOfWork
-            cooridinator.Uow
-                .ShouldBeTheSameAs(cooridinator.Worker1.Uow);
+            coordinator.Uow
+                .ShouldBeTheSameAs(coordinator.Worker1.Uow);
 
-            cooridinator.Uow
-                .ShouldBeTheSameAs(cooridinator.Worker2.Uow);
+            coordinator.Uow
+                .ShouldBeTheSameAs(coordinator.Worker2.Uow);
 
-            cooridinator.Worker1.Uow
-                .ShouldBeTheSameAs(cooridinator.Worker2.Uow);
+            coordinator.Worker1.Uow
+                .ShouldBeTheSameAs(coordinator.Worker2.Uow);
         }
 
 </code></pre>
@@ -205,7 +203,7 @@ from a Container or as a dependency to another object. The <em>AlwaysUnique</em>
 <div class="alert alert-info" role="alert">The StructureMap team strongly feels that the default lifecycle is appropriate in most cases and that the <i>unique</i>
 lifecycle is mostly useful for logging services as demonstrated in the <a href="http://jeremydmiller.com/2014/08/12/structuremap-3-1/">StructureMap 3.1 announcement.</a></div>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void Always_Unique()
         {
             var c = new Container(x =&gt; { x.For&lt;IService&gt;().Use&lt;Service&gt;().AlwaysUnique(); });
@@ -217,7 +215,7 @@ lifecycle is mostly useful for logging services as demonstrated in the <a href="
                 .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;())
                 .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;());
 
-            // Within a nested container, &#39;Transient&#39; now 
+            // Within a nested container, &#39;Transient&#39; now
             // means within the Nested Container.
             // A nested container is effectively one request
             using (var nested = c.GetNestedContainer())
@@ -227,7 +225,7 @@ lifecycle is mostly useful for logging services as demonstrated in the <a href="
                     .ShouldNotBeTheSameAs(nested.GetInstance&lt;IService&gt;());
             }
 
-            // Even in a single request, 
+            // Even in a single request,
             var holder = c.GetInstance&lt;ServiceUserHolder&gt;();
             holder.Service.ShouldNotBeTheSameAs(holder.User.Service);
         }
@@ -236,7 +234,7 @@ lifecycle is mostly useful for logging services as demonstrated in the <a href="
 <h2>Singleton</h2>
 <p>StructureMap 3.0 fixed the <a href="https://github.com/structuremap/structuremap/issues/3">dreaded singletons with nested container's bug</a> that was so problematic in 2.6.</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void singletons_are_disposed_when_the_container_is_disposed()
         {
             var container = new Container(_ =&gt;
@@ -260,6 +258,7 @@ lifecycle is mostly useful for logging services as demonstrated in the <a href="
             // the SingletonThing scoped object should be disposed
             singleton.WasDisposed.ShouldBeTrue();
         }
+
 </code></pre>
 <p>Do note that objects created as the singleton scope will be disposed when the Container is disposed if they
 implement the <code>IDisposable</code> interface:</p>
@@ -306,24 +305,24 @@ implement the <code>IDisposable</code> interface:</p>
             }
         }
 
-        [Test]
+        [Fact]
         public void transient_scoped_Instance_is_built_once_per_resolution_to_the_Container()
         {
             var container = new Container(_ =&gt; { _.For&lt;IUnitOfWork&gt;().Use&lt;DefaultUnitOfWork&gt;(); });
 
-            var cooridinator = container.GetInstance&lt;WorkerCoordinator&gt;();
+            var coordinator = container.GetInstance&lt;WorkerCoordinator&gt;();
 
             // The IUnitOfWork object instance is the same for
             // all the objects in the object graph that had
             // a constructor dependency on IUnitOfWork
-            cooridinator.Uow
-                .ShouldBeTheSameAs(cooridinator.Worker1.Uow);
+            coordinator.Uow
+                .ShouldBeTheSameAs(coordinator.Worker1.Uow);
 
-            cooridinator.Uow
-                .ShouldBeTheSameAs(cooridinator.Worker2.Uow);
+            coordinator.Uow
+                .ShouldBeTheSameAs(coordinator.Worker2.Uow);
 
-            cooridinator.Worker1.Uow
-                .ShouldBeTheSameAs(cooridinator.Worker2.Uow);
+            coordinator.Worker1.Uow
+                .ShouldBeTheSameAs(coordinator.Worker2.Uow);
         }
 
 </code></pre>
@@ -333,7 +332,7 @@ implement the <code>IDisposable</code> interface:</p>
 container, and every single nested container will build its own object instance.</p>
 <p>The acceptance test for <code>ContainerScoped</code> is shown below:</p>
 <pre><code class="language-csharp">
-        [Test]
+        [Fact]
         public void container_scoping_with_root_child_and_nested_container()
         {
             var container = new Container(_ =&gt;
@@ -388,31 +387,26 @@ container, and every single nested container will build its own object instance.
             container.Dispose();
             mainDisposable.WasDisposed.ShouldBeTrue();
         }
+
 </code></pre>
 <h2>ThreadLocal</h2>
 <p>The ThreadLocalStorage based lifecycle is seldom used, but the easiest example of using it and explanation is the integration test:</p>
 <pre><code class="language-csharp">
-    [TestFixture]
+
     public class ThreadLocalStorageLifecycleTester
     {
-        #region Setup/Teardown
-
-        [SetUp]
-        public void SetUp()
+        public ThreadLocalStorageLifecycleTester()
         {
             _lifecycle = new ThreadLocalStorageLifecycle();
 
             container = new Container(x =&gt; x.For&lt;Rule&gt;(Lifecycles.ThreadLocal).Use(() =&gt; new ColorRule(&quot;Red&quot;)));
         }
 
-        #endregion
-
         private ThreadLocalStorageLifecycle _lifecycle;
         private ColorRule _rule1;
         private ColorRule _rule2;
         private ColorRule _rule3;
         private Container container;
-
 
         private void findRule1()
         {
@@ -447,7 +441,7 @@ container, and every single nested container will build its own object instance.
             _rule3.ShouldBeTheSameAs(rule);
         }
 
-        [Test]
+        [Fact]
         public void object_has_been_created()
         {
             container.Model.For&lt;Rule&gt;().Default.ObjectHasBeenCreated().ShouldBeFalse();
@@ -455,7 +449,7 @@ container, and every single nested container will build its own object instance.
             container.Model.For&lt;Rule&gt;().Default.ObjectHasBeenCreated().ShouldBeTrue();
         }
 
-        [Test]
+        [Fact]
         public void FindUniqueInstancePerThread()
         {
             var t1 = new Thread(findRule1);
@@ -490,45 +484,31 @@ container, and every single nested container will build its own object instance.
 <li>Hybrid -- uses ThreadLocalStorage in the absence of an active HttpContext</li>
 <li>HybridSession</li>
 </ul>
-<pre><code class="language-csharp">
-    public class AspNetRegistry : Registry
-    {
-        public AspNetRegistry()
-        {
-            For&lt;IWeirdThing&gt;().LifecycleIs&lt;HttpContextLifecycle&gt;();
-            For&lt;IGateway&gt;().LifecycleIs&lt;HybridLifecycle&gt;();
-            For&lt;IRule&gt;().LifecycleIs&lt;HttpSessionLifecycle&gt;();
-            For&lt;ICache&gt;().LifecycleIs&lt;HybridSessionLifecycle&gt;();
-        }
-    }
-
-</code></pre>
+<p class="bg-warning" style="padding:10px"><b>Missing code sample &#39;AspNet-Lifecycles&#39;</b><small> -- Wait for ST to catch up reading samples or CTRL+SHIFT+R to force refresh</small></p>
 <p>If you do use any of the HttpContext lifecycles, make sure you also do:</p>
-<pre><code class="language-csharp">
-            HttpContextLifecycle.DisposeAndClearAll();
-</code></pre> 
+<p class="bg-warning" style="padding:10px"><b>Missing code sample &#39;clean-up-http-context&#39;</b><small> -- Wait for ST to catch up reading samples or CTRL+SHIFT+R to force refresh</small></p> 
 <p>at the end of your HTTP request.</p>
 
 
-			      	</div>
+                      </div>
 
-			      	<hr />
+                      <hr />
 
-			      	<nav>
-				        <span>
-				        	<strong>Previous: </strong><a href="/object-lifecycle">Object Lifecycles</a>
+                      <nav>
+                        <span>
+                            <strong>Previous: </strong><a href="/object-lifecycle">Object Lifecycles</a>
 
-				        </span>
-				        <span class="pull-right">
+                        </span>
+                        <span class="pull-right">
 
-				        	<strong>Next: </strong><a href="/object-lifecycle/configuring-lifecycles">Configuring Lifecycles</a>
+                            <strong>Next: </strong><a href="/object-lifecycle/configuring-lifecycles">Configuring Lifecycles</a>
 
-				        </span>
-			      	</nav>
+                        </span>
+                      </nav>
 
-		      </div><!--/right-->
-		  	</div><!--/row-->
-		</div><!--/container-->
+              </div><!--/right-->
+              </div><!--/row-->
+        </div><!--/container-->
 
 
     </body>
@@ -562,7 +542,7 @@ $('#search').keyup(function(e){
 
 
 
-}); 
+});
 
 </script>
     </foot>
