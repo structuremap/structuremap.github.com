@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/registration/registry-dsl">Registry DSL</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/setter-injection">Setter Injection</a></p></li>
                 </ul>
@@ -94,48 +94,9 @@
 Container with both explicit registrations and conventional auto-registrations. StructureMap no longer supports Xml configuration or MEF-style attribute configuration -- but there is some facility for rolling your own attribute-based configuration support.</p>
 <p>The first step in using StructureMap is configuring a <code>Container</code> object. The following examples are based on the usage of the <a href="/registration/registry-dsl">Registry DSL</a>.</p>
 <p>Let's say that you have a simple set of services like this:</p>
-<pre><code class="language-csharp">
-    public interface IBar
-    {
-    }
-
-    public class Bar : IBar
-    {
-    }
-
-    public interface IFoo
-    {
-    }
-
-    public class Foo : IFoo
-    {
-        public IBar Bar { get; private set; }
-
-        public Foo(IBar bar)
-        {
-            Bar = bar;
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public interface IBar&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Bar : IBar&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public interface IFoo&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Foo : IFoo&#xD;&#xA;{&#xD;&#xA;    public IBar Bar { get; private set; }&#xD;&#xA;&#xD;&#xA;    public Foo(IBar bar)&#xD;&#xA;    {&#xD;&#xA;        Bar = bar;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>A simple configuration of a StructureMap Container might then be:</p>
-<pre><code class="language-csharp">
-// Example #1 - Create an container instance and directly pass in the configuration.
-            var container1 = new Container(c =&gt;
-            {
-                c.For&lt;IFoo&gt;().Use&lt;Foo&gt;();
-                c.For&lt;IBar&gt;().Use&lt;Bar&gt;();
-            });
-
-// Example #2 - Create an container instance but add configuration later.
-            var container2 = new Container();
-
-            container2.Configure(c =&gt;
-            {
-                c.For&lt;IFoo&gt;().Use&lt;Foo&gt;();
-                c.For&lt;IBar&gt;().Use&lt;Bar&gt;();
-            });
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;// Example #1 - Create an container instance and directly pass in the configuration.&#xD;&#xA;            var container1 = new Container(c =&gt;&#xD;&#xA;            {&#xD;&#xA;                c.For&lt;IFoo&gt;().Use&lt;Foo&gt;();&#xD;&#xA;                c.For&lt;IBar&gt;().Use&lt;Bar&gt;();&#xD;&#xA;            });&#xD;&#xA;&#xD;&#xA;// Example #2 - Create an container instance but add configuration later.&#xD;&#xA;            var container2 = new Container();&#xD;&#xA;&#xD;&#xA;            container2.Configure(c =&gt;&#xD;&#xA;            {&#xD;&#xA;                c.For&lt;IFoo&gt;().Use&lt;Foo&gt;();&#xD;&#xA;                c.For&lt;IBar&gt;().Use&lt;Bar&gt;();&#xD;&#xA;            });&#xD;&#xA;</code></pre>
 <p>Initializing or configuring the container is usually done at application startup and is located as close as possible to the application's entry point.
 This place is sometimes referred to as the composition root of the application.
 In our example we are composing our application's object graph by connecting abstractions to concrete types.</p>
@@ -143,64 +104,17 @@ In our example we are composing our application's object graph by connecting abs
 <p>The recommended way of using the <a href="/registration/registry-dsl">Registry DSL</a> is by defining one or more <code>Registry</code> classes. Typically, you would subclass the <code>Registry</code> class,
 then use the Fluent API methods exposed by the <code>Registry</code> class to describe a <code>Container</code> configuration.</p>
 <p>Here's a sample <code>Registry</code> class used to configure the same types as in our previous example:</p>
-<pre><code class="language-csharp">
-    public class FooBarRegistry : Registry
-    {
-        public FooBarRegistry()
-        {
-            For&lt;IFoo&gt;().Use&lt;Foo&gt;();
-            For&lt;IBar&gt;().Use&lt;Bar&gt;();
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class FooBarRegistry : Registry&#xD;&#xA;{&#xD;&#xA;    public FooBarRegistry()&#xD;&#xA;    {&#xD;&#xA;        For&lt;IFoo&gt;().Use&lt;Foo&gt;();&#xD;&#xA;        For&lt;IBar&gt;().Use&lt;Bar&gt;();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>When you set up a <code>Container</code> , you need to simply direct the <code>Container</code> to use the configuration in that <code>Registry</code> class.</p>
-<pre><code class="language-csharp">
-// Example #1
-            var container1 = new Container(new FooBarRegistry());
-
-// Example #2
-            var container2 = new Container(c =&gt; { c.AddRegistry&lt;FooBarRegistry&gt;(); });
-
-// Example #3 -- create a container for a single Registry
-            var container3 = Container.For&lt;FooBarRegistry&gt;();
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;// Example #1&#xD;&#xA;            var container1 = new Container(new FooBarRegistry());&#xD;&#xA;&#xD;&#xA;// Example #2&#xD;&#xA;            var container2 = new Container(c =&gt; { c.AddRegistry&lt;FooBarRegistry&gt;(); });&#xD;&#xA;&#xD;&#xA;// Example #3 -- create a container for a single Registry&#xD;&#xA;            var container3 = Container.For&lt;FooBarRegistry&gt;();&#xD;&#xA;</code></pre>
 <div class="alert alert-info" role="alert">The StructureMap team highly recommends using `Registry` classes for your real application configuration.  The syntax is shorter inside the Registry class constructor than from within the `Container` constructor method. In addition, Registry classes can be used to modularize the configuration of a bigger application into more manageable chunks.  Lastly, using `Registry` classes makes it easier to stand up additional `Container` objects in testing scenarios that reflect the real application composition.</div>
 <p>In real world applications you also have to deal with repetitive similar registrations. Such registrations are tedious, easy to forget and can be a weak spot in your application. StructureMap provides <a href="/registration/auto-registration-and-conventions">Auto-Registration and Conventions</a>  which mitigates this pain and eases the maintenance burden. StructureMap exposes this feature through the <a href="/registration/registry-dsl">Registry DSL</a> by the <code>Scan</code> method.</p>
 <p>In our example there is an reoccuring pattern, we are connecting the plugin type <code>ISomething</code> to a concrete type <code>Something</code>, meaning <code>IFoo</code> to <code>Foo</code> and <code>IBar</code> to <code>Bar</code>. Wouldn't it be cool if we could write a convention for exactly doing that? Fortunatly StructureMap has already one build in. Let's see how we can create an container with the same configuration as in the above examples.</p>
-<pre><code class="language-csharp">
-// Example #1
-            var container1 = new Container(c =&gt;
-                c.Scan(scanner =&gt;
-                {
-                    scanner.TheCallingAssembly();
-                    scanner.WithDefaultConventions();
-                }));
-
-// Example #2
-            var container2 = new Container();
-
-            container2.Configure(c =&gt;
-                c.Scan(scanner =&gt;
-                {
-                    scanner.TheCallingAssembly();
-                    scanner.WithDefaultConventions();
-                }));
-
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;// Example #1&#xD;&#xA;            var container1 = new Container(c =&gt;&#xD;&#xA;                c.Scan(scanner =&gt;&#xD;&#xA;                {&#xD;&#xA;                    scanner.TheCallingAssembly();&#xD;&#xA;                    scanner.WithDefaultConventions();&#xD;&#xA;                }));&#xD;&#xA;&#xD;&#xA;// Example #2&#xD;&#xA;            var container2 = new Container();&#xD;&#xA;&#xD;&#xA;            container2.Configure(c =&gt;&#xD;&#xA;                c.Scan(scanner =&gt;&#xD;&#xA;                {&#xD;&#xA;                    scanner.TheCallingAssembly();&#xD;&#xA;                    scanner.WithDefaultConventions();&#xD;&#xA;                }));&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>We instruct the scanner to scan through the calling assembly with default conventions on. This will find and register the default instance for <code>IFoo</code> and <code>IBar</code> which are obviously the concrete types <code>Foo</code> and <code>Bar</code>. Now whenever you add an additional interface <code>IMoreFoo</code> and a class <code>MoreFoo</code> to your application's code base, it's automatically picked up by the scanner.</p>
 <p>Sometimes classes need to be supplied with some primitive value in its constructor. For example the <code>System.Data.SqlClient.SqlConnection</code> needs to be supplied with the connection string in its constructor. No problem, just set up the value of the constructor argument in the bootstrapping:</p>
-<pre><code class="language-csharp">
-            var container = new Container(c =&gt;
-            {
-                //just for demo purposes, normally you don&#39;t want to embed the connection string directly into code.
-                c.For&lt;IDbConnection&gt;().Use&lt;SqlConnection&gt;().Ctor&lt;string&gt;().Is(&quot;YOUR_CONNECTION_STRING&quot;);
-                //a better way would be providing a delegate that retrieves the value from your app config.    
-            });
-</code></pre>
-<p>So far you have seen an couple of ways to work with the &lt;linkto:registration/registry-dsl]&gt; and configure a <code>Container</code> object. We have seen examples of configuration that allow us to build objects that don't depend on anything like the <code>Bar</code> class, or do depend on other types like the <code>Foo</code> class needs an instance of <code>IBar</code>. In our last example we have seen configuration for objects that need some primitive types like strings in its constructor function.</p>
-
+<pre><code class="language-csharp">&#xD;&#xA;var container = new Container(c =&gt;&#xD;&#xA;{&#xD;&#xA;    //just for demo purposes, normally you don&#x27;t want to embed the connection string directly into code.&#xD;&#xA;    c.For&lt;IDbConnection&gt;().Use&lt;SqlConnection&gt;().Ctor&lt;string&gt;().Is(&quot;YOUR_CONNECTION_STRING&quot;);&#xD;&#xA;    //a better way would be providing a delegate that retrieves the value from your app config.    &#xD;&#xA;});&#xD;&#xA;</code></pre>
+<p>So far you have seen an couple of ways to work with the <a href="/registration/registry-dsl">Registry DSL</a> and configure a <code>Container</code> object. We have seen examples of configuration that allow us to build objects that don't depend on anything like the <code>Bar</code> class, or do depend on other types like the <code>Foo</code> class needs an instance of <code>IBar</code>. In our last example we have seen configuration for objects that need some primitive types like strings in its constructor function.</p>
 
                       </div>
 

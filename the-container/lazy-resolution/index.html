@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/the-container/disposing">StructureMap and IDisposable</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/the-container/handling-missing-named-instances">Handling Missing Named Instances</a></p></li>
                 </ul>
@@ -98,129 +98,24 @@ the parent object.</p>
 automatically building a unique object instance.</p>
 <p>Also note that <code>Lazy&lt;T&gt;</code> or <code>Func&lt;T&gt;</code> is your best (only) viable approach if you wish to have StructureMap inject bi-directional
 relationships.</p>
-<h2>Lazy&lt;T&gt;</h2>
+<h2 id="lazyt">Lazy&lt;T&gt;</h2>
 <p>Assuming that StructureMap either has an existing configuration for <code>T</code> or can
 derive a way to build <code>T</code>, you can just declare a dependency on <code>Lazy&lt;T&gt;</code> like this sample:</p>
-<pre><code class="language-csharp">
-        public class WidgetLazyUser
-        {
-            private readonly Lazy&lt;IWidget&gt; _widget;
-
-            public WidgetLazyUser(Lazy&lt;IWidget&gt; widget)
-            {
-                _widget = widget;
-            }
-
-            public IWidget Widget
-            {
-                get { return _widget.Value; }
-            }
-        }
-
-        [Fact]
-        public void lazy_resolution_in_action()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
-            });
-
-            container.GetInstance&lt;WidgetLazyUser&gt;()
-                .Widget.ShouldBeOfType&lt;AWidget&gt;();
-        }
-
-</code></pre>
-<h2>Func&lt;T&gt;</h2>
+<pre><code class="language-csharp">&#xD;&#xA;public class WidgetLazyUser&#xD;&#xA;{&#xD;&#xA;    private readonly Lazy&lt;IWidget&gt; _widget;&#xD;&#xA;&#xD;&#xA;    public WidgetLazyUser(Lazy&lt;IWidget&gt; widget)&#xD;&#xA;    {&#xD;&#xA;        _widget = widget;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public IWidget Widget&#xD;&#xA;    {&#xD;&#xA;        get { return _widget.Value; }&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void lazy_resolution_in_action()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;WidgetLazyUser&gt;()&#xD;&#xA;        .Widget.ShouldBeOfType&lt;AWidget&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="funct">Func&lt;T&gt;</h2>
 <p>Likewise, you can also declare a dependency on <code>Func&lt;T&gt;</code> with very similar mechanics:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void build_a_func_that_returns_a_singleton()
-        {
-            var container = new Container(x =&gt;
-            {
-                x.ForSingletonOf&lt;IWidget&gt;().Use&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;green&quot;);
-            });
-
-            var func = container.GetInstance&lt;Func&lt;IWidget&gt;&gt;();
-            var w1 = func();
-            var w2 = func();
-            var w3 = func();
-
-            w1.ShouldBeOfType&lt;ColorWidget&gt;().Color.ShouldBe(&quot;green&quot;);
-
-            w1.ShouldBeTheSameAs(w2);
-            w1.ShouldBeTheSameAs(w3);
-            w2.ShouldBeTheSameAs(w3);
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void build_a_func_that_returns_a_singleton()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        x.ForSingletonOf&lt;IWidget&gt;().Use&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;green&quot;);&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    var func = container.GetInstance&lt;Func&lt;IWidget&gt;&gt;();&#xD;&#xA;    var w1 = func();&#xD;&#xA;    var w2 = func();&#xD;&#xA;    var w3 = func();&#xD;&#xA;&#xD;&#xA;    w1.ShouldBeOfType&lt;ColorWidget&gt;().Color.ShouldBe(&quot;green&quot;);&#xD;&#xA;&#xD;&#xA;    w1.ShouldBeTheSameAs(w2);&#xD;&#xA;    w1.ShouldBeTheSameAs(w3);&#xD;&#xA;    w2.ShouldBeTheSameAs(w3);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p><em>This functionality predates the introduction of the Lazy type to .Net</em></p>
-<h2>Func&lt;string, T&gt;</h2>
+<h2 id="funcstring-t">Func&lt;string, T&gt;</h2>
 <p>Finally, you can also declare a dependency on <code>Func&lt;string, T&gt;</code> that will allow you to lazily
 resolve a dependency of <code>T</code> by name:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void build_a_func_by_string()
-        {
-            var container = new Container(x =&gt;
-            {
-                x.For&lt;IWidget&gt;().Add&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;green&quot;).Named(&quot;green&quot;);
-                x.For&lt;IWidget&gt;().Add&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;blue&quot;).Named(&quot;blue&quot;);
-                x.For&lt;IWidget&gt;().Add&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;red&quot;).Named(&quot;red&quot;);
-            });
-
-            var func = container.GetInstance&lt;Func&lt;string, IWidget&gt;&gt;();
-            func(&quot;green&quot;).ShouldBeOfType&lt;ColorWidget&gt;().Color.ShouldBe(&quot;green&quot;);
-        }
-
-</code></pre>
-<h2>Bi-relational Dependency Workaround</h2>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void build_a_func_by_string()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        x.For&lt;IWidget&gt;().Add&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;green&quot;).Named(&quot;green&quot;);&#xD;&#xA;        x.For&lt;IWidget&gt;().Add&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;blue&quot;).Named(&quot;blue&quot;);&#xD;&#xA;        x.For&lt;IWidget&gt;().Add&lt;ColorWidget&gt;().Ctor&lt;string&gt;(&quot;color&quot;).Is(&quot;red&quot;).Named(&quot;red&quot;);&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    var func = container.GetInstance&lt;Func&lt;string, IWidget&gt;&gt;();&#xD;&#xA;    func(&quot;green&quot;).ShouldBeOfType&lt;ColorWidget&gt;().Color.ShouldBe(&quot;green&quot;);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="bi-relational-dependency-workaround">Bi-relational Dependency Workaround</h2>
 <p><strong>StructureMap does not directly support bi-directional dependency relationships</strong> -- but will happily tell you in an exception when
 you accidentally manage to create one without cratering your AppDomain with a <code>StackOverflowException</code>.</p>
 <p>Either <code>Func&lt;T&gt;</code> or <code>Lazy&lt;T&gt;</code> can be used as a workaround for purposeful bi-directional dependencies between types. The
 following is an example of using this strategy:</p>
-<pre><code class="language-csharp">
-
-        [Singleton]
-        public class Thing1
-        {
-            private readonly Lazy&lt;Thing2&gt; _thing2;
-
-            public Thing1(Lazy&lt;Thing2&gt; thing2)
-            {
-                _thing2 = thing2;
-            }
-
-            public Thing2 Thing2
-            {
-                get { return _thing2.Value; }
-            }
-        }
-
-        [Singleton]
-        public class Thing2
-        {
-            public Thing1 Thing1 { get; set; }
-
-            public Thing2(Thing1 thing1)
-            {
-                Thing1 = thing1;
-            }
-        }
-
-        [Fact]
-        public void use_lazy_as_workaround_for_bi_directional_dependency()
-        {
-            var container = new Container();
-            var thing1 = container.GetInstance&lt;Thing1&gt;();
-            var thing2 = container.GetInstance&lt;Thing2&gt;();
-
-            thing1.Thing2.ShouldBeSameAs(thing2);
-            thing2.Thing1.ShouldBeSameAs(thing1);
-        }
-
-</code></pre>
-
+<pre><code class="language-csharp">&#xD;&#xA;&#xD;&#xA;[Singleton]&#xD;&#xA;public class Thing1&#xD;&#xA;{&#xD;&#xA;    private readonly Lazy&lt;Thing2&gt; _thing2;&#xD;&#xA;&#xD;&#xA;    public Thing1(Lazy&lt;Thing2&gt; thing2)&#xD;&#xA;    {&#xD;&#xA;        _thing2 = thing2;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public Thing2 Thing2&#xD;&#xA;    {&#xD;&#xA;        get { return _thing2.Value; }&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Singleton]&#xD;&#xA;public class Thing2&#xD;&#xA;{&#xD;&#xA;    public Thing1 Thing1 { get; set; }&#xD;&#xA;&#xD;&#xA;    public Thing2(Thing1 thing1)&#xD;&#xA;    {&#xD;&#xA;        Thing1 = thing1;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void use_lazy_as_workaround_for_bi_directional_dependency()&#xD;&#xA;{&#xD;&#xA;    var container = new Container();&#xD;&#xA;    var thing1 = container.GetInstance&lt;Thing1&gt;();&#xD;&#xA;    var thing2 = container.GetInstance&lt;Thing2&gt;();&#xD;&#xA;&#xD;&#xA;    thing1.Thing2.ShouldBeSameAs(thing2);&#xD;&#xA;    thing2.Thing1.ShouldBeSameAs(thing1);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 
                       </div>
 

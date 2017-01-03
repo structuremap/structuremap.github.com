@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/the-container/handling-missing-named-instances">Handling Missing Named Instances</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a></p></li>
                 </ul>
@@ -105,95 +105,19 @@ specific registration for the enumerable types, StructureMap has a built in poli
 of <code>IWidget</code> <strong>in the exact order that the registrations were made to StructureMap</strong>.</p>
 <p>Note, if there are not any registrations for whatever <code>T</code> is, you'll get an empty enumeration.</p>
 <p>Here's an acceptance test from the StructureMap codebase that demonstrates this:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void collection_types_are_all_possible_by_default()
-        {
-            // NOTE that we do NOT make any explicit registration of
-            // IList&lt;IWidget&gt;, IEnumerable&lt;IWidget&gt;, ICollection&lt;IWidget&gt;, or IWidget[]
-            var container = new Container(_ =&gt;
-            {
-                _.For&lt;IWidget&gt;().Add&lt;AWidget&gt;();
-                _.For&lt;IWidget&gt;().Add&lt;BWidget&gt;();
-                _.For&lt;IWidget&gt;().Add&lt;CWidget&gt;();
-            });
-
-            // IList&lt;T&gt;
-            container.GetInstance&lt;IList&lt;IWidget&gt;&gt;()
-                .Select(x =&gt; x.GetType())
-                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
-
-            // ICollection&lt;T&gt;
-            container.GetInstance&lt;ICollection&lt;IWidget&gt;&gt;()
-                .Select(x =&gt; x.GetType())
-                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
-
-            // Array of T
-            container.GetInstance&lt;IWidget[]&gt;()
-                .Select(x =&gt; x.GetType())
-                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void collection_types_are_all_possible_by_default()&#xD;&#xA;{&#xD;&#xA;    // NOTE that we do NOT make any explicit registration of&#xD;&#xA;    // IList&lt;IWidget&gt;, IEnumerable&lt;IWidget&gt;, ICollection&lt;IWidget&gt;, or IWidget[]&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.For&lt;IWidget&gt;().Add&lt;AWidget&gt;();&#xD;&#xA;        _.For&lt;IWidget&gt;().Add&lt;BWidget&gt;();&#xD;&#xA;        _.For&lt;IWidget&gt;().Add&lt;CWidget&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    // IList&lt;T&gt;&#xD;&#xA;    container.GetInstance&lt;IList&lt;IWidget&gt;&gt;()&#xD;&#xA;        .Select(x =&gt; x.GetType())&#xD;&#xA;        .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));&#xD;&#xA;&#xD;&#xA;    // ICollection&lt;T&gt;&#xD;&#xA;    container.GetInstance&lt;ICollection&lt;IWidget&gt;&gt;()&#xD;&#xA;        .Select(x =&gt; x.GetType())&#xD;&#xA;        .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));&#xD;&#xA;&#xD;&#xA;    // Array of T&#xD;&#xA;    container.GetInstance&lt;IWidget[]&gt;()&#xD;&#xA;        .Select(x =&gt; x.GetType())&#xD;&#xA;        .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>And another showing how you can override this behavior with explicit configuration:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void override_enumeration_behavior()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.For&lt;IWidget&gt;().Add&lt;AWidget&gt;();
-                _.For&lt;IWidget&gt;().Add&lt;BWidget&gt;();
-                _.For&lt;IWidget&gt;().Add&lt;CWidget&gt;();
-
-                // Explicit registration should have precedence over the default
-                // behavior
-                _.For&lt;IWidget[]&gt;().Use(new IWidget[] { new DefaultWidget() });
-            });
-
-            container.GetInstance&lt;IWidget[]&gt;()
-                .Single().ShouldBeOfType&lt;DefaultWidget&gt;();
-        }
-
-</code></pre>
-<h2>Sample Usage: Validation Rules</h2>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void override_enumeration_behavior()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.For&lt;IWidget&gt;().Add&lt;AWidget&gt;();&#xD;&#xA;        _.For&lt;IWidget&gt;().Add&lt;BWidget&gt;();&#xD;&#xA;        _.For&lt;IWidget&gt;().Add&lt;CWidget&gt;();&#xD;&#xA;&#xD;&#xA;        // Explicit registration should have precedence over the default&#xD;&#xA;        // behavior&#xD;&#xA;        _.For&lt;IWidget[]&gt;().Use(new IWidget[] { new DefaultWidget() });&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IWidget[]&gt;()&#xD;&#xA;        .Single().ShouldBeOfType&lt;DefaultWidget&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="sample-usage-validation-rules">Sample Usage: Validation Rules</h2>
 <p>One of the ways that I have used the built in <code>IEnumerable</code> handling is for extensible validation rules. Say that we are
 building a system to process <code>IWidget</code> objects. As part of processing a widget, we first need to validate that widget with a
 series of rules that we might model with the <code>IWidgetValidator</code> interface shown below and used within the main
 <code>WidgetProcessor</code> class:</p>
-<pre><code class="language-csharp">
-        public interface IWidgetValidator
-        {
-            IEnumerable&lt;string&gt; Validate(IWidget widget);
-        }
-
-        public class WidgetProcessor
-        {
-            private readonly IEnumerable&lt;IWidgetValidator&gt; _validators;
-
-            public WidgetProcessor(IEnumerable&lt;IWidgetValidator&gt; validators)
-            {
-                _validators = validators;
-            }
-
-            public void Process(IWidget widget)
-            {
-                var validationMessages = _validators.SelectMany(x =&gt; x.Validate(widget))
-                    .ToArray();
-
-                if (validationMessages.Any())
-                {
-                    // don&#39;t process the widget
-                }
-            }
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public interface IWidgetValidator&#xD;&#xA;{&#xD;&#xA;    IEnumerable&lt;string&gt; Validate(IWidget widget);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class WidgetProcessor&#xD;&#xA;{&#xD;&#xA;    private readonly IEnumerable&lt;IWidgetValidator&gt; _validators;&#xD;&#xA;&#xD;&#xA;    public WidgetProcessor(IEnumerable&lt;IWidgetValidator&gt; validators)&#xD;&#xA;    {&#xD;&#xA;        _validators = validators;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public void Process(IWidget widget)&#xD;&#xA;    {&#xD;&#xA;        var validationMessages = _validators.SelectMany(x =&gt; x.Validate(widget))&#xD;&#xA;            .ToArray();&#xD;&#xA;&#xD;&#xA;        if (validationMessages.Any())&#xD;&#xA;        {&#xD;&#xA;            // don&#x27;t process the widget&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>We <em>could</em> simply configure all of the <code>IWidgetValidator</code> rules in one place with an explicit registration of <code>IEnumerable&lt;IWidgetValidator&gt;</code>,
 but what if we need to have an extensibility to add more validation rules later? What if we want to add these additional rules in addon packages? Or we
 just don't want to continuously break into the centralized <code>Registry</code> class every single time we add a new validation rule?</p>
 <p>By relying on StructureMap's <code>IEnumerable</code> behavior, we're able to split our <code>IWidgetValidatior</code> registration across multiple <code>Registry</code> classes and that's not infrequently useful to do.</p>
-
 
                       </div>
 

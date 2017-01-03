@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/generics">Generic Types</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/object-lifecycle/configuring-lifecycles">Configuring Lifecycles</a></p></li>
                 </ul>
@@ -90,51 +90,11 @@
                       <div id="main-pane">
                           <!--Title: Custom Lifecycles-->
 <!--Url: custom-lifecycles-->
-<p>Lifecycle's in StructureMap are pluggable.  To create your own custom lifecycle, make an implementation of the <code>ILifecycle</code> interface like this one:</p>
-<pre><code class="language-csharp">
-    public class CustomLifecycle : ILifecycle
-    {
-        public static LifecycleObjectCache Cache = new LifecycleObjectCache();
-
-        public string Description
-        {
-            get { return &quot;Custom&quot;; }
-        }
-
-        public void EjectAll(ILifecycleContext context)
-        {
-            // Here you&#39;d remove all the existing objects
-            // from the cache and call IDisposable.Dispose()
-            // as appropriate
-        }
-
-        public IObjectCache FindCache(ILifecycleContext context)
-        {
-            // using the context, &quot;find&quot; the appropriate
-            // IObjectCache object
-            return Cache;
-        }
-    }
-
-</code></pre>
+<p>Lifecycles in StructureMap are pluggable.  To create your own custom lifecycle, make an implementation of the <code>ILifecycle</code> interface like this one:</p>
+<pre><code class="language-csharp">&#xD;&#xA;public class CustomLifecycle : ILifecycle&#xD;&#xA;{&#xD;&#xA;    public static LifecycleObjectCache Cache = new LifecycleObjectCache();&#xD;&#xA;&#xD;&#xA;    public string Description&#xD;&#xA;    {&#xD;&#xA;        get { return &quot;Custom&quot;; }&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public void EjectAll(ILifecycleContext context)&#xD;&#xA;    {&#xD;&#xA;        // Here you&#x27;d remove all the existing objects&#xD;&#xA;        // from the cache and call IDisposable.Dispose()&#xD;&#xA;        // as appropriate&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public IObjectCache FindCache(ILifecycleContext context)&#xD;&#xA;    {&#xD;&#xA;        // using the context, &quot;find&quot; the appropriate&#xD;&#xA;        // IObjectCache object&#xD;&#xA;        return Cache;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>Registering your custom lifecycle can be done like this:</p>
-<pre><code class="language-csharp">
-    public class UsingCustomLifecycle : Registry
-    {
-        public UsingCustomLifecycle()
-        {
-            // at the Plugin Type level
-            For&lt;IService&gt;().LifecycleIs&lt;CustomLifecycle&gt;();
-
-            // at the Instance level
-            For&lt;IService&gt;().Use&lt;AService&gt;()
-                .LifecycleIs&lt;CustomLifecycle&gt;();
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class UsingCustomLifecycle : Registry&#xD;&#xA;{&#xD;&#xA;    public UsingCustomLifecycle()&#xD;&#xA;    {&#xD;&#xA;        // at the Plugin Type level&#xD;&#xA;        For&lt;IService&gt;().LifecycleIs&lt;CustomLifecycle&gt;();&#xD;&#xA;&#xD;&#xA;        // at the Instance level&#xD;&#xA;        For&lt;IService&gt;().Use&lt;AService&gt;()&#xD;&#xA;            .LifecycleIs&lt;CustomLifecycle&gt;();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>Most of the built in <code>ILifecycle</code> implementations use <code>LifecycleObjectCache</code> internally, but you may also need to create your own <code>IObjectCache</code> implementation.</p>
-
 
                       </div>
 

@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/the-container/forwarding-requests-for-a-type-to-another-type">Registering a Single Instance Against Multiple PluginType's</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/the-container/lambdas">Building Objects with Lambdas</a></p></li>
                 </ul>
@@ -104,225 +104,30 @@ the current object creation operation for usage in user-supplied <a href="/the-c
 <li>See the root type of the top level object that StructureMap is building in this request</li>
 </ol>
 <p>The entire <code>IContext</code> interface is shown below:</p>
-<pre><code class="language-csharp">
-    /// &lt;summary&gt;
-    /// Access to the state and type resolution of the current &quot;build session&quot;
-    /// during a request to a StructureMap container
-    /// &lt;/summary&gt;
-    public interface IContext
-    {
-        /// &lt;summary&gt;
-        /// The requested instance name of the object graph
-        /// &lt;/summary&gt;
-        string RequestedName { get; }
-
-        /// &lt;summary&gt;
-        /// The &quot;BuildUp&quot; method takes in an already constructed object
-        /// and uses Setter Injection to push in configured dependencies
-        /// of that object
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;target&quot;&gt;&lt;/param&gt;
-        void BuildUp(object target);
-
-        /// &lt;summary&gt;
-        /// Get the object of type T that is valid for this build session.
-        /// &lt;/summary&gt;
-        /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        T GetInstance&lt;T&gt;();
-
-        /// &lt;summary&gt;
-        /// Get the object of type T that is valid for this build session by name.
-        /// &lt;/summary&gt;
-        /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        T GetInstance&lt;T&gt;(string name);
-
-        /// &lt;summary&gt;
-        /// Get a service from the current build session by type
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        object GetInstance(Type pluginType);
-
-        /// &lt;summary&gt;
-        /// Creates or finds the named instance of the pluginType
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;
-        /// &lt;param name=&quot;instanceKey&quot;&gt;&lt;/param&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        object GetInstance(Type pluginType, string instanceKey);
-
-        /// &lt;summary&gt;
-        /// Same as GetInstance, but can gracefully return null if 
-        /// the Type does not already exist
-        /// &lt;/summary&gt;
-        /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        T TryGetInstance&lt;T&gt;() where T : class;
-
-        /// &lt;summary&gt;
-        /// Same as GetInstance(name), but can gracefully return null if 
-        /// the Type and name does not already exist
-        /// &lt;/summary&gt;
-        /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;
-        /// &lt;param name=&quot;name&quot;&gt;&lt;/param&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        T TryGetInstance&lt;T&gt;(string name) where T : class;
-
-        /// &lt;summary&gt;
-        /// Creates or finds the default instance of the pluginType. Returns null if the pluginType is not known to the container.
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        object TryGetInstance(Type pluginType);
-
-        /// &lt;summary&gt;
-        /// Creates or finds the named instance of the pluginType. Returns null if the named instance is not known to the container.
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;
-        /// &lt;param name=&quot;instanceKey&quot;&gt;&lt;/param&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        object TryGetInstance(Type pluginType, string instanceKey);
-
-        /// &lt;summary&gt;
-        /// Gets all objects in the current object graph that can be cast
-        /// to T that have already been created
-        /// &lt;/summary&gt;
-        /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        IEnumerable&lt;T&gt; All&lt;T&gt;() where T : class;
-
-
-        /// &lt;summary&gt;
-        /// Creates/Resolves every configured instance of PlutinType T
-        /// &lt;/summary&gt;
-        /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        IEnumerable&lt;T&gt; GetAllInstances&lt;T&gt;();
-
-        /// &lt;summary&gt;
-        /// Creates or resolves all registered instances of the pluginType
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        IEnumerable&lt;object&gt; GetAllInstances(Type pluginType);
-
-        /// &lt;summary&gt;
-        /// The type of the parent object.  Useful for constructing
-        /// contextual logging dependencies
-        /// &lt;/summary&gt;
-        Type ParentType { get; }
-
-        /// &lt;summary&gt;
-        /// The type of the requested object at the very top of the 
-        /// object graph
-        /// &lt;/summary&gt;
-        Type RootType { get; }
-    }
-</code></pre>
-<h2>Example 1: Contextual Logging</h2>
+<pre><code class="language-csharp">&#xD;&#xA;/// &lt;summary&gt;&#xD;&#xA;/// Access to the state and type resolution of the current &quot;build session&quot;&#xD;&#xA;/// during a request to a StructureMap container&#xD;&#xA;/// &lt;/summary&gt;&#xD;&#xA;public interface IContext&#xD;&#xA;{&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The requested instance name of the object graph&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    string RequestedName { get; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The &quot;BuildUp&quot; method takes in an already constructed object&#xD;&#xA;    /// and uses Setter Injection to push in configured dependencies&#xD;&#xA;    /// of that object&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;target&quot;&gt;&lt;/param&gt;&#xD;&#xA;    void BuildUp(object target);&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Get the object of type T that is valid for this build session.&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    T GetInstance&lt;T&gt;();&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Get the object of type T that is valid for this build session by name.&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    T GetInstance&lt;T&gt;(string name);&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Get a service from the current build session by type&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    object GetInstance(Type pluginType);&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Creates or finds the named instance of the pluginType&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;&#xD;&#xA;    /// &lt;param name=&quot;instanceKey&quot;&gt;&lt;/param&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    object GetInstance(Type pluginType, string instanceKey);&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Same as GetInstance, but can gracefully return null if &#xD;&#xA;    /// the Type does not already exist&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    T TryGetInstance&lt;T&gt;() where T : class;&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Same as GetInstance(name), but can gracefully return null if &#xD;&#xA;    /// the Type and name does not already exist&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;&#xD;&#xA;    /// &lt;param name=&quot;name&quot;&gt;&lt;/param&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    T TryGetInstance&lt;T&gt;(string name) where T : class;&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Creates or finds the default instance of the pluginType. Returns null if the pluginType is not known to the container.&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    object TryGetInstance(Type pluginType);&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Creates or finds the named instance of the pluginType. Returns null if the named instance is not known to the container.&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;&#xD;&#xA;    /// &lt;param name=&quot;instanceKey&quot;&gt;&lt;/param&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    object TryGetInstance(Type pluginType, string instanceKey);&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Gets all objects in the current object graph that can be cast&#xD;&#xA;    /// to T that have already been created&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    IEnumerable&lt;T&gt; All&lt;T&gt;() where T : class;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Creates/Resolves every configured instance of PlutinType T&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    IEnumerable&lt;T&gt; GetAllInstances&lt;T&gt;();&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Creates or resolves all registered instances of the pluginType&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    IEnumerable&lt;object&gt; GetAllInstances(Type pluginType);&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The type of the parent object.  Useful for constructing&#xD;&#xA;    /// contextual logging dependencies&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    Type ParentType { get; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The type of the requested object at the very top of the &#xD;&#xA;    /// object graph&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    Type RootType { get; }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<h2 id="example-1-contextual-logging">Example 1: Contextual Logging</h2>
 <p>All of <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Acceptance/contextual_building.cs">the sample code in this example is in Github</a>.</p>
 <p>One of the canonical examples of using <code>IContext</code> is the integration of logging frameworks like NLog or Log4net
 that allow you to create logging policies by concrete type. With these tools, you generally have a static class (boo!)
 where you ask for the proper logging service for a type of object like this one:</p>
-<pre><code class="language-csharp">
-    public static class LoggerFactory
-    {
-        public static Logger LoggerFor(Type type)
-        {
-            return new Logger(type);
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public static class LoggerFactory&#xD;&#xA;{&#xD;&#xA;    public static Logger LoggerFor(Type type)&#xD;&#xA;    {&#xD;&#xA;        return new Logger(type);&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>Now, say you would want to have the proper <code>Logger</code> injected into every object that StructureMap creates that depends on <code>Logger</code> matching
 the concrete type of the object being created. That registration is shown below in a unit test from StructureMap's codebase:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void can_happily_use_the_parent_type()
-        {
-            var container = new Container(x =&gt;
-            {
-                // AlwaysUnique() is important so that every object created will get
-                // their own Logger instead of sharing whichever one is created first
-                x.For&lt;Logger&gt;().Use(c =&gt; LoggerFactory.LoggerFor(c.ParentType)).AlwaysUnique();
-            });
-
-            var top = container.GetInstance&lt;LoggedClass1&gt;();
-            top.Logger.ParentType.ShouldBe(typeof(LoggedClass1));
-            top.Child.Logger.ParentType.ShouldBe(typeof(LoggedClass2));
-            top.Child.Child.Logger.ParentType.ShouldBe(typeof(LoggedClass3));
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void can_happily_use_the_parent_type()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        // AlwaysUnique() is important so that every object created will get&#xD;&#xA;        // their own Logger instead of sharing whichever one is created first&#xD;&#xA;        x.For&lt;Logger&gt;().Use(c =&gt; LoggerFactory.LoggerFor(c.ParentType)).AlwaysUnique();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    var top = container.GetInstance&lt;LoggedClass1&gt;();&#xD;&#xA;    top.Logger.ParentType.ShouldBe(typeof(LoggedClass1));&#xD;&#xA;    top.Child.Logger.ParentType.ShouldBe(typeof(LoggedClass2));&#xD;&#xA;    top.Child.Child.Logger.ParentType.ShouldBe(typeof(LoggedClass3));&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>Just for fun, here's the equivalent with the new <a href="/registration/policies">construction policies from 4.0</a>:</p>
-<pre><code class="language-csharp">
-        public class LoggerConvention : ConfiguredInstancePolicy
-        {
-            protected override void apply(Type pluginType, IConfiguredInstance instance)
-            {
-                instance.Constructor
-                    .GetParameters()
-                    .Where(param =&gt; param.ParameterType == typeof(Logger))
-                    .Each(param =&gt; instance.Dependencies.Add(LoggerFactory.LoggerFor(instance.PluggedType)));
-            }
-        }
-
-        [Fact]
-        public void use_logger_convention()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.Policies.Add&lt;LoggerConvention&gt;();
-            });
-
-            var top = container.GetInstance&lt;LoggedClass1&gt;();
-            top.Logger.ParentType.ShouldBe(typeof(LoggedClass1));
-            top.Child.Logger.ParentType.ShouldBe(typeof(LoggedClass2));
-            top.Child.Child.Logger.ParentType.ShouldBe(typeof(LoggedClass3));
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class LoggerConvention : ConfiguredInstancePolicy&#xD;&#xA;{&#xD;&#xA;    protected override void apply(Type pluginType, IConfiguredInstance instance)&#xD;&#xA;    {&#xD;&#xA;        instance.Constructor&#xD;&#xA;            .GetParameters()&#xD;&#xA;            .Where(param =&gt; param.ParameterType == typeof(Logger))&#xD;&#xA;            .Each(param =&gt; instance.Dependencies.Add(LoggerFactory.LoggerFor(instance.PluggedType)));&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void use_logger_convention()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.Policies.Add&lt;LoggerConvention&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    var top = container.GetInstance&lt;LoggedClass1&gt;();&#xD;&#xA;    top.Logger.ParentType.ShouldBe(typeof(LoggedClass1));&#xD;&#xA;    top.Child.Logger.ParentType.ShouldBe(typeof(LoggedClass2));&#xD;&#xA;    top.Child.Child.Logger.ParentType.ShouldBe(typeof(LoggedClass3));&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>The <code>LoggerConvention</code> way of accomplishing the logging integration is technically more code and possibly harder to understand,
 but it's significantly more efficient at runtime because the decision about which <code>Logger</code> to use is only done once upfront.
 The conventional approach should also be more evident in StructureMap diagnostics.</p>
-<h2>Example 2: NHibernate Integration</h2>
+<h2 id="example-2-nhibernate-integration">Example 2: NHibernate Integration</h2>
 <p><em>It's been several years since I used NHibernate, so I might not have the technical details exactly right here:)</em></p>
 <p>If you're developing a system with <a href="http://nhibernate.info">NHibernate</a> managed by StructureMap, you will frequently need to inject
 NHibernate's <code>ISession</code> service into your concrete classes. There's a little catch though, to create an <code>ISession</code> object
 you have to use NHibernate's <code>ISessionFactory</code> service:</p>
-<pre><code class="language-csharp">
-    public interface ISession { }
-
-    public interface ISessionFactory
-    {
-        ISession Build();
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public interface ISession { }&#xD;&#xA;&#xD;&#xA;public interface ISessionFactory&#xD;&#xA;{&#xD;&#xA;    ISession Build();&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>Sidestepping the issue of how to build an <code>ISessionFactory</code>, here's a possible way to enable a StructureMap
 <code>Container</code> to build and resolve dependencies of <code>ISession</code> with a <a href="/the-container/lambdas">lambda builder</a>:</p>
-<pre><code class="language-csharp">
-    public class SessionFactoryRegistry : Registry
-    {
-        // Let&#39;s not worry about how ISessionFactory is built
-        // in this example
-        public SessionFactoryRegistry(ISessionFactory factory)
-        {
-            For&lt;ISessionFactory&gt;().Use(factory);
-
-            // Build ISession with a lambda:
-            For&lt;ISession&gt;().Use(&quot;Build ISession from ISessionFactory&quot;, c =&gt;
-            {
-                // To resolve ISession, I first pull out
-                // ISessionFactory from the IContext and use that
-                // to build a new ISession. 
-                return c.GetInstance&lt;ISessionFactory&gt;().Build();
-            });
-        }
-    }
-</code></pre>
-
+<pre><code class="language-csharp">&#xD;&#xA;public class SessionFactoryRegistry : Registry&#xD;&#xA;{&#xD;&#xA;    // Let&#x27;s not worry about how ISessionFactory is built&#xD;&#xA;    // in this example&#xD;&#xA;    public SessionFactoryRegistry(ISessionFactory factory)&#xD;&#xA;    {&#xD;&#xA;        For&lt;ISessionFactory&gt;().Use(factory);&#xD;&#xA;&#xD;&#xA;        // Build ISession with a lambda:&#xD;&#xA;        For&lt;ISession&gt;().Use(&quot;Build ISession from ISessionFactory&quot;, c =&gt;&#xD;&#xA;        {&#xD;&#xA;            // To resolve ISession, I first pull out&#xD;&#xA;            // ISessionFactory from the IContext and use that&#xD;&#xA;            // to build a new ISession. &#xD;&#xA;            return c.GetInstance&lt;ISessionFactory&gt;().Build();&#xD;&#xA;        });&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
 
                       </div>
 

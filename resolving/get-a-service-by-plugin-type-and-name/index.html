@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/resolving/get-all-services-by-plugin-type">Get all Services by Plugin Type</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/resolving/get-a-service-by-plugintype">Get a Service by PluginType</a></p></li>
                 </ul>
@@ -91,30 +91,7 @@
                           <!--Title: Get a Service by Plugin Type and Name-->
 <!--Url: get-a-service-by-plugin-type-and-name-->
 <p>You can also request a named configuration for a given PluginType by using the overloads of <code>IContainer.GetInstance()</code> that take in a name like this:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void get_a_named_instance()
-        {
-            var container = new Container(x =&gt;
-            {
-                x.For&lt;IWidget&gt;().Add&lt;AWidget&gt;().Named(&quot;A&quot;);
-                x.For&lt;IWidget&gt;().Add&lt;BWidget&gt;().Named(&quot;B&quot;);
-                x.For&lt;IWidget&gt;().Add&lt;CWidget&gt;().Named(&quot;C&quot;);
-            });
-
-            container.GetInstance&lt;IWidget&gt;(&quot;A&quot;).ShouldBeOfType&lt;AWidget&gt;();
-            container.GetInstance&lt;IWidget&gt;(&quot;B&quot;).ShouldBeOfType&lt;BWidget&gt;();
-            container.GetInstance&lt;IWidget&gt;(&quot;C&quot;).ShouldBeOfType&lt;CWidget&gt;();
-
-            // or
-
-            container.GetInstance(typeof(IWidget), &quot;A&quot;).ShouldBeOfType&lt;AWidget&gt;();
-            container.GetInstance(typeof(IWidget), &quot;B&quot;).ShouldBeOfType&lt;BWidget&gt;();
-            container.GetInstance(typeof(IWidget), &quot;C&quot;).ShouldBeOfType&lt;CWidget&gt;();
-        }
-
-</code></pre>
-
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void get_a_named_instance()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        x.For&lt;IWidget&gt;().Add&lt;AWidget&gt;().Named(&quot;A&quot;);&#xD;&#xA;        x.For&lt;IWidget&gt;().Add&lt;BWidget&gt;().Named(&quot;B&quot;);&#xD;&#xA;        x.For&lt;IWidget&gt;().Add&lt;CWidget&gt;().Named(&quot;C&quot;);&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IWidget&gt;(&quot;A&quot;).ShouldBeOfType&lt;AWidget&gt;();&#xD;&#xA;    container.GetInstance&lt;IWidget&gt;(&quot;B&quot;).ShouldBeOfType&lt;BWidget&gt;();&#xD;&#xA;    container.GetInstance&lt;IWidget&gt;(&quot;C&quot;).ShouldBeOfType&lt;CWidget&gt;();&#xD;&#xA;&#xD;&#xA;    // or&#xD;&#xA;&#xD;&#xA;    container.GetInstance(typeof(IWidget), &quot;A&quot;).ShouldBeOfType&lt;AWidget&gt;();&#xD;&#xA;    container.GetInstance(typeof(IWidget), &quot;B&quot;).ShouldBeOfType&lt;BWidget&gt;();&#xD;&#xA;    container.GetInstance(typeof(IWidget), &quot;C&quot;).ShouldBeOfType&lt;CWidget&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 
                       </div>
 

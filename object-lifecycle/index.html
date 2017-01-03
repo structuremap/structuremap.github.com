@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/object-lifecycle/supported-lifecycles">Supported Lifecycles</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/the-container">The Container</a></p></li>
                 </ul>
@@ -97,58 +97,17 @@ Other services should be created new every time you ask the container for one.  
 every request to the container for a service originating within the context of a single HTTP request gets the same object instance.</p>
 <p>In all the cases above, StructureMap will assemble object graphs for you using the correct scoping of each dependency.  Likewise, <strong>in some cases</strong>, StructureMap can help you
 with object cleanup by calling <code>IDisposable.Dispose()</code> as appropriate when an object lifecyle is completed.</p>
-<div class="alert alert-info" role="alert">StructureMap isn't magic, you'll still need to be cognizant of the need for object cleanup.  See the section on <linkto:best-practices]> for more guidance.</div>
-<h2>Motivation for Container Managed Scope</h2>
+<div class="alert alert-info" role="alert">StructureMap isn't magic, you'll still need to be cognizant of the need for object cleanup.  See the section on <a href="/best-practices">Best Practices</a> for more guidance.</div>
+ 
+<h2 id="motivation-for-container-managed-scope">Motivation for Container Managed Scope</h2>
 <p>In the bad old days, we used the infamous <a href="http://c2.com/cgi/wiki?SingletonPattern">Singleton pattern</a>
 as shown below for objects that really needed to be scoped as one single instance for the entire system:</p>
-<pre><code class="language-csharp">
-    public class EvilSingleton
-    {
-        public static readonly EvilSingleton Instance = new EvilSingleton();
-
-        private EvilSingleton()
-        {
-        }
-
-        public void DoSomething()
-        {
-            // do something with the static data here
-        }
-    }
-
-
-    public class EvilSingletonUser
-    {
-        public void DoWork()
-        {
-            EvilSingleton.Instance.DoSomething();
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class EvilSingleton&#xD;&#xA;{&#xD;&#xA;    public static readonly EvilSingleton Instance = new EvilSingleton();&#xD;&#xA;&#xD;&#xA;    private EvilSingleton()&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public void DoSomething()&#xD;&#xA;    {&#xD;&#xA;        // do something with the static data here&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;public class EvilSingletonUser&#xD;&#xA;{&#xD;&#xA;    public void DoWork()&#xD;&#xA;    {&#xD;&#xA;        EvilSingleton.Instance.DoSomething();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>The code above isn't terribly difficult to write or understand, but using a Singleton has some negative effects on your code as explained in <a href="http://c2.com/cgi/wiki?SingletonsAreEvil">Singletons are Evil</a> and my own writing at <a href="http://codebetter.com/jeremymiller/2005/08/04/chill-out-on-the-singleton-fetish">Chill out on the Singleton Fetish</a>.</p>
 <p>Instead, let's just use StructureMap to handle the singleton scoping instead and rewrite the code sample above as:</p>
-<pre><code class="language-csharp">
-    public class SingletonService { }
-
-    public class SingletonUser
-    {
-        public SingletonUser(SingletonService singleton)
-        {
-        }
-    }
-
-    public class SingletonScopeRegistry : Registry
-    {
-        public SingletonScopeRegistry()
-        {
-            For&lt;SingletonService&gt;().Singleton();
-        }
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class SingletonService { }&#xD;&#xA;&#xD;&#xA;public class SingletonUser&#xD;&#xA;{&#xD;&#xA;    public SingletonUser(SingletonService singleton)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class SingletonScopeRegistry : Registry&#xD;&#xA;{&#xD;&#xA;    public SingletonScopeRegistry()&#xD;&#xA;    {&#xD;&#xA;        For&lt;SingletonService&gt;().Singleton();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>The big advantage to the second, StructureMap-managed singleton scoping is that my <code>DependencyUser</code> class does not have to have any knowledge of
 how the <code>ISingletonDependency</code> object is built and certainly no coupling to the hard Singleton mechanics from the first sample that was so harmful in the past.</p>
-
 
                       </div>
 

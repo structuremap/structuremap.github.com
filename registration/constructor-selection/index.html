@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/registration/fallback-services">Fallback Services</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/registration/on-missing-family-policies">On Missing Family Policies</a></p></li>
                 </ul>
@@ -94,247 +94,39 @@
 by allowing users to override the constructor selection on specific <em>Instance's</em> and register custom rules for
 selecting constructors to override the basic StructureMap behavior.</p>
 <div class="alert alert-info" role="alert">In all cases, StructureMap can only use <b>public</b> constructor functions.</div>
-<h2>Greediest Constructor</h2>
+<h2 id="greediest-constructor">Greediest Constructor</h2>
 <p>If there are multiple public constructor functions on a concrete class, StructureMap's default behavior is to
 select the &quot;greediest&quot; constructor, i.e., the constructor function with the most parameters. In the case of two or more
 constructor functions with the same number of parameters StructureMap will simply take the first constructor encountered
 in that subset of constructors.</p>
 <p>The default constructor selection is demonstrated below:</p>
-<pre><code class="language-csharp">
-        public class GreaterThanRule : Rule
-        {
-            public string Attribute { get; set; }
-            public int Value { get; set; }
-
-            public GreaterThanRule()
-            {
-            }
-
-            public GreaterThanRule(string attribute, int value)
-            {
-                Attribute = attribute;
-                Value = value;
-            }
-
-            public GreaterThanRule(IWidget widget, Rule rule)
-            {
-            }
-        }
-
-        [Fact]
-        public void using_the_greediest_ctor()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.ForConcreteType&lt;GreaterThanRule&gt;().Configure
-                    .Ctor&lt;string&gt;(&quot;attribute&quot;).Is(&quot;foo&quot;)
-                    .Ctor&lt;int&gt;(&quot;value&quot;).Is(42);
-            });
-
-            var rule = container.GetInstance&lt;GreaterThanRule&gt;();
-            rule.Attribute.ShouldBe(&quot;foo&quot;);
-            rule.Value.ShouldBe(42);
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class GreaterThanRule : Rule&#xD;&#xA;{&#xD;&#xA;    public string Attribute { get; set; }&#xD;&#xA;    public int Value { get; set; }&#xD;&#xA;&#xD;&#xA;    public GreaterThanRule()&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public GreaterThanRule(string attribute, int value)&#xD;&#xA;    {&#xD;&#xA;        Attribute = attribute;&#xD;&#xA;        Value = value;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public GreaterThanRule(IWidget widget, Rule rule)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void using_the_greediest_ctor()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.ForConcreteType&lt;GreaterThanRule&gt;().Configure&#xD;&#xA;            .Ctor&lt;string&gt;(&quot;attribute&quot;).Is(&quot;foo&quot;)&#xD;&#xA;            .Ctor&lt;int&gt;(&quot;value&quot;).Is(42);&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    var rule = container.GetInstance&lt;GreaterThanRule&gt;();&#xD;&#xA;    rule.Attribute.ShouldBe(&quot;foo&quot;);&#xD;&#xA;    rule.Value.ShouldBe(42);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p><strong>New in StructureMap 4.0</strong>, the &quot;greediest constructor selection&quot; will bypass any constructor function that requires &quot;simple&quot; arguments
 like strings, numbers, or enumeration values that are not explicitly configured for the instance.</p>
 <p>You can see this behavior shown below:</p>
-<pre><code class="language-csharp">
-        public class DbContext
-        {
-            public string ConnectionString { get; set; }
-
-            public DbContext(string connectionString)
-            {
-                ConnectionString = connectionString;
-            }
-
-            public DbContext() : this(&quot;default value&quot;)
-            {
-            }
-        }
-
-        [Fact]
-        public void should_bypass_ctor_with_unresolvable_simple_args()
-        {
-            var container = new Container();
-            container.GetInstance&lt;DbContext&gt;()
-                .ConnectionString.ShouldBe(&quot;default value&quot;);
-        }
-
-        [Fact]
-        public void should_use_greediest_ctor_that_has_all_of_simple_dependencies()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.ForConcreteType&lt;DbContext&gt;().Configure
-                    .Ctor&lt;string&gt;(&quot;connectionString&quot;).Is(&quot;not the default&quot;);
-            });
-
-            container.GetInstance&lt;DbContext&gt;()
-                .ConnectionString.ShouldBe(&quot;not the default&quot;);
-        }
-
-</code></pre>
-<h2>Explicitly Selecting a Constructor</h2>
+<pre><code class="language-csharp">&#xD;&#xA;public class DbContext&#xD;&#xA;{&#xD;&#xA;    public string ConnectionString { get; set; }&#xD;&#xA;&#xD;&#xA;    public DbContext(string connectionString)&#xD;&#xA;    {&#xD;&#xA;        ConnectionString = connectionString;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public DbContext() : this(&quot;default value&quot;)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void should_bypass_ctor_with_unresolvable_simple_args()&#xD;&#xA;{&#xD;&#xA;    var container = new Container();&#xD;&#xA;    container.GetInstance&lt;DbContext&gt;()&#xD;&#xA;        .ConnectionString.ShouldBe(&quot;default value&quot;);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void should_use_greediest_ctor_that_has_all_of_simple_dependencies()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.ForConcreteType&lt;DbContext&gt;().Configure&#xD;&#xA;            .Ctor&lt;string&gt;(&quot;connectionString&quot;).Is(&quot;not the default&quot;);&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;DbContext&gt;()&#xD;&#xA;        .ConnectionString.ShouldBe(&quot;not the default&quot;);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="explicitly-selecting-a-constructor">Explicitly Selecting a Constructor</h2>
 <p>To override the constructor selection explicitly on a case by case basis, you
 can use the <code>SelectConstructor(Expression)</code> method in the <a href="/registration/registry-dsl">Registry DSL</a>
 as shown below:</p>
-<pre><code class="language-csharp">
-        public class Thingie
-        {
-            public Thingie(IWidget widget)
-            {
-                CorrectCtorWasUsed = true;
-            }
-
-            public bool CorrectCtorWasUsed { get; set; }
-
-            public Thingie(IWidget widget, IService service)
-            {
-                Assert.True(false, &quot;I should not have been called&quot;);
-            }
-        }
-
-        [Fact]
-        public void override_the_constructor_selection()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
-
-                _.ForConcreteType&lt;Thingie&gt;().Configure
-
-                    // StructureMap parses the expression passed
-                    // into the method below to determine the
-                    // constructor
-                    .SelectConstructor(() =&gt; new Thingie(null));
-            });
-
-            container.GetInstance&lt;Thingie&gt;()
-                .CorrectCtorWasUsed
-                .ShouldBeTrue();
-        }
-
-</code></pre>
-<h2>[DefaultConstructor] Attribute</h2>
+<pre><code class="language-csharp">&#xD;&#xA;public class Thingie&#xD;&#xA;{&#xD;&#xA;    public Thingie(IWidget widget)&#xD;&#xA;    {&#xD;&#xA;        CorrectCtorWasUsed = true;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public bool CorrectCtorWasUsed { get; set; }&#xD;&#xA;&#xD;&#xA;    public Thingie(IWidget widget, IService service)&#xD;&#xA;    {&#xD;&#xA;        Assert.True(false, &quot;I should not have been called&quot;);&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void override_the_constructor_selection()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();&#xD;&#xA;&#xD;&#xA;        _.ForConcreteType&lt;Thingie&gt;().Configure&#xD;&#xA;&#xD;&#xA;            // StructureMap parses the expression passed&#xD;&#xA;            // into the method below to determine the&#xD;&#xA;            // constructor&#xD;&#xA;            .SelectConstructor(() =&gt; new Thingie(null));&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;Thingie&gt;()&#xD;&#xA;        .CorrectCtorWasUsed&#xD;&#xA;        .ShouldBeTrue();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="defaultconstructor-attribute">[DefaultConstructor] Attribute</h2>
 <p>Alternatively, you can override the choice of constructor function by using the
 older <code>[DefaultConstructor]</code> attribute like this:</p>
-<pre><code class="language-csharp">
-        public class AttributedThing
-        {
-            // Normally the greediest ctor would be
-            // selected, but using this attribute
-            // will overrid that behavior
-            [DefaultConstructor]
-            public AttributedThing(IWidget widget)
-            {
-                CorrectCtorWasUsed = true;
-            }
-
-            public bool CorrectCtorWasUsed { get; set; }
-
-            public AttributedThing(IWidget widget, IService service)
-            {
-                Assert.True(false, &quot;I should not have been called&quot;);
-            }
-        }
-
-        [Fact]
-        public void select_constructor_by_attribute()
-        {
-            var container = new Container(_ =&gt; { _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;(); });
-
-            container.GetInstance&lt;AttributedThing&gt;()
-                .CorrectCtorWasUsed
-                .ShouldBeTrue();
-        }
-
-</code></pre>
-<h2>Custom Constructor Selection Rule</h2>
+<pre><code class="language-csharp">&#xD;&#xA;public class AttributedThing&#xD;&#xA;{&#xD;&#xA;    // Normally the greediest ctor would be&#xD;&#xA;    // selected, but using this attribute&#xD;&#xA;    // will overrid that behavior&#xD;&#xA;    [DefaultConstructor]&#xD;&#xA;    public AttributedThing(IWidget widget)&#xD;&#xA;    {&#xD;&#xA;        CorrectCtorWasUsed = true;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public bool CorrectCtorWasUsed { get; set; }&#xD;&#xA;&#xD;&#xA;    public AttributedThing(IWidget widget, IService service)&#xD;&#xA;    {&#xD;&#xA;        Assert.True(false, &quot;I should not have been called&quot;);&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void select_constructor_by_attribute()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt; { _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;(); });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;AttributedThing&gt;()&#xD;&#xA;        .CorrectCtorWasUsed&#xD;&#xA;        .ShouldBeTrue();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="custom-constructor-selection-rule">Custom Constructor Selection Rule</h2>
 <p>If the constructor selection logic isn't what you want, you can systematically
 override the selection rules by registering one or more custom <code>IConstructorSelector</code>
 policies to a <code>Container</code>. Do note that you can register more than one policy and they
 will be executed from last one registered to the first one registered.</p>
 <p>Let's say that you want to control the constructor selection for all concrete
 subclasses of an abstract class like this hiearchy:</p>
-<pre><code class="language-csharp">
-    public abstract class BaseThing
-    {
-        public BaseThing(IWidget widget)
-        {
-            CorrectCtorWasUsed = true;
-        }
-
-        public bool CorrectCtorWasUsed { get; set; }
-
-        public BaseThing(IWidget widget, IService service)
-        {
-            Assert.True(false, &quot;I should not have been called&quot;);
-        }
-    }
-
-    public class Thing1 : BaseThing
-    {
-        public Thing1(IWidget widget) : base(widget)
-        {
-        }
-
-        public Thing1(IWidget widget, IService service) : base(widget, service)
-        {
-        }
-    }
-
-    public class Thing2 : BaseThing
-    {
-        public Thing2(IWidget widget) : base(widget)
-        {
-        }
-
-        public Thing2(IWidget widget, IService service) : base(widget, service)
-        {
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public abstract class BaseThing&#xD;&#xA;{&#xD;&#xA;    public BaseThing(IWidget widget)&#xD;&#xA;    {&#xD;&#xA;        CorrectCtorWasUsed = true;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public bool CorrectCtorWasUsed { get; set; }&#xD;&#xA;&#xD;&#xA;    public BaseThing(IWidget widget, IService service)&#xD;&#xA;    {&#xD;&#xA;        Assert.True(false, &quot;I should not have been called&quot;);&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Thing1 : BaseThing&#xD;&#xA;{&#xD;&#xA;    public Thing1(IWidget widget) : base(widget)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public Thing1(IWidget widget, IService service) : base(widget, service)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Thing2 : BaseThing&#xD;&#xA;{&#xD;&#xA;    public Thing2(IWidget widget) : base(widget)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public Thing2(IWidget widget, IService service) : base(widget, service)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>You could create a custom <code>IConstructorSelector</code> like this one below to override
 the constructor behavior for only subclasses of <code>BaseThing</code>:</p>
-<pre><code class="language-csharp">
-    public class ThingCtorRule : IConstructorSelector
-    {
-        public ConstructorInfo Find(Type pluggedType, DependencyCollection dependencies, PluginGraph graph)
-        {
-            // if this rule does not apply to the pluggedType,
-            // just return null to denote &quot;not applicable&quot;
-            if (!pluggedType.CanBeCastTo&lt;BaseThing&gt;()) return null;
-
-            return pluggedType.GetConstructor(new[] { typeof(IWidget) });
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class ThingCtorRule : IConstructorSelector&#xD;&#xA;{&#xD;&#xA;    public ConstructorInfo Find(Type pluggedType, DependencyCollection dependencies, PluginGraph graph)&#xD;&#xA;    {&#xD;&#xA;        // if this rule does not apply to the pluggedType,&#xD;&#xA;        // just return null to denote &quot;not applicable&quot;&#xD;&#xA;        if (!pluggedType.CanBeCastTo&lt;BaseThing&gt;()) return null;&#xD;&#xA;&#xD;&#xA;        return pluggedType.GetConstructor(new[] { typeof(IWidget) });&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>Finally, you can register your custom rule as shown below:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void use_a_custom_constructor_selector()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
-
-                _.Policies.ConstructorSelector&lt;ThingCtorRule&gt;();
-            });
-
-            container.GetInstance&lt;Thing1&gt;()
-                .CorrectCtorWasUsed.ShouldBeTrue();
-
-            container.GetInstance&lt;Thing2&gt;()
-                .CorrectCtorWasUsed.ShouldBeTrue();
-        }
-
-</code></pre>
-
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void use_a_custom_constructor_selector()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();&#xD;&#xA;&#xD;&#xA;        _.Policies.ConstructorSelector&lt;ThingCtorRule&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;Thing1&gt;()&#xD;&#xA;        .CorrectCtorWasUsed.ShouldBeTrue();&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;Thing2&gt;()&#xD;&#xA;        .CorrectCtorWasUsed.ShouldBeTrue();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 
                       </div>
 

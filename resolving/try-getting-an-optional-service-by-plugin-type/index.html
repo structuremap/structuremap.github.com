@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/resolving/try-geting-an-optional-service-by-plugin-type-and-name">Try Geting an Optional Service by Plugin Type and Name</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/resolving/get-all-services-by-plugin-type">Get all Services by Plugin Type</a></p></li>
                 </ul>
@@ -97,118 +97,24 @@ prefers the usage of the <a href="http://en.wikipedia.org/wiki/Null_Object_patte
 retrieve an <em>optional</em> service from StructureMap that may or may not be registered in the Container. If that particular registration doesn't exist, you
 just want a null value. StructureMap provides first class support for <em>optional</em> dependencies through the usage of the <code>IContainer.TryGetInstance()</code> methods.</p>
 <p>Say you have a simple interface <code>IFoo</code> that may or may not be registered in the Container:</p>
-<pre><code class="language-csharp">
-        public interface IFoo
-        {
-        }
-
-        public class Foo : IFoo
-        {
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public interface IFoo&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Foo : IFoo&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>In your own code you might request the <code>IFoo</code> service like the code below, knowing that you'll
 take responsibility yourself for building the <code>IFoo</code> service if StructureMap doesn't have a registration
 for <code>IFoo</code>:</p>
-<pre><code class="language-csharp">
-        public class MyFoo : IFoo
-        {
-        }
-
-        [Fact]
-        public void real_usage()
-        {
-            var container = new Container();
-
-            // if the container doesn&#39;t know about it,
-            // I&#39;ll build it myself
-            var foo = container.TryGetInstance&lt;IFoo&gt;()
-                      ?? new MyFoo();
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class MyFoo : IFoo&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void real_usage()&#xD;&#xA;{&#xD;&#xA;    var container = new Container();&#xD;&#xA;&#xD;&#xA;    // if the container doesn&#x27;t know about it,&#xD;&#xA;    // I&#x27;ll build it myself&#xD;&#xA;    var foo = container.TryGetInstance&lt;IFoo&gt;()&#xD;&#xA;              ?? new MyFoo();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>Just to make this perfectly clear, if StructureMap has a default registration for <code>IFoo</code>, you get this behavior:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void i_have_got_that()
-        {
-            var container = new Container(_ =&gt; _.For&lt;IFoo&gt;().Use&lt;Foo&gt;());
-
-            container.TryGetInstance&lt;IFoo&gt;()
-                .ShouldNotBeNull();
-
-            // -- or --
-
-            container.TryGetInstance(typeof(IFoo))
-                .ShouldNotBeNull();
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void i_have_got_that()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt; _.For&lt;IFoo&gt;().Use&lt;Foo&gt;());&#xD;&#xA;&#xD;&#xA;    container.TryGetInstance&lt;IFoo&gt;()&#xD;&#xA;        .ShouldNotBeNull();&#xD;&#xA;&#xD;&#xA;    // -- or --&#xD;&#xA;&#xD;&#xA;    container.TryGetInstance(typeof(IFoo))&#xD;&#xA;        .ShouldNotBeNull();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>If StructureMap knows nothing about <code>IFoo</code>, you get a null:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void i_do_not_have_that()
-        {
-            var container = new Container();
-
-            container.TryGetInstance&lt;IFoo&gt;()
-                .ShouldBeNull();
-
-            // -- or --
-
-            container.TryGetInstance(typeof(IFoo))
-                .ShouldBeNull();
-        }
-
-</code></pre>
-<h2>Concrete Types</h2>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void i_do_not_have_that()&#xD;&#xA;{&#xD;&#xA;    var container = new Container();&#xD;&#xA;&#xD;&#xA;    container.TryGetInstance&lt;IFoo&gt;()&#xD;&#xA;        .ShouldBeNull();&#xD;&#xA;&#xD;&#xA;    // -- or --&#xD;&#xA;&#xD;&#xA;    container.TryGetInstance(typeof(IFoo))&#xD;&#xA;        .ShouldBeNull();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="concrete-types">Concrete Types</h2>
 <p>Since it's not a perfect world, there are some gotchas you need to be aware of.
 While StructureMap will happily <em>auto-resolve</em> concrete types that aren't registered,
 that does not apply to the <code>TryGetInstance</code> mechanism:</p>
-<pre><code class="language-csharp">
-        public class ConcreteThing
-        {
-        }
-
-        [Fact]
-        public void no_auto_resolution_of_concrete_types()
-        {
-            var container = new Container();
-
-            container.TryGetInstance&lt;ConcreteThing&gt;()
-                .ShouldBeNull();
-
-            // now register ConcreteThing and do it again
-            container.Configure(_ =&gt; { _.For&lt;ConcreteThing&gt;().Use&lt;ConcreteThing&gt;(); });
-
-            container.TryGetInstance&lt;ConcreteThing&gt;()
-                .ShouldNotBeNull();
-        }
-
-</code></pre>
-<h2>Optional Generic Types</h2>
+<pre><code class="language-csharp">&#xD;&#xA;public class ConcreteThing&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void no_auto_resolution_of_concrete_types()&#xD;&#xA;{&#xD;&#xA;    var container = new Container();&#xD;&#xA;&#xD;&#xA;    container.TryGetInstance&lt;ConcreteThing&gt;()&#xD;&#xA;        .ShouldBeNull();&#xD;&#xA;&#xD;&#xA;    // now register ConcreteThing and do it again&#xD;&#xA;    container.Configure(_ =&gt; { _.For&lt;ConcreteThing&gt;().Use&lt;ConcreteThing&gt;(); });&#xD;&#xA;&#xD;&#xA;    container.TryGetInstance&lt;ConcreteThing&gt;()&#xD;&#xA;        .ShouldNotBeNull();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="optional-generic-types">Optional Generic Types</h2>
 <p>If you are using open generic types, the <code>TryGetInstance()</code> mechanism <strong>can</strong> close the open generic registration
 to satisfy the optional dependency like this sample:</p>
-<pre><code class="language-csharp">
-        public interface IThing&lt;T&gt;
-        {
-        }
-
-        public class Thing&lt;T&gt; : IThing&lt;T&gt;
-        {
-        }
-
-        [Fact]
-        public void can_try_get_open_type_resolution()
-        {
-            var container = new Container(_ =&gt; { _.For(typeof(IThing&lt;&gt;)).Use(typeof(Thing&lt;&gt;)); });
-
-            container.TryGetInstance&lt;IThing&lt;string&gt;&gt;()
-                .ShouldBeOfType&lt;Thing&lt;string&gt;&gt;();
-        }
-
-</code></pre>
-
+<pre><code class="language-csharp">&#xD;&#xA;public interface IThing&lt;T&gt;&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Thing&lt;T&gt; : IThing&lt;T&gt;&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void can_try_get_open_type_resolution()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt; { _.For(typeof(IThing&lt;&gt;)).Use(typeof(Thing&lt;&gt;)); });&#xD;&#xA;&#xD;&#xA;    container.TryGetInstance&lt;IThing&lt;string&gt;&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;Thing&lt;string&gt;&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 
                       </div>
 

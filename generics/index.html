@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/interception-and-decorators">Interception and Decorators</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/object-lifecycle">Object Lifecycles</a></p></li>
                 </ul>
@@ -91,100 +91,32 @@
                           <!--Title:Generic Types-->
 <p>StructureMap comes with some power abilities to exploit <a href="https://msdn.microsoft.com/en-us/library/ms172334(v=vs.110).aspx">open generic types</a> in .Net for extensibility
 and flexible handling within your system.</p>
-<h2>Example 1: Visualizing an Activity Log</h2>
+<h2 id="example-1-visualizing-an-activity-log">Example 1: Visualizing an Activity Log</h2>
 <p>I worked years ago on a system that could be used to record and resolve customer support problems. Since it was very workflow heavy in its logic,
 we tracked user and system activity as an <em>event stream</em> of small objects that reflected all the different actions or state changes
 that could happen to an issue. To render and visualize the activity log to HTML, we used many of the open generic type capabilities shown in
 this topic to find and apply the correct HTML rendering strategy for each type of log object in an activity stream.</p>
 <p>Given a log object, we wanted to look up the right visualizer strategy to render that type of log object to html on the server side.</p>
 <p>To start, we had an interface like this one that we were going to use to get the HTML for each log object:</p>
-<pre><code class="language-csharp">
-    public interface ILogVisualizer
-    {
-        // If we already know what the type of log we have
-        string ToHtml&lt;TLog&gt;(TLog log);
-
-        // If we only know that we have a log object
-        string ToHtml(object log);
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public interface ILogVisualizer&#xD;&#xA;{&#xD;&#xA;    // If we already know what the type of log we have&#xD;&#xA;    string ToHtml&lt;TLog&gt;(TLog log);&#xD;&#xA;&#xD;&#xA;    // If we only know that we have a log object&#xD;&#xA;    string ToHtml(object log);&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>So for an example, if we already knew that we had an <code>IssueCreated</code> object, we should be able to use StructureMap like this:</p>
-<pre><code class="language-csharp">
-            // Just setting up a Container and ILogVisualizer
-            var container = Container.For&lt;VisualizationRegistry&gt;();
-            var visualizer = container.GetInstance&lt;ILogVisualizer&gt;();
-
-            // If I have an IssueCreated lob object...
-            var created = new IssueCreated();
-
-            // I can get the html representation:
-            var html = visualizer.ToHtml(created);
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;// Just setting up a Container and ILogVisualizer&#xD;&#xA;var container = Container.For&lt;VisualizationRegistry&gt;();&#xD;&#xA;var visualizer = container.GetInstance&lt;ILogVisualizer&gt;();&#xD;&#xA;&#xD;&#xA;// If I have an IssueCreated lob object...&#xD;&#xA;var created = new IssueCreated();&#xD;&#xA;&#xD;&#xA;// I can get the html representation:&#xD;&#xA;var html = visualizer.ToHtml(created);&#xD;&#xA;</code></pre>
 <p>If we had an array of log objects, but we do not already know the specific types, we can still use the more generic <code>ToHtml(object)</code> method like this:</p>
-<pre><code class="language-csharp">
-            var logs = new object[]
-            {
-                new IssueCreated(),
-                new TaskAssigned(),
-                new Comment(),
-                new IssueResolved()
-            };
-
-            // SAMPLE: using-visualizer-knowning-the-type
-            // Just setting up a Container and ILogVisualizer
-            var container = Container.For&lt;VisualizationRegistry&gt;();
-            var visualizer = container.GetInstance&lt;ILogVisualizer&gt;();
-
-            var items = logs.Select(visualizer.ToHtml);
-            var html = string.Join(&quot;&lt;hr /&gt;&quot;, items);
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;var logs = new object[]&#xD;&#xA;{&#xD;&#xA;    new IssueCreated(),&#xD;&#xA;    new TaskAssigned(),&#xD;&#xA;    new Comment(),&#xD;&#xA;    new IssueResolved()&#xD;&#xA;};&#xD;&#xA;&#xD;&#xA;// SAMPLE: using-visualizer-knowning-the-type&#xD;&#xA;// Just setting up a Container and ILogVisualizer&#xD;&#xA;var container = Container.For&lt;VisualizationRegistry&gt;();&#xD;&#xA;var visualizer = container.GetInstance&lt;ILogVisualizer&gt;();&#xD;&#xA;&#xD;&#xA;var items = logs.Select(visualizer.ToHtml);&#xD;&#xA;var html = string.Join(&quot;&lt;hr /&gt;&quot;, items);&#xD;&#xA;</code></pre>
 <p>The next step is to create a way to identify the visualization strategy for a single type of log object. We certainly could have done this
 with a giant switch statement, but we wanted some extensibility for new types of activity log objects and even customer specific log types
 that would never, ever be in the main codebase. We settled on an interface like the one shown below that would be responsible for
 rendering a particular type of log object (&quot;T&quot; in the type):</p>
-<pre><code class="language-csharp">
-    public interface IVisualizer&lt;TLog&gt;
-    {
-        string ToHtml(TLog log);
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public interface IVisualizer&lt;TLog&gt;&#xD;&#xA;{&#xD;&#xA;    string ToHtml(TLog log);&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>Inside of the concrete implementation of <code>ILogVisualizer</code> we need to be able to pull out and use the correct <code>IVisualizer&lt;T&gt;</code> strategy for a log type. We of course
 used a StructureMap <code>Container</code> to do the resolution and lookup, so now we also need to be able to register all the log visualization strategies in some easy way.
 On top of that, many of the log types were simple and could just as easily be rendered with a simple html strategy like this class:</p>
-<pre><code class="language-csharp">
-    public class DefaultVisualizer&lt;TLog&gt; : IVisualizer&lt;TLog&gt;
-    {
-        public string ToHtml(TLog log)
-        {
-            return string.Format(&quot;&lt;div&gt;{0}&lt;/div&gt;&quot;, log);
-        }
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class DefaultVisualizer&lt;TLog&gt; : IVisualizer&lt;TLog&gt;&#xD;&#xA;{&#xD;&#xA;    public string ToHtml(TLog log)&#xD;&#xA;    {&#xD;&#xA;        return string.Format(&quot;&lt;div&gt;{0}&lt;/div&gt;&quot;, log);&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>Inside of our StructureMap usage, if we don't have a specific visualizer for a given log type, we'd just like to fallback to the default visualizer and proceed.</p>
 <p>Alright, now that we have a real world problem, let's proceed to the mechanics of the solution.</p>
-<h2>Registering Open Generic Types</h2>
+<h2 id="registering-open-generic-types">Registering Open Generic Types</h2>
 <p>Let's say to begin with all we want to do is to always use the <code>DefaultVisualizer</code> for each log type. We can do that with code like this below:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void register_open_generic_type()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.For(typeof(IVisualizer&lt;&gt;)).Use(typeof(DefaultVisualizer&lt;&gt;));
-            });
-
-            Debug.WriteLine(container.WhatDoIHave(@namespace: &quot;StructureMap.Testing.Acceptance.Visualization&quot;));
-
-            container.GetInstance&lt;IVisualizer&lt;IssueCreated&gt;&gt;()
-                .ShouldBeOfType&lt;DefaultVisualizer&lt;IssueCreated&gt;&gt;();
-
-            Debug.WriteLine(container.WhatDoIHave(@namespace: &quot;StructureMap.Testing.Acceptance.Visualization&quot;));
-
-            container.GetInstance&lt;IVisualizer&lt;IssueResolved&gt;&gt;()
-                .ShouldBeOfType&lt;DefaultVisualizer&lt;IssueResolved&gt;&gt;();
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void register_open_generic_type()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.For(typeof(IVisualizer&lt;&gt;)).Use(typeof(DefaultVisualizer&lt;&gt;));&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    Debug.WriteLine(container.WhatDoIHave(@namespace: &quot;StructureMap.Testing.Acceptance.Visualization&quot;));&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IVisualizer&lt;IssueCreated&gt;&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;DefaultVisualizer&lt;IssueCreated&gt;&gt;();&#xD;&#xA;&#xD;&#xA;    Debug.WriteLine(container.WhatDoIHave(@namespace: &quot;StructureMap.Testing.Acceptance.Visualization&quot;));&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IVisualizer&lt;IssueResolved&gt;&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;DefaultVisualizer&lt;IssueResolved&gt;&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>With the configuration above, there are no specific registrations for <code>IVisualizer&lt;IssueCreated&gt;</code>. At the first request for that
 interface, StructureMap will run through its &quot;<a href="/registration/on-missing-family-policies">missing family policies</a>&quot;, one of which is
 to try to find registrations for an open generic type that could be closed to make a valid registration for the requested type. In the case above,
@@ -207,86 +139,28 @@ IVisualizer&lt;IssueCreated&gt;     StructureMap.Testing.Acceptance.Visualizatio
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 IVisualizer&lt;TLog&gt;             StructureMap.Testing.Acceptance.Visualization     Transient     DefaultVisualizer&lt;TLog&gt;                                                      (Default)
 ====================================================================================================================================================================================
+
+
 </pre>
-<h2>Generic Registrations and Default Fallbacks</h2>
+<h2 id="generic-registrations-and-default-fallbacks">Generic Registrations and Default Fallbacks</h2>
 <p>A powerful feature of generic type support in StructureMap is the ability to register specific handlers for some types, but allow
 users to register a &quot;fallback&quot; registration otherwise. In the case of the visualization, some types of log objects may justify some
 special HTML rendering while others can happily be rendered with the default visualization strategy. This behavior is demonstrated by
 the following code sample:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void generic_defaults()
-        {
-            var container = new Container(_ =&gt;
-            {
-                // The default visualizer just like we did above
-                _.For(typeof(IVisualizer&lt;&gt;)).Use(typeof(DefaultVisualizer&lt;&gt;));
-
-                // Register a specific visualizer for IssueCreated
-                _.For&lt;IVisualizer&lt;IssueCreated&gt;&gt;().Use&lt;IssueCreatedVisualizer&gt;();
-            });
-
-            // We have a specific visualizer for IssueCreated
-            container.GetInstance&lt;IVisualizer&lt;IssueCreated&gt;&gt;()
-                .ShouldBeOfType&lt;IssueCreatedVisualizer&gt;();
-
-            // We do not have any special visualizer for TaskAssigned,
-            // so fall back to the DefaultVisualizer&lt;T&gt;
-            container.GetInstance&lt;IVisualizer&lt;TaskAssigned&gt;&gt;()
-                .ShouldBeOfType&lt;DefaultVisualizer&lt;TaskAssigned&gt;&gt;();
-        }
-
-</code></pre>
-<h2>Connecting Generic Implementations with Type Scanning</h2>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void generic_defaults()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        // The default visualizer just like we did above&#xD;&#xA;        _.For(typeof(IVisualizer&lt;&gt;)).Use(typeof(DefaultVisualizer&lt;&gt;));&#xD;&#xA;&#xD;&#xA;        // Register a specific visualizer for IssueCreated&#xD;&#xA;        _.For&lt;IVisualizer&lt;IssueCreated&gt;&gt;().Use&lt;IssueCreatedVisualizer&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    // We have a specific visualizer for IssueCreated&#xD;&#xA;    container.GetInstance&lt;IVisualizer&lt;IssueCreated&gt;&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;IssueCreatedVisualizer&gt;();&#xD;&#xA;&#xD;&#xA;    // We do not have any special visualizer for TaskAssigned,&#xD;&#xA;    // so fall back to the DefaultVisualizer&lt;T&gt;&#xD;&#xA;    container.GetInstance&lt;IVisualizer&lt;TaskAssigned&gt;&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;DefaultVisualizer&lt;TaskAssigned&gt;&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="connecting-generic-implementations-with-type-scanning">Connecting Generic Implementations with Type Scanning</h2>
 <div class="alert alert-info" role="alert">It's generally harmful in software projects to have a single code file that has to be frequently edited to for unrelated changes,
  and StructureMap <code>Registry</code> classes that explicitly configure services can easily fall into that category. Using type scanning registration can help
  teams avoid that problem altogether by eliminating the need to make any explict registrations as new providers are added to the codebase.</div>
 <p>For this example, I have two special visualizers for the <code>IssueCreated</code> and <code>IssueResolved</code> log types:</p>
-<pre><code class="language-csharp">
-    public class IssueCreatedVisualizer : IVisualizer&lt;IssueCreated&gt;
-    {
-        public string ToHtml(IssueCreated log)
-        {
-            return &quot;special html for an issue being created&quot;;
-        }
-    }
-
-    public class IssueResolvedVisualizer : IVisualizer&lt;IssueResolved&gt;
-    {
-        public string ToHtml(IssueResolved log)
-        {
-            return &quot;special html for issue resolved&quot;;
-        }
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class IssueCreatedVisualizer : IVisualizer&lt;IssueCreated&gt;&#xD;&#xA;{&#xD;&#xA;    public string ToHtml(IssueCreated log)&#xD;&#xA;    {&#xD;&#xA;        return &quot;special html for an issue being created&quot;;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class IssueResolvedVisualizer : IVisualizer&lt;IssueResolved&gt;&#xD;&#xA;{&#xD;&#xA;    public string ToHtml(IssueResolved log)&#xD;&#xA;    {&#xD;&#xA;        return &quot;special html for issue resolved&quot;;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>In the real project that inspired this example, we had many, many more types of log visualizer strategies and it
 could have easily been very tedious to manually register all the different little <code>IVisualizer&lt;T&gt;</code> strategy types in a <code>Registry</code> class by hand.
 Fortunately, part of StructureMap's <a href="/registration/auto-registration-and-conventions">type scanning</a> support is the <code>ConnectImplementationsToTypesClosing()</code>
 auto-registration mechanism via generic templates for exactly this kind of scenario.</p>
 <p>In the sample below, I've set up a type scanning operation that will register any concrete type in the Assembly that contains the <code>VisualizationRegistry</code>
 that closes <code>IVisualizer&lt;T&gt;</code> against the proper interface:</p>
-<pre><code class="language-csharp">
-    public class VisualizationRegistry : Registry
-    {
-        public VisualizationRegistry()
-        {
-            // The main ILogVisualizer service
-            For&lt;ILogVisualizer&gt;().Use&lt;LogVisualizer&gt;();
-
-            // A default, fallback visualizer
-            For(typeof(IVisualizer&lt;&gt;)).Use(typeof(DefaultVisualizer&lt;&gt;));
-
-            // Auto-register all concrete types that &quot;close&quot;
-            // IVisualizer&lt;TLog&gt;
-            Scan(x =&gt;
-            {
-                x.TheCallingAssembly();
-                x.ConnectImplementationsToTypesClosing(typeof(IVisualizer&lt;&gt;));
-            });
-
-        }
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class VisualizationRegistry : Registry&#xD;&#xA;{&#xD;&#xA;    public VisualizationRegistry()&#xD;&#xA;    {&#xD;&#xA;        // The main ILogVisualizer service&#xD;&#xA;        For&lt;ILogVisualizer&gt;().Use&lt;LogVisualizer&gt;();&#xD;&#xA;&#xD;&#xA;        // A default, fallback visualizer&#xD;&#xA;        For(typeof(IVisualizer&lt;&gt;)).Use(typeof(DefaultVisualizer&lt;&gt;));&#xD;&#xA;&#xD;&#xA;        // Auto-register all concrete types that &quot;close&quot;&#xD;&#xA;        // IVisualizer&lt;TLog&gt;&#xD;&#xA;        Scan(x =&gt;&#xD;&#xA;        {&#xD;&#xA;            x.TheCallingAssembly();&#xD;&#xA;            x.ConnectImplementationsToTypesClosing(typeof(IVisualizer&lt;&gt;));&#xD;&#xA;        });&#xD;&#xA;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>If we create a <code>Container</code> based on the configuration above, we can see that the type scanning operation picks up the specific visualizers for
 <code>IssueCreated</code> and <code>IssueResolved</code> as shown in the diagnostic view below:</p>
 <pre style="overflow:scroll;word-break:normal;word-wrap:normal">
@@ -305,228 +179,46 @@ IVisualizer&lt;TLog&gt;              StructureMap.Testing.Acceptance.Visualizati
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 IVisualizer&lt;TLog&gt;              StructureMap.Testing.Acceptance.Visualization     Transient     DefaultVisualizer&lt;TLog&gt;                                                   (Default)
 ==================================================================================================================================================================================
+
 </pre>
 <p>The following sample shows the <code>VisualizationRegistry</code> in action to combine the type scanning registration plus the default fallback behavior for
 log types that do not have any special visualization logic:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void visualization_registry()
-        {
-            var container = Container.For&lt;VisualizationRegistry&gt;();
-
-            Debug.WriteLine(container.WhatDoIHave(@namespace: &quot;StructureMap.Testing.Acceptance.Visualization&quot;));
-
-            container.GetInstance&lt;IVisualizer&lt;IssueCreated&gt;&gt;()
-                .ShouldBeOfType&lt;IssueCreatedVisualizer&gt;();
-
-            container.GetInstance&lt;IVisualizer&lt;IssueResolved&gt;&gt;()
-                .ShouldBeOfType&lt;IssueResolvedVisualizer&gt;();
-
-            // We have no special registration for TaskAssigned,
-            // so fallback to the default visualizer
-            container.GetInstance&lt;IVisualizer&lt;TaskAssigned&gt;&gt;()
-                .ShouldBeOfType&lt;DefaultVisualizer&lt;TaskAssigned&gt;&gt;();
-        }
-
-</code></pre>
-<h2>Building Closed Types with ForGenericType() and ForObject()</h2>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void visualization_registry()&#xD;&#xA;{&#xD;&#xA;    var container = Container.For&lt;VisualizationRegistry&gt;();&#xD;&#xA;&#xD;&#xA;    Debug.WriteLine(container.WhatDoIHave(@namespace: &quot;StructureMap.Testing.Acceptance.Visualization&quot;));&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IVisualizer&lt;IssueCreated&gt;&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;IssueCreatedVisualizer&gt;();&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IVisualizer&lt;IssueResolved&gt;&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;IssueResolvedVisualizer&gt;();&#xD;&#xA;&#xD;&#xA;    // We have no special registration for TaskAssigned,&#xD;&#xA;    // so fallback to the default visualizer&#xD;&#xA;    container.GetInstance&lt;IVisualizer&lt;TaskAssigned&gt;&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;DefaultVisualizer&lt;TaskAssigned&gt;&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="building-closed-types-with-forgenerictype-and-forobject">Building Closed Types with ForGenericType() and ForObject()</h2>
 <p>Working with generic types and the common <code>IHandler&lt;T&gt;</code> pattern can be a little bit tricky if all you have is an object that is declared as an <code>object</code>. Fortunately,
 StructureMap has a couple helper methods and mechanisms to help you bridge the gap between <code>DoSomething(object something)</code> and <code>DoSomething&lt;T&gt;(T something)</code>.</p>
 <p>If you remember the full <code>ILogVisualizer</code> interface from above:</p>
-<pre><code class="language-csharp">
-    public interface ILogVisualizer
-    {
-        // If we already know what the type of log we have
-        string ToHtml&lt;TLog&gt;(TLog log);
-
-        // If we only know that we have a log object
-        string ToHtml(object log);
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public interface ILogVisualizer&#xD;&#xA;{&#xD;&#xA;    // If we already know what the type of log we have&#xD;&#xA;    string ToHtml&lt;TLog&gt;(TLog log);&#xD;&#xA;&#xD;&#xA;    // If we only know that we have a log object&#xD;&#xA;    string ToHtml(object log);&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>The method <code>ToHtml(object log)</code> somehow needs to be able to find the right <code>IVisualizer&lt;T&gt;</code> and execute it to get the HTML representation for a log object.
 The StructureMap <code>IContainer</code> provides two different methods called <code>ForObject()</code> and <code>ForGenericType()</code> for exactly this case, as shown below in a possible implementation
 of <code>ILogVisualizer</code>:</p>
-<pre><code class="language-csharp">
-    public class LogVisualizer : ILogVisualizer
-    {
-        private readonly IContainer _container;
-
-        // Take in the IContainer directly so that
-        // yes, you can use it as a service locator
-        public LogVisualizer(IContainer container)
-        {
-            _container = container;
-        }
-
-        // It&#39;s easy if you already know what the log
-        // type is
-        public string ToHtml&lt;TLog&gt;(TLog log)
-        {
-            return _container.GetInstance&lt;IVisualizer&lt;TLog&gt;&gt;()
-                .ToHtml(log);
-        }
-
-        public string ToHtml(object log)
-        {
-            // The ForObject() method uses the 
-            // log.GetType() as the parameter to the open
-            // type Writer&lt;T&gt;, and then resolves that
-            // closed type from the container and
-            // casts it to IWriter for you
-            return _container.ForObject(log)
-                .GetClosedTypeOf(typeof (Writer&lt;&gt;))
-                .As&lt;IWriter&gt;()
-                .Write(log);
-        }
-
-        public string ToHtml2(object log)
-        {
-            // The ForGenericType() method is again creating
-            // a closed type of Writer&lt;T&gt; from the Container
-            // and casting it to IWriter
-            return _container.ForGenericType(typeof (Writer&lt;&gt;))
-                .WithParameters(log.GetType())
-                .GetInstanceAs&lt;IWriter&gt;()
-                .Write(log);
-        }
-
-        // The IWriter and Writer&lt;T&gt; class below are
-        // adapters to go from &quot;object&quot; to &lt;T&gt;() signatures
-        public interface IWriter
-        {
-            string Write(object log);
-        }
-
-        public class Writer&lt;T&gt; : IWriter
-        {
-            private readonly IVisualizer&lt;T&gt; _visualizer;
-
-            public Writer(IVisualizer&lt;T&gt; visualizer)
-            {
-                _visualizer = visualizer;
-            }
-
-            public string Write(object log)
-            {
-                return _visualizer.ToHtml((T) log);
-            }
-        }
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class LogVisualizer : ILogVisualizer&#xD;&#xA;{&#xD;&#xA;    private readonly IContainer _container;&#xD;&#xA;&#xD;&#xA;    // Take in the IContainer directly so that&#xD;&#xA;    // yes, you can use it as a service locator&#xD;&#xA;    public LogVisualizer(IContainer container)&#xD;&#xA;    {&#xD;&#xA;        _container = container;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    // It&#x27;s easy if you already know what the log&#xD;&#xA;    // type is&#xD;&#xA;    public string ToHtml&lt;TLog&gt;(TLog log)&#xD;&#xA;    {&#xD;&#xA;        return _container.GetInstance&lt;IVisualizer&lt;TLog&gt;&gt;()&#xD;&#xA;            .ToHtml(log);&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public string ToHtml(object log)&#xD;&#xA;    {&#xD;&#xA;        // The ForObject() method uses the &#xD;&#xA;        // log.GetType() as the parameter to the open&#xD;&#xA;        // type Writer&lt;T&gt;, and then resolves that&#xD;&#xA;        // closed type from the container and&#xD;&#xA;        // casts it to IWriter for you&#xD;&#xA;        return _container.ForObject(log)&#xD;&#xA;            .GetClosedTypeOf(typeof (Writer&lt;&gt;))&#xD;&#xA;            .As&lt;IWriter&gt;()&#xD;&#xA;            .Write(log);&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public string ToHtml2(object log)&#xD;&#xA;    {&#xD;&#xA;        // The ForGenericType() method is again creating&#xD;&#xA;        // a closed type of Writer&lt;T&gt; from the Container&#xD;&#xA;        // and casting it to IWriter&#xD;&#xA;        return _container.ForGenericType(typeof (Writer&lt;&gt;))&#xD;&#xA;            .WithParameters(log.GetType())&#xD;&#xA;            .GetInstanceAs&lt;IWriter&gt;()&#xD;&#xA;            .Write(log);&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    // The IWriter and Writer&lt;T&gt; class below are&#xD;&#xA;    // adapters to go from &quot;object&quot; to &lt;T&gt;() signatures&#xD;&#xA;    public interface IWriter&#xD;&#xA;    {&#xD;&#xA;        string Write(object log);&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public class Writer&lt;T&gt; : IWriter&#xD;&#xA;    {&#xD;&#xA;        private readonly IVisualizer&lt;T&gt; _visualizer;&#xD;&#xA;&#xD;&#xA;        public Writer(IVisualizer&lt;T&gt; visualizer)&#xD;&#xA;        {&#xD;&#xA;            _visualizer = visualizer;&#xD;&#xA;        }&#xD;&#xA;&#xD;&#xA;        public string Write(object log)&#xD;&#xA;        {&#xD;&#xA;            return _visualizer.ToHtml((T) log);&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>The two methods are almost identical in result with some slight differences:</p>
 <ol>
 <li><code>ForObject(object subject)</code> can only work with open types that have only one generic type parameter, and it will pass the argument <code>subject</code> to the underlying <code>Container</code> as an <a href="/resolving/passing-arguments-at-runtime">explicit argument</a> so that you can inject that <code>subject</code> object into the object graph being created.</li>
 <li><code>ForGenericType(Type openType)</code> is a little clumsier to use, but can handle any number of generic type parameters</li>
 </ol>
-<h2>Example #2: Generic Instance Builder</h2>
+<h2 id="example-2-generic-instance-builder">Example #2: Generic Instance Builder</h2>
 <p>As I recall, the following example was inspired by a question about how to use StructureMap to build out MongoDB <a href="http://api.mongodb.org/csharp/1.7/html/6d5bbe8e-46f4-087f-8e83-06297634ed40.htm">MongoCollection</a> objects from some sort of static builder or factory -- but I can't find the discussion on the mailing list as I write this today. This has come up often enough to justify its inclusion in the documentation.</p>
 <p>Say that you have some sort of persistence tooling that you primarily interact with through an interface like this one below, where <code>TDocument</code> and <code>TQuery</code> are classes in
 your persistent domain:</p>
-<pre><code class="language-csharp">
-    public interface IRepository&lt;TDocument, TQuery&gt;
-    {
-    }
-
-</code></pre> 
+<pre><code class="language-csharp">&#xD;&#xA;public interface IRepository&lt;TDocument, TQuery&gt;&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre> 
 <p>Great, StructureMap handles generic types just fine, so you can just register the various closed types and off you go. Except you can't because the way that your
 persistence tooling works requires you to create the <code>IRepository&lt;,&gt;</code> objects with a static builder class like this one below:</p>
-<pre><code class="language-csharp">
-    public static class RepositoryBuilder
-    {
-        public static IRepository&lt;TDocument, TQuery&gt; Build&lt;TDocument, TQuery&gt;()
-        {
-            return new Repository&lt;TDocument, TQuery&gt;();
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public static class RepositoryBuilder&#xD;&#xA;{&#xD;&#xA;    public static IRepository&lt;TDocument, TQuery&gt; Build&lt;TDocument, TQuery&gt;()&#xD;&#xA;    {&#xD;&#xA;        return new Repository&lt;TDocument, TQuery&gt;();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>StructureMap has an admittedly non-obvious way to handle this situation by creating a new subclass of <code>Instance</code> that will &quot;know&quot; how to create the real <code>Instance</code> for a closed
 type of <code>IRepository&lt;,&gt;</code>.</p>
 <p>First off, let's create a new <code>Instance</code> type that knows how to build a specific type of <code>IRepository&lt;,&gt;</code> by subclassing the <code>LambdaInstance</code> type and providing a <code>Func</code> to
 build our repository type with the static <code>RepositoryBuilder</code> class:</p>
-<pre><code class="language-csharp">
-    public class RepositoryInstance&lt;TDocument, TQuery&gt; : LambdaInstance&lt;IRepository&lt;TDocument, TQuery&gt;&gt;
-    {
-        public RepositoryInstance() : base(() =&gt; RepositoryBuilder.Build&lt;TDocument, TQuery&gt;())
-        {
-        }
-
-        // This is purely to make the diagnostic views prettier
-        public override string Description
-        {
-            get
-            {
-                return &quot;RepositoryBuilder.Build&lt;{0}, {1}&gt;()&quot;
-                    .ToFormat(typeof(TDocument).Name, typeof(TQuery).Name);
-            }
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class RepositoryInstance&lt;TDocument, TQuery&gt; : LambdaInstance&lt;IRepository&lt;TDocument, TQuery&gt;&gt;&#xD;&#xA;{&#xD;&#xA;    public RepositoryInstance() : base(() =&gt; RepositoryBuilder.Build&lt;TDocument, TQuery&gt;())&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    // This is purely to make the diagnostic views prettier&#xD;&#xA;    public override string Description&#xD;&#xA;    {&#xD;&#xA;        get&#xD;&#xA;        {&#xD;&#xA;            return &quot;RepositoryBuilder.Build&lt;{0}, {1}&gt;()&quot;&#xD;&#xA;                .ToFormat(typeof(TDocument).Name, typeof(TQuery).Name);&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>As you've probably surmised, the custom <code>RepositoryInstance</code> above is itself an open generic type and cannot be used directly until it has been closed. You <strong>could</strong> use this class directly if you have a very few document types like this:</p>
-<pre><code class="language-csharp">
-            var container = new Container(_ =&gt;
-            {
-                _.For&lt;IRepository&lt;string, int&gt;&gt;().UseInstance(new RepositoryInstance&lt;string, int&gt;());
-
-                // or skip the custom Instance with:
-
-                _.For&lt;IRepository&lt;string, int&gt;&gt;().Use(() =&gt; RepositoryBuilder.Build&lt;string, int&gt;());
-            });
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;var container = new Container(_ =&gt;&#xD;&#xA;{&#xD;&#xA;    _.For&lt;IRepository&lt;string, int&gt;&gt;().UseInstance(new RepositoryInstance&lt;string, int&gt;());&#xD;&#xA;&#xD;&#xA;    // or skip the custom Instance with:&#xD;&#xA;&#xD;&#xA;    _.For&lt;IRepository&lt;string, int&gt;&gt;().Use(() =&gt; RepositoryBuilder.Build&lt;string, int&gt;());&#xD;&#xA;});&#xD;&#xA;</code></pre>
 <p>To handle the problem in a more generic way, we can create a second custom subclass of <code>Instance</code> for the open type <code>IRepository&lt;,&gt;</code> that will help StructureMap understand how
 to build the specific closed types of <code>IRepository&lt;,&gt;</code> at runtime:</p>
-<pre><code class="language-csharp">
-    public class RepositoryInstanceFactory : Instance
-    {
-        // This is the key part here. This method is called by
-        // StructureMap to &quot;find&quot; an Instance for a closed
-        // type of IRepository&lt;,&gt;
-        public override Instance CloseType(Type[] types)
-        {
-            // StructureMap will cache the object built out of this,
-            // so the expensive Reflection hit only happens
-            // once
-            var instanceType = typeof(RepositoryInstance&lt;,&gt;).MakeGenericType(types);
-            return Activator.CreateInstance(instanceType).As&lt;Instance&gt;();
-        }
-
-        // Don&#39;t worry about this one, never gets called
-        public override IDependencySource ToDependencySource(Type pluginType)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override string Description
-        {
-            get { return &quot;Build Repository&lt;T, T1&gt;() with RepositoryBuilder&quot;; }
-        }
-
-        public override Type ReturnedType
-        {
-            get { return typeof(Repository&lt;,&gt;); }
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class RepositoryInstanceFactory : Instance&#xD;&#xA;{&#xD;&#xA;    // This is the key part here. This method is called by&#xD;&#xA;    // StructureMap to &quot;find&quot; an Instance for a closed&#xD;&#xA;    // type of IRepository&lt;,&gt;&#xD;&#xA;    public override Instance CloseType(Type[] types)&#xD;&#xA;    {&#xD;&#xA;        // StructureMap will cache the object built out of this,&#xD;&#xA;        // so the expensive Reflection hit only happens&#xD;&#xA;        // once&#xD;&#xA;        var instanceType = typeof(RepositoryInstance&lt;,&gt;).MakeGenericType(types);&#xD;&#xA;        return Activator.CreateInstance(instanceType).As&lt;Instance&gt;();&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    // Don&#x27;t worry about this one, never gets called&#xD;&#xA;    public override IDependencySource ToDependencySource(Type pluginType)&#xD;&#xA;    {&#xD;&#xA;        throw new NotSupportedException();&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public override string Description&#xD;&#xA;    {&#xD;&#xA;        get { return &quot;Build Repository&lt;T, T1&gt;() with RepositoryBuilder&quot;; }&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public override Type ReturnedType&#xD;&#xA;    {&#xD;&#xA;        get { return typeof(Repository&lt;,&gt;); }&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>The key part of the class above is the <code>CloseType(Type[] types)</code> method. At that point, we can determine the right type of <code>RepositoryInstance&lt;,&gt;</code> to build the requested type of <code>IRepository&lt;,&gt;</code>, then use some reflection to create and return that custom <code>Instance</code>.</p>
 <p>Here's a unit test that exercises and demonstrates this functionality from end to end:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void show_the_workaround_for_generic_builders()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.For(typeof(IRepository&lt;,&gt;)).Use(new RepositoryInstanceFactory());
-            });
-
-            container.GetInstance&lt;IRepository&lt;string, int&gt;&gt;()
-                .ShouldBeOfType&lt;Repository&lt;string, int&gt;&gt;();
-
-            Debug.WriteLine(container.WhatDoIHave(assembly: GetType().GetAssembly()));
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void show_the_workaround_for_generic_builders()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.For(typeof(IRepository&lt;,&gt;)).Use(new RepositoryInstanceFactory());&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IRepository&lt;string, int&gt;&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;Repository&lt;string, int&gt;&gt;();&#xD;&#xA;&#xD;&#xA;    Debug.WriteLine(container.WhatDoIHave(assembly: GetType().GetAssembly()));&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>After requesting <code>IRepository&lt;string, int&gt;</code> for the first time, the container configuration from <a href="/diagnostics/whatdoihave">Container.WhatDoIHave()</a> is:</p>
 <pre style="overflow:scroll;word-break:normal;word-wrap:normal">
 ===================================================================================================================================================
@@ -537,82 +229,22 @@ IRepository&lt;String, Int32&gt;         StructureMap.Testing.Acceptance     Tra
 IRepository&lt;TDocument, TQuery&gt;     StructureMap.Testing.Acceptance     Transient     Build Repository&lt;T, T1&gt;() with RepositoryBuilder     (Default)
 ===================================================================================================================================================
 </pre>
-<h2>Example 3: Interception Policy against Generic Types</h2>
+<h2 id="example-3-interception-policy-against-generic-types">Example 3: Interception Policy against Generic Types</h2>
 <p>Several years ago I described an approach for <a href="http://codebetter.com/jeremymiller/2009/07/24/how-i-m-using-the-event-aggregator-pattern-in-storyteller/">using an Event Aggregator in a WPF application</a> that relied on StructureMap interception to register any object that
 StructureMap built with the active <a href="http://martinfowler.com/eaaDev/EventAggregator.html">EventAggregator</a> for the system <em>if that object was recognized as a listener to the event aggregator</em>. I thought that approach worked out quite well, so let's talk about how you could implement
 that same design with the improved interception model introduced by StructureMap 3.0 (the event aggregator and StructureMap interception worked out well,
 but I'm very happy now that I ditched the old WPF client and replaced it with a web application using React.js instead).</p>
 <p>First off, let's say that we're going to have this interface for our event aggregator:</p>
-<pre><code class="language-csharp">
-    public interface IEventAggregator
-    {
-        // Sending messages
-        void SendMessage&lt;T&gt;(T message);
-
-        void SendMessage&lt;T&gt;() where T : new();
-
-        // Explicit registration
-        void AddListener(object listener);
-
-        void RemoveListener(object listener);
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public interface IEventAggregator&#xD;&#xA;{&#xD;&#xA;    // Sending messages&#xD;&#xA;    void SendMessage&lt;T&gt;(T message);&#xD;&#xA;&#xD;&#xA;    void SendMessage&lt;T&gt;() where T : new();&#xD;&#xA;&#xD;&#xA;    // Explicit registration&#xD;&#xA;    void AddListener(object listener);&#xD;&#xA;&#xD;&#xA;    void RemoveListener(object listener);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>To register a listener for a particular type of event notification, you would implement an interface called <code>IListener&lt;T&gt;</code> shown below
 and directly add that object to the <code>IEventAggregator</code>:</p>
-<pre><code class="language-csharp">
-    public interface IListener&lt;T&gt;
-    {
-        void Handle(T message);
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public interface IListener&lt;T&gt;&#xD;&#xA;{&#xD;&#xA;    void Handle(T message);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>In the application I'm describing, all of the listener objects were presenters or screen controls that were created by StructureMap, so it was convenient to allow StructureMap to register newly created objects with the <code>IEventAggregator</code> in an activation interceptor.</p>
 <p>What we want to do though is have an interception policy that only applies to any concrete type that implements some interface that
 closes <code>IListener&lt;T&gt;</code>:</p>
-<pre><code class="language-csharp">
-    public class EventListenerRegistration : IInterceptorPolicy
-    {
-        public string Description
-        {
-            get { return &quot;Adds the constructed object to the EventAggregator&quot;; }
-        }
-
-        public IEnumerable&lt;IInterceptor&gt; DetermineInterceptors(Type pluginType, Instance instance)
-        {
-            if (instance.ReturnedType.FindInterfacesThatClose(typeof(IListener&lt;&gt;)).Any())
-            {
-                Expression&lt;Action&lt;IContext, object&gt;&gt; register =
-                    (c, o) =&gt; c.GetInstance&lt;IEventAggregator&gt;().AddListener(o);
-                yield return new ActivatorInterceptor&lt;object&gt;(register);
-            }
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class EventListenerRegistration : IInterceptorPolicy&#xD;&#xA;{&#xD;&#xA;    public string Description&#xD;&#xA;    {&#xD;&#xA;        get { return &quot;Adds the constructed object to the EventAggregator&quot;; }&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public IEnumerable&lt;IInterceptor&gt; DetermineInterceptors(Type pluginType, Instance instance)&#xD;&#xA;    {&#xD;&#xA;        if (instance.ReturnedType.FindInterfacesThatClose(typeof(IListener&lt;&gt;)).Any())&#xD;&#xA;        {&#xD;&#xA;            Expression&lt;Action&lt;IContext, object&gt;&gt; register =&#xD;&#xA;                (c, o) =&gt; c.GetInstance&lt;IEventAggregator&gt;().AddListener(o);&#xD;&#xA;            yield return new ActivatorInterceptor&lt;object&gt;(register);&#xD;&#xA;        }&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>To see our new interception policy in action, see <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Samples/Interception/Event_Aggregator_Registration.cs">this unit test from GitHub</a>:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void use_the_event_listener_registration()
-        {
-            var container = new Container(x =&gt;
-            {
-                x.Policies.Interceptors(new EventListenerRegistration());
-                x.For&lt;IEventAggregator&gt;().Use&lt;EventAggregator&gt;().Singleton();
-            });
-
-            var events = container.GetInstance&lt;IEventAggregator&gt;();
-            var listener = container.GetInstance&lt;BooMessageListener&gt;();
-
-            var message = new BooMessage();
-
-            events.SendMessage(message);
-
-            listener.Messages.Single().ShouldBeTheSameAs(message);
-        }
-
-</code></pre>
-
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void use_the_event_listener_registration()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        x.Policies.Interceptors(new EventListenerRegistration());&#xD;&#xA;        x.For&lt;IEventAggregator&gt;().Use&lt;EventAggregator&gt;().Singleton();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    var events = container.GetInstance&lt;IEventAggregator&gt;();&#xD;&#xA;    var listener = container.GetInstance&lt;BooMessageListener&gt;();&#xD;&#xA;&#xD;&#xA;    var message = new BooMessage();&#xD;&#xA;&#xD;&#xA;    events.SendMessage(message);&#xD;&#xA;&#xD;&#xA;    listener.Messages.Single().ShouldBeTheSameAs(message);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 
                       </div>
 

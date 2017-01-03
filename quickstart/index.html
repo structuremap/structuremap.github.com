@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/glossary">Glossary</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/roadmap">Roadmap</a></p></li>
                 </ul>
@@ -99,92 +99,34 @@ of <a href="http://codebetter.com/jeremymiller/2005/10/06/the-dependency-injecti
 and <a href="http://codebetter.com/jeremymiller/2005/09/20/what%E2%80%99s-so-great-about-inversion-of-control/">Inversion Of Control</a>.
 It's important that you structure and build your application with these concepts in mind to fully utilize StructureMap's abilities.</p>
 <p>Assuming that you're already familiar with those concepts, or you'd really rather skip the pedantry and jump right into concrete code, the first thing to do is, go <a href="/get-structuremap">Get StructureMap</a> and jump into usage.</p>
-<h2>Main Usage</h2>
+<h2 id="main-usage">Main Usage</h2>
 <p>By and large, you really only do two kinds of things with StructureMap:</p>
 <ol>
-<li>
-<p>Configure the container by registering the <strong>what</strong> and <strong>how</strong> StructureMap should build or find requested services based on a type and/or name.</p>
+<li><p>Configure the container by registering the <strong>what</strong> and <strong>how</strong> StructureMap should build or find requested services based on a type and/or name.</p>
 </li>
-<li>
-<p>Resolve object instances of a service or dependency built out with all of its dependencies.</p>
+<li><p>Resolve object instances of a service or dependency built out with all of its dependencies.</p>
 </li>
 </ol>
 <p>So let's say that you have a simple object model like so:</p>
-<pre><code class="language-csharp">
-    public interface IBar
-    {
-    }
-
-    public class Bar : IBar
-    {
-    }
-
-    public interface IFoo
-    {
-    }
-
-    public class Foo : IFoo
-    {
-        public IBar Bar { get; private set; }
-
-        public Foo(IBar bar)
-        {
-            Bar = bar;
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public interface IBar&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Bar : IBar&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public interface IFoo&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Foo : IFoo&#xD;&#xA;{&#xD;&#xA;    public IBar Bar { get; private set; }&#xD;&#xA;&#xD;&#xA;    public Foo(IBar bar)&#xD;&#xA;    {&#xD;&#xA;        Bar = bar;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>You could explicitly build a StructureMap <code>Container</code> object to build these types like this:</p>
-<pre><code class="language-csharp">
-// Configure and build a brand new
-// StructureMap Container object
-            var container = new Container(_ =&gt;
-            {
-                _.For&lt;IFoo&gt;().Use&lt;Foo&gt;();
-                _.For&lt;IBar&gt;().Use&lt;Bar&gt;();
-            });
-
-// Now, resolve a new object instance of IFoo
-            container.GetInstance&lt;IFoo&gt;()
-                // should be type Foo
-                .ShouldBeOfType&lt;Foo&gt;()
-
-                // and the IBar dependency too
-                .Bar.ShouldBeOfType&lt;Foo&gt;();
-
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;// Configure and build a brand new&#xD;&#xA;// StructureMap Container object&#xD;&#xA;            var container = new Container(_ =&gt;&#xD;&#xA;            {&#xD;&#xA;                _.For&lt;IFoo&gt;().Use&lt;Foo&gt;();&#xD;&#xA;                _.For&lt;IBar&gt;().Use&lt;Bar&gt;();&#xD;&#xA;            });&#xD;&#xA;&#xD;&#xA;// Now, resolve a new object instance of IFoo&#xD;&#xA;            container.GetInstance&lt;IFoo&gt;()&#xD;&#xA;                // should be type Foo&#xD;&#xA;                .ShouldBeOfType&lt;Foo&gt;()&#xD;&#xA;&#xD;&#xA;                // and the IBar dependency too&#xD;&#xA;                .Bar.ShouldBeOfType&lt;Bar&gt;();&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>or utilize StructureMap's type scanning conventions to configure the relationships and do the same thing like this:</p>
-<pre><code class="language-csharp">
-            var container = new Container(_ =&gt;
-            {
-                _.Scan(x =&gt;
-                {
-                    x.TheCallingAssembly();
-                    x.WithDefaultConventions();
-                });
-            });
-
-            container.GetInstance&lt;IFoo&gt;()
-                .ShouldBeOfType&lt;Foo&gt;()
-                .Bar.ShouldBeOfType&lt;Foo&gt;();
-
-</code></pre>
-<h2>Integrating StructureMap within your application</h2>
+<pre><code class="language-csharp">&#xD;&#xA;var container = new Container(_ =&gt;&#xD;&#xA;{&#xD;&#xA;    _.Scan(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        x.TheCallingAssembly();&#xD;&#xA;        x.WithDefaultConventions();&#xD;&#xA;    });&#xD;&#xA;});&#xD;&#xA;&#xD;&#xA;container.GetInstance&lt;IFoo&gt;()&#xD;&#xA;    .ShouldBeOfType&lt;Foo&gt;()&#xD;&#xA;    .Bar.ShouldBeOfType&lt;Bar&gt;();&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="integrating-structuremap-within-your-application">Integrating StructureMap within your application</h2>
 <p>At some point you will want to integrate StructureMap into your application. Whether you are using Windows Presentation Foundation (WPF), FubuMVC, ASP.NET WebForms, ASP.NET MVC or any other framework or technology, you will have to do some sort of plumbing and bootstrapping. Depending on the used technology or framework there can be important integration points that you will have to use to fully enable the power of StructureMap.</p>
 <p>While StructureMap doesn't provide integration support out of the box for all of the frameworks and technologies out there, we do find it important to help you get started with integrating StructureMap into your application. That said, StructureMap does provide integration support for <a href="http://fubuworld.com/fubumvc">FubuMVC</a> (a web framework, which is part of the same family as StructureMap).</p>
-<h2>What to do when things go wrong?</h2>
+<h2 id="what-to-do-when-things-go-wrong">What to do when things go wrong?</h2>
 <p>StructureMap, and any other IoC tool for that matter, is configuration intensive, which means that their will be problems in that configuration. We're all moving to more convention based type registration, so more stuff is happening off stage and out of your sight, making debugging the configuration even trickier. Not to worry (too much), StructureMap has some diagnostic abilities to help you solve configuration problems:</p>
 <ul>
 <li><a href="/interpreting-exceptions">Interpreting Exceptions</a></li>
 <li><a href="/diagnostics">Diagnostics</a></li>
 </ul>
-<h2>Need Help?</h2>
+<h2 id="need-help">Need Help?</h2>
 <ul>
 <li>There is a <a href="http://groups.google.com/group/structuremap-users?hl=en">google group</a> for StructureMap support.</li>
 <li>You can ask questions on <a href="http://stackoverflow.com/">StackOverflow</a> with the tag &quot;structuremap.&quot;</li>
 </ul>
-
 
                       </div>
 

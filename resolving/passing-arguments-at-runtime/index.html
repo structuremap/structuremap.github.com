@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/resolving/requesting-a-concrete-type">Auto Resolving Concrete Types</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/resolving/try-geting-an-optional-service-by-plugin-type-and-name">Try Geting an Optional Service by Plugin Type and Name</a></p></li>
                 </ul>
@@ -100,118 +100,25 @@ also has the capability to supply dependencies by type or named parameters (if y
 <li>Inject something contextual that can only be built at runtime like an ASP.Net HttpContext into a pre-configured object graph</li>
 </ol>
 <p>Now, for some samples. Let's say that we have some classes like so:</p>
-<pre><code class="language-csharp">
-    public class ColorWidget : IWidget
-    {
-        public string Color { get; set; }
-
-        public ColorWidget(string color)
-        {
-            Color = color;
-        }
-    }
-
-    public class GuyWithWidgetAndService
-    {
-        public IWidget Widget { get; set; }
-        public IService Service { get; set; }
-
-        public GuyWithWidgetAndService(IWidget widget, IService service)
-        {
-            Widget = widget;
-            Service = service;
-        }
-    }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class ColorWidget : IWidget&#xD;&#xA;{&#xD;&#xA;    public string Color { get; set; }&#xD;&#xA;&#xD;&#xA;    public ColorWidget(string color)&#xD;&#xA;    {&#xD;&#xA;        Color = color;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class GuyWithWidgetAndService&#xD;&#xA;{&#xD;&#xA;    public IWidget Widget { get; set; }&#xD;&#xA;    public IService Service { get; set; }&#xD;&#xA;&#xD;&#xA;    public GuyWithWidgetAndService(IWidget widget, IService service)&#xD;&#xA;    {&#xD;&#xA;        Widget = widget;&#xD;&#xA;        Service = service;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>and unless stated otherwise in a sample, a <code>Container</code> configured like so:</p>
-<pre><code class="language-csharp">
-            var container = new Container(x =&gt;
-            {
-                x.For&lt;IWidget&gt;().Use&lt;BWidget&gt;();
-                x.For&lt;IService&gt;().Use&lt;AService&gt;();
-            });
-</code></pre>
-<h2>Passing Named Arguments</h2>
+<pre><code class="language-csharp">&#xD;&#xA;var container = new Container(x =&gt;&#xD;&#xA;{&#xD;&#xA;    x.For&lt;IWidget&gt;().Use&lt;BWidget&gt;();&#xD;&#xA;    x.For&lt;IService&gt;().Use&lt;AService&gt;();&#xD;&#xA;});&#xD;&#xA;</code></pre>
+<h2 id="passing-named-arguments">Passing Named Arguments</h2>
 <p>The original usage of explicit arguments was to replace primitive arguments to constructor functions like this sample:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void supply_named_arguments()
-        {
-            var container = new Container(x =&gt; { x.For&lt;IWidget&gt;().Use&lt;ColorWidget&gt;().Ctor&lt;string&gt;().Is(&quot;Red&quot;); });
-
-            container.GetInstance&lt;IWidget&gt;()
-                .ShouldBeOfType&lt;ColorWidget&gt;()
-                .Color.ShouldBe(&quot;Red&quot;);
-
-            container.With(&quot;color&quot;).EqualTo(&quot;Blue&quot;)
-                .GetInstance&lt;IWidget&gt;()
-                .ShouldBeOfType&lt;ColorWidget&gt;()
-                .Color.ShouldBe(&quot;Blue&quot;);
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void supply_named_arguments()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(x =&gt; { x.For&lt;IWidget&gt;().Use&lt;ColorWidget&gt;().Ctor&lt;string&gt;().Is(&quot;Red&quot;); });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IWidget&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;ColorWidget&gt;()&#xD;&#xA;        .Color.ShouldBe(&quot;Red&quot;);&#xD;&#xA;&#xD;&#xA;    container.With(&quot;color&quot;).EqualTo(&quot;Blue&quot;)&#xD;&#xA;        .GetInstance&lt;IWidget&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;ColorWidget&gt;()&#xD;&#xA;        .Color.ShouldBe(&quot;Blue&quot;);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>The canonical usage is overriding file paths, database connection string, or urls.</p>
-<h2>Passing Arguments with a Fluent Interface</h2>
+<h2 id="passing-arguments-with-a-fluent-interface">Passing Arguments with a Fluent Interface</h2>
 <p>You can invoke the explicit argument passing as a fluent interface starting with
 <code>IContainer.With()</code> like the following sample:</p>
-<pre><code class="language-csharp">
-            var widget = new BWidget();
-            var service = new BService();
-
-            var guyWithWidgetAndService = container
-                .With&lt;IWidget&gt;(widget)
-                .With&lt;IService&gt;(service)
-                .GetInstance&lt;GuyWithWidgetAndService&gt;();
-
-            guyWithWidgetAndService
-                .Widget.ShouldBeTheSameAs(widget);
-
-            guyWithWidgetAndService
-                .Service.ShouldBeTheSameAs(service);
-</code></pre>
-<h2>Using a Nested Closure</h2>
+<pre><code class="language-csharp">&#xD;&#xA;var widget = new BWidget();&#xD;&#xA;var service = new BService();&#xD;&#xA;&#xD;&#xA;var guyWithWidgetAndService = container&#xD;&#xA;    .With&lt;IWidget&gt;(widget)&#xD;&#xA;    .With&lt;IService&gt;(service)&#xD;&#xA;    .GetInstance&lt;GuyWithWidgetAndService&gt;();&#xD;&#xA;&#xD;&#xA;guyWithWidgetAndService&#xD;&#xA;    .Widget.ShouldBeTheSameAs(widget);&#xD;&#xA;&#xD;&#xA;guyWithWidgetAndService&#xD;&#xA;    .Service.ShouldBeTheSameAs(service);&#xD;&#xA;</code></pre>
+<h2 id="using-a-nested-closure">Using a Nested Closure</h2>
 <p>If you dislike fluent interfaces or want to pass in a <em>lot</em> of dependencies,
 the nested closure syntax might be more usable:</p>
-<pre><code class="language-csharp">
-            var widget = new BWidget();
-            var service = new BService();
-
-            var guyWithWidgetAndService = container
-                .With(x =&gt;
-                {
-                    x.With&lt;IWidget&gt;(widget);
-                    x.With&lt;IService&gt;(service);
-                })
-                .GetInstance&lt;GuyWithWidgetAndService&gt;();
-
-            guyWithWidgetAndService
-                .Widget.ShouldBeTheSameAs(widget);
-
-            guyWithWidgetAndService
-                .Service.ShouldBeTheSameAs(service);
-</code></pre>
-<h2>Using the ExplicitArguments object</h2>
+<pre><code class="language-csharp">&#xD;&#xA;var widget = new BWidget();&#xD;&#xA;var service = new BService();&#xD;&#xA;&#xD;&#xA;var guyWithWidgetAndService = container&#xD;&#xA;    .With(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        x.With&lt;IWidget&gt;(widget);&#xD;&#xA;        x.With&lt;IService&gt;(service);&#xD;&#xA;    })&#xD;&#xA;    .GetInstance&lt;GuyWithWidgetAndService&gt;();&#xD;&#xA;&#xD;&#xA;guyWithWidgetAndService&#xD;&#xA;    .Widget.ShouldBeTheSameAs(widget);&#xD;&#xA;&#xD;&#xA;guyWithWidgetAndService&#xD;&#xA;    .Service.ShouldBeTheSameAs(service);&#xD;&#xA;</code></pre>
+<h2 id="using-the-explicitarguments-object">Using the ExplicitArguments object</h2>
 <p>Finally, you can also pass an object of type <code>ExplicitArguments</code> directly to an overload
 of the <code>IContainer.GetInstance()</code> method:</p>
-<pre><code class="language-csharp">
-            var widget = new BWidget();
-            var service = new BService();
-
-            var args = new ExplicitArguments();
-            args.Set&lt;IWidget&gt;(widget);
-            args.Set&lt;IService&gt;(service);
-
-            var guyWithWidgetAndService = container
-                .GetInstance&lt;GuyWithWidgetAndService&gt;(args);
-
-            guyWithWidgetAndService
-                .Widget.ShouldBeTheSameAs(widget);
-
-            guyWithWidgetAndService
-                .Service.ShouldBeTheSameAs(service);
-</code></pre>
-
+<pre><code class="language-csharp">&#xD;&#xA;var widget = new BWidget();&#xD;&#xA;var service = new BService();&#xD;&#xA;&#xD;&#xA;var args = new ExplicitArguments();&#xD;&#xA;args.Set&lt;IWidget&gt;(widget);&#xD;&#xA;args.Set&lt;IService&gt;(service);&#xD;&#xA;&#xD;&#xA;var guyWithWidgetAndService = container&#xD;&#xA;    .GetInstance&lt;GuyWithWidgetAndService&gt;(args);&#xD;&#xA;&#xD;&#xA;guyWithWidgetAndService&#xD;&#xA;    .Widget.ShouldBeTheSameAs(widget);&#xD;&#xA;&#xD;&#xA;guyWithWidgetAndService&#xD;&#xA;    .Service.ShouldBeTheSameAs(service);&#xD;&#xA;</code></pre>
 
                       </div>
 

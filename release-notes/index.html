@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/instances">Custom Instance Types</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/history">History</a></p></li>
                 </ul>
@@ -91,7 +91,7 @@
                           <!--Title: Release Notes-->
 <!--Url: release-notes-->
 <p>StructureMap is attempting to follow a strict <a href="http://semver.org">SemVer</a> versioning policy.</p>
-<h2>Release Notes 4.3</h2>
+<h2 id="release-notes-4.3">Release Notes 4.3</h2>
 <p>See the <a href="https://github.com/structuremap/structuremap/issues?q=is%3Aissue+milestone%3A4.3+is%3Aclosed">closed GitHub issues</a> for
 a complete list of changes.</p>
 <ul>
@@ -99,20 +99,20 @@ a complete list of changes.</p>
 <li>Targets .Net 4.5, Netstandard 1.3, and Netstandard 1.5</li>
 <li>Performance improvement for some <code>IContainer.With()</code> usages</li>
 </ul>
-<h2>Release Notes 4.2</h2>
+<h2 id="release-notes-4.2">Release Notes 4.2</h2>
 <ul>
 <li>Added the &quot;disposal lock&quot; feature to prevent a Container from being erroneously disposed</li>
 </ul>
-<h2>Release Notes 4.1</h2>
+<h2 id="release-notes-4.1">Release Notes 4.1</h2>
 <p>4.1 was mostly a bugfix release, but also included some new public API calls for type scanning discovery from *.exe files.
 See the <a href="https://github.com/structuremap/structuremap/issues?q=is%3Aissue+milestone%3A4.1+is%3Aclosed">closed GitHub issues</a> for details.</p>
 <ul>
 <li>4.1.2 - Bug fix for <a href="https://github.com/structuremap/structuremap/issues/461">GH-461</a> singleton scoped registrations to a child container</li>
 <li>4.1.1 - Bug fix for &quot;AlwaysUnique&quot; lifecycle within enumerable, inline dependencies</li>
 </ul>
-<h2>Release Notes 4.0.*</h2>
+<h2 id="release-notes-4.0">Release Notes 4.0.*</h2>
 <p>4.0.1 was strictly a bug fix release.</p>
-<h2>Release Notes 4.0</h2>
+<h2 id="release-notes-4.0-1">Release Notes 4.0</h2>
 <p>4.0 is a medium sized release that largely builds on the existing 3.0 architecture with significant improvements to conventional
 registration via type scanning and several performance improvements as well as some bug fixes.</p>
 <p>The highlights:</p>
@@ -134,7 +134,7 @@ lifecyle, and an optional mode to make the root or child containers track <em>Tr
 <a href="/registration/clear-or-replace">Replace or Clear Out Previous Registrations</a> for more information.</li>
 </ol>
 <p>See also <a href="https://github.com/structuremap/structuremap/issues?q=milestone%3A4.0+is%3Aclosed">the complete list of changes and issues</a> for StructureMap 4.0.</p>
-<h2>3.1.*</h2>
+<h2 id="section">3.1.*</h2>
 <p>Click on any release version to see the list of closed GitHub issues related to any of the 3.1 releases.</p>
 <ul>
 <li><a href="https://github.com/structuremap/structuremap/pulls?q=is%3Apr+milestone%3A3.1.6+is%3Aclosed">3.1.6</a> -- Optional strong named nugets, bug fixes</li>
@@ -145,7 +145,7 @@ lifecyle, and an optional mode to make the root or child containers track <em>Tr
 <li><a href="https://github.com/structuremap/structuremap/issues?q=is%3Aissue+milestone%3A3.1.1+is%3Aclosed">3.1.1</a> -- fixed a potentially significant memory  leak issue</li>
 <li><a href="https://github.com/structuremap/structuremap/issues?q=is%3Aissue+milestone%3A3.1.0+is%3Aclosed">3.1.0</a> -- new functionality on <code>IContext</code></li>
 </ul>
-<h2>3.0.* Bug Fix Releases</h2>
+<h2 id="bug-fix-releases">3.0.* Bug Fix Releases</h2>
 <p>Click on any release version to see the list of closed GitHub issues related to a bugfix release.</p>
 <ul>
 <li><a href="https://github.com/structuremap/structuremap/issues?q=is%3Aissue+milestone%3A3.0.5+is%3Aclosed">3.0.5</a></li>
@@ -154,47 +154,34 @@ lifecyle, and an optional mode to make the root or child containers track <em>Tr
 <li><a href="https://github.com/structuremap/structuremap/issues?q=is%3Aissue+milestone%3A3.0.2+is%3Aclosed">3.0.2</a></li>
 <li><a href="https://github.com/structuremap/structuremap/issues?q=is%3Aissue+milestone%3A3.0.1+is%3Aclosed">3.0.1</a></li>
 </ul>
-<h2>Release Notes 3.0</h2>
+<h2 id="release-notes-3.0">Release Notes 3.0</h2>
 <ul>
-<li>
-<p>The exception messages provide contextual information about what StructureMap was trying to do when things went wrong.</p>
+<li><p>The exception messages provide contextual information about what StructureMap was trying to do when things went wrong.</p>
 </li>
-<li>
-<p>The nested container implementation is vastly improved, much faster (100X in my testing against a big application), and doesn’t have the massive singleton behavior bug from 2.6.*.</p>
+<li><p>The nested container implementation is vastly improved, much faster (100X in my testing against a big application), and doesn’t have the massive singleton behavior bug from 2.6.*.</p>
 </li>
-<li>
-<p>All old <code>[Obsolete]</code> 2.5 registration syntax has been removed, and there’s been a major effort to enforce consistency throughout the registration API’s.</p>
+<li><p>All old <code>[Obsolete]</code> 2.5 registration syntax has been removed, and there’s been a major effort to enforce consistency throughout the registration API’s.</p>
 </li>
-<li>
-<p>The original StructureMap.dll has been broken up into a couple pieces.  The main assembly will be targeting PCL compliance thanks to the diligent efforts of Frank Quednau, and that means that Xml configuration and anything to do with ASP.Net has been devolved into separate assemblies and eventually into different Nuget packages.  This means that StructureMap will theoretically support WP8 and other versions of .Net for the very first time.  God help me.</p>
+<li><p>The original StructureMap.dll has been broken up into a couple pieces.  The main assembly will be targeting PCL compliance thanks to the diligent efforts of Frank Quednau, and that means that Xml configuration and anything to do with ASP.Net has been devolved into separate assemblies and eventually into different Nuget packages.  This means that StructureMap will theoretically support WP8 and other versions of .Net for the very first time.  God help me.</p>
 </li>
-<li>
-<p>The strong naming has been removed.  My thought is to distribute separate Nuget packages with unsigned versions for sane folks and signed versions for enterprise-y folks.</p>
+<li><p>The strong naming has been removed.  My thought is to distribute separate Nuget packages with unsigned versions for sane folks and signed versions for enterprise-y folks.</p>
 </li>
-<li>
-<p>Lifecycle (scope) can be set individually on each Instance (stupid limitation left over from the very early days)
+<li><p>Lifecycle (scope) can be set individually on each Instance (stupid limitation left over from the very early days)
 Constructor selection can be specified per Instance.</p>
 </li>
-<li>
-<p>Improved diagnostics, both at runtime and for the container configuration.</p>
+<li><p>Improved diagnostics, both at runtime and for the container configuration.</p>
 </li>
-<li>
-<p>Improved runtime performance, especially for deep object graphs with inline dependencies (i.e., <ProjectLink name="FubuMVC"/> behavior chains).</p>
+<li><p>Improved runtime performance, especially for deep object graphs with inline dependencies (i.e., <ProjectLink name="FubuMVC"/> behavior chains).</p>
 </li>
-<li>
-<p>The interception model has been completely redesigned.</p>
+<li><p>The interception model has been completely redesigned.</p>
 </li>
-<li>
-<p>The ancient attribute model for StructureMap configuration has been mostly removed.</p>
+<li><p>The ancient attribute model for StructureMap configuration has been mostly removed.</p>
 </li>
-<li>
-<p>The “Profile” model has been much improved.</p>
+<li><p>The “Profile” model has been much improved.</p>
 </li>
-<li>
-<p>The Xml configuration has been heavily streamlined.</p>
+<li><p>The Xml configuration has been heavily streamlined.</p>
 </li>
-<li>
-<p>Internally, the old <code>PipelineGraph</code>, <code>InstanceFactory</code>, <code>ProfileManager</code> architecture is all gone. The new <code>PipelineGraph</code> implementations just wrap one or more <code>PluginGraph</code> objects, so there’s vastly less data structure shuffling gone on internally.</p>
+<li><p>Internally, the old <code>PipelineGraph</code>, <code>InstanceFactory</code>, <code>ProfileManager</code> architecture is all gone. The new <code>PipelineGraph</code> implementations just wrap one or more <code>PluginGraph</code> objects, so there’s vastly less data structure shuffling gone on internally.</p>
 </li>
 </ul>
 <p><strong>Related links:</strong></p>
@@ -204,7 +191,6 @@ Constructor selection can be specified per Instance.</p>
 <li>http://jeremydmiller.com/2013/02/22/big-update-on-structuremap-3-0-progress/</li>
 <li>http://jeremydmiller.com/2013/01/30/lets-try-this-again-structuremap-3-0-in-en-route-as-of-now/</li>
 </ul>
-
 
                       </div>
 

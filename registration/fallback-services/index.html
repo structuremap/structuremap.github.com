@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/registration/existing-objects">Registering Existing Objects</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/registration/constructor-selection">Constructor Selection</a></p></li>
                 </ul>
@@ -97,83 +97,10 @@ override specific registrations <strong>without having to worry about the order 
 <p>To see this in practice, say you have an application that will support client specific modularity that might allow
 business clients to override the base StructureMap registrations. This is a perfect use case for
 defining the application defaults with <code>UseIfNone()</code> as shown in this example below:</p>
-<pre><code class="language-csharp">
-        public class DefaultServices : Registry
-        {
-            public DefaultServices()
-            {
-                // If nobody else provides a default
-                // for IWidget, use AWidget
-                For&lt;IWidget&gt;().UseIfNone&lt;AWidget&gt;();
-            }
-        }
-
-        public class SpecificServices : Registry
-        {
-            public SpecificServices()
-            {
-                // Use BWidget for IWidget, period
-                For&lt;IWidget&gt;().Use&lt;BWidget&gt;();
-            }
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class DefaultServices : Registry&#xD;&#xA;{&#xD;&#xA;    public DefaultServices()&#xD;&#xA;    {&#xD;&#xA;        // If nobody else provides a default&#xD;&#xA;        // for IWidget, use AWidget&#xD;&#xA;        For&lt;IWidget&gt;().UseIfNone&lt;AWidget&gt;();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class SpecificServices : Registry&#xD;&#xA;{&#xD;&#xA;    public SpecificServices()&#xD;&#xA;    {&#xD;&#xA;        // Use BWidget for IWidget, period&#xD;&#xA;        For&lt;IWidget&gt;().Use&lt;BWidget&gt;();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>In application usage, you would add the default <code>UseIfNone()</code> registrations, and optionally pick
 up additional extension <code>Registry</code> objects from extension assemblies as shown in this example:</p>
-<pre><code class="language-csharp">
-        [AttributeUsage(AttributeTargets.Assembly)]
-        public class ProductModuleAttribute : Attribute
-        {
-        }
-
-        public class ApplicationRegistry : Registry
-        {
-            public ApplicationRegistry()
-            {
-                // Use the default services as fallbacks
-                IncludeRegistry&lt;DefaultServices&gt;();
-
-                // Dependending on what assemblies are present,
-                // this might find specific registrations that
-                // will take precedence over the UseIfNone()
-                // registrations in DefaultServices
-                Scan(_ =&gt;
-                {
-                    _.AssembliesFromApplicationBaseDirectory(
-                        assem =&gt; assem.HasAttribute&lt;ProductModuleAttribute&gt;());
-
-                    _.LookForRegistries();
-                });
-            }
-        }
-
-        [Fact]
-        public void see_use_if_none_in_action()
-        {
-            var container1 = Container.For&lt;DefaultServices&gt;();
-
-            // No other registrations, so fallback
-            // to AWidget
-            container1.GetInstance&lt;IWidget&gt;()
-                .ShouldBeOfType&lt;AWidget&gt;();
-
-            var container2 = new Container(_ =&gt;
-            {
-                // add both registries above
-                // NOTE: the order does not matter for IWidget
-
-                _.IncludeRegistry&lt;SpecificServices&gt;();
-                _.IncludeRegistry&lt;DefaultServices&gt;();
-            });
-
-            // The registration in SpecificServices
-            // should win out
-            container2.GetInstance&lt;IWidget&gt;()
-                .ShouldBeOfType&lt;BWidget&gt;();
-        }
-
-</code></pre>
-
+<pre><code class="language-csharp">&#xD;&#xA;[AttributeUsage(AttributeTargets.Assembly)]&#xD;&#xA;public class ProductModuleAttribute : Attribute&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class ApplicationRegistry : Registry&#xD;&#xA;{&#xD;&#xA;    public ApplicationRegistry()&#xD;&#xA;    {&#xD;&#xA;        // Use the default services as fallbacks&#xD;&#xA;        IncludeRegistry&lt;DefaultServices&gt;();&#xD;&#xA;&#xD;&#xA;        // Dependending on what assemblies are present,&#xD;&#xA;        // this might find specific registrations that&#xD;&#xA;        // will take precedence over the UseIfNone()&#xD;&#xA;        // registrations in DefaultServices&#xD;&#xA;        Scan(_ =&gt;&#xD;&#xA;        {&#xD;&#xA;            _.AssembliesFromApplicationBaseDirectory(&#xD;&#xA;                assem =&gt; assem.HasAttribute&lt;ProductModuleAttribute&gt;());&#xD;&#xA;&#xD;&#xA;            _.LookForRegistries();&#xD;&#xA;        });&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void see_use_if_none_in_action()&#xD;&#xA;{&#xD;&#xA;    var container1 = Container.For&lt;DefaultServices&gt;();&#xD;&#xA;&#xD;&#xA;    // No other registrations, so fallback&#xD;&#xA;    // to AWidget&#xD;&#xA;    container1.GetInstance&lt;IWidget&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;AWidget&gt;();&#xD;&#xA;&#xD;&#xA;    var container2 = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        // add both registries above&#xD;&#xA;        // NOTE: the order does not matter for IWidget&#xD;&#xA;&#xD;&#xA;        _.IncludeRegistry&lt;SpecificServices&gt;();&#xD;&#xA;        _.IncludeRegistry&lt;DefaultServices&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    // The registration in SpecificServices&#xD;&#xA;    // should win out&#xD;&#xA;    container2.GetInstance&lt;IWidget&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;BWidget&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 
                       </div>
 

@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/resolving/try-getting-an-optional-service-by-plugin-type">Try Getting an Optional Service by Plugin Type</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/resolving/get-a-service-by-plugin-type-and-name">Get a Service by Plugin Type and Name</a></p></li>
                 </ul>
@@ -93,32 +93,8 @@
 <p>Please see <a href="/the-container/working-with-enumerable-types">Working with Enumerable Types</a> for a lot more information about what's going on behind the
 scenes.</p>
 <p>Once in a while you might want to get an enumerable of all the configured objects for a PluginType.  That's done with the <code>GetAllInstances()</code> method shown below:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void get_all_instances()
-        {
-            var container = new Container(x =&gt;
-            {
-                x.For&lt;IWidget&gt;().Add&lt;AWidget&gt;().Named(&quot;A&quot;);
-                x.For&lt;IWidget&gt;().Add&lt;BWidget&gt;().Named(&quot;B&quot;);
-                x.For&lt;IWidget&gt;().Add&lt;CWidget&gt;().Named(&quot;C&quot;);
-            });
-
-            container.GetAllInstances&lt;IWidget&gt;()
-                .Select(x =&gt; x.GetType())
-                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
-
-            // or
-
-            container.GetAllInstances(typeof(IWidget))
-                .OfType&lt;IWidget&gt;() // returns an IEnumerable, so I&#39;m casting here
-                .Select(x =&gt; x.GetType())
-                .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void get_all_instances()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        x.For&lt;IWidget&gt;().Add&lt;AWidget&gt;().Named(&quot;A&quot;);&#xD;&#xA;        x.For&lt;IWidget&gt;().Add&lt;BWidget&gt;().Named(&quot;B&quot;);&#xD;&#xA;        x.For&lt;IWidget&gt;().Add&lt;CWidget&gt;().Named(&quot;C&quot;);&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetAllInstances&lt;IWidget&gt;()&#xD;&#xA;        .Select(x =&gt; x.GetType())&#xD;&#xA;        .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));&#xD;&#xA;&#xD;&#xA;    // or&#xD;&#xA;&#xD;&#xA;    container.GetAllInstances(typeof(IWidget))&#xD;&#xA;        .OfType&lt;IWidget&gt;() // returns an IEnumerable, so I&#x27;m casting here&#xD;&#xA;        .Select(x =&gt; x.GetType())&#xD;&#xA;        .ShouldHaveTheSameElementsAs(typeof(AWidget), typeof(BWidget), typeof(CWidget));&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <div class="alert alert-info" role="alert"><code>GetAllInstances()</code> respects the order in which the actual instances are configured in the Container.  Be warned that some other IoC tools make different assuptions if you are coming from a different tool.</div>
-
 
                       </div>
 

@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/resolving">Resolving Services</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/registration/clear-or-replace">Replace or Clear Out Previous Registrations</a></p></li>
                 </ul>
@@ -97,48 +97,7 @@ their own code is in clear violation of this philosophy. <em>In other words, we 
 your normal registration conventions or cause less harm than having to constantly change a centralized <code>Registry</code> or
 just seem more clear and understandable to users than a convention. For those usages, StructureMap 4.0 has introduced a
 new base class that can be extended and used to explicitly customize your StructureMap configuration:</p>
-<pre><code class="language-csharp">
-    /// &lt;summary&gt;
-    /// Base class for custom configuration attributes
-    /// &lt;/summary&gt;
-    public abstract class StructureMapAttribute : Attribute
-    {
-        /// &lt;summary&gt;
-        /// Override this method to apply a configuration change to an entire
-        /// PluginFamily (every Instance of a certain PluginType)
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;family&quot;&gt;&lt;/param&gt;
-        public virtual void Alter(PluginFamily family)
-        {
-        }
-
-        /// &lt;summary&gt;
-        /// Make configuration alterations to a single IConfiguredInstance object
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;
-        public virtual void Alter(IConfiguredInstance instance)
-        {
-        }
-
-        /// &lt;summary&gt;
-        /// Apply configuration customization to a single setter property
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;
-        /// &lt;param name=&quot;property&quot;&gt;&lt;/param&gt;
-        public virtual void Alter(IConfiguredInstance instance, PropertyInfo property)
-        {
-        }
-
-        /// &lt;summary&gt;
-        /// Apply configuration customization for a single constructor parameter
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;
-        /// &lt;param name=&quot;parameter&quot;&gt;&lt;/param&gt;
-        public virtual void Alter(IConfiguredInstance instance, ParameterInfo parameter)
-        {
-        }
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;/// &lt;summary&gt;&#xD;&#xA;/// Base class for custom configuration attributes&#xD;&#xA;/// &lt;/summary&gt;&#xD;&#xA;public abstract class StructureMapAttribute : Attribute&#xD;&#xA;{&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Override this method to apply a configuration change to an entire&#xD;&#xA;    /// PluginFamily (every Instance of a certain PluginType)&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;family&quot;&gt;&lt;/param&gt;&#xD;&#xA;    public virtual void Alter(PluginFamily family)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Make configuration alterations to a single IConfiguredInstance object&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;&#xD;&#xA;    public virtual void Alter(IConfiguredInstance instance)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Apply configuration customization to a single setter property&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;&#xD;&#xA;    /// &lt;param name=&quot;property&quot;&gt;&lt;/param&gt;&#xD;&#xA;    public virtual void Alter(IConfiguredInstance instance, PropertyInfo property)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Apply configuration customization for a single constructor parameter&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;&#xD;&#xA;    /// &lt;param name=&quot;parameter&quot;&gt;&lt;/param&gt;&#xD;&#xA;    public virtual void Alter(IConfiguredInstance instance, ParameterInfo parameter)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>There's a couple thing to note, here about this new attibute:</p>
 <ul>
 <li>StructureMap internals are looking for any attribute of the base class. Attributes that affect types are read and applied early,
@@ -146,112 +105,22 @@ while attributes decorating properties or constructor parameters are only read a
 <li>Unlike many other frameworks, the attributes in StructureMap are not executed at build time. Instead, StructureMap uses attributes <em>one time</em>
 to determine the build plan.</li>
 </ul>
-<h2>Attribute Targeting Plugin Type or Concrete Type</h2>
+<h2 id="attribute-targeting-plugin-type-or-concrete-type">Attribute Targeting Plugin Type or Concrete Type</h2>
 <p>Take the new <code>[Singleton]</code> attribute shown below:</p>
-<pre><code class="language-csharp">
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
-    public class SingletonAttribute : StructureMapAttribute
-    {
-        // This method will affect the configuration for the
-        // entire plugin type
-        public override void Alter(PluginFamily family)
-        {
-            family.SetLifecycleTo&lt;SingletonLifecycle&gt;();
-        }
-
-        // This method will affect single registrations
-        public override void Alter(IConfiguredInstance instance)
-        {
-            instance.SetLifecycleTo&lt;SingletonLifecycle&gt;();
-        }
-    }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]&#xD;&#xA;public class SingletonAttribute : StructureMapAttribute&#xD;&#xA;{&#xD;&#xA;    // This method will affect the configuration for the&#xD;&#xA;    // entire plugin type&#xD;&#xA;    public override void Alter(PluginFamily family)&#xD;&#xA;    {&#xD;&#xA;        family.SetLifecycleTo&lt;SingletonLifecycle&gt;();&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    // This method will affect single registrations&#xD;&#xA;    public override void Alter(IConfiguredInstance instance)&#xD;&#xA;    {&#xD;&#xA;        instance.SetLifecycleTo&lt;SingletonLifecycle&gt;();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>This new attribute can be used on either the plugin type (typically an interface) or on a concrete type
 to make an individual type registration be a singleton. You can see the usage on some types below:</p>
-<pre><code class="language-csharp">
-        [Singleton] // ALL Instance&#39;s of ITeamCache will be singletons by default
-        public interface ITeamCache { }
-
-        public class TeamCache : ITeamCache { }
-
-        public class OtherTeamCache : ITeamCache { }
-
-        public interface ITeam { }
-
-        public class Chargers : ITeam { }
-
-        [Singleton] // This specific type will be a singleton
-        public class Chiefs : ITeam { }
-
-</code></pre>
-<h2>Attribute Targeting Constructor Parameters or Setter Properties</h2>
+<pre><code class="language-csharp">&#xD;&#xA;[Singleton] // ALL Instance&#x27;s of ITeamCache will be singletons by default&#xD;&#xA;public interface ITeamCache { }&#xD;&#xA;&#xD;&#xA;public class TeamCache : ITeamCache { }&#xD;&#xA;&#xD;&#xA;public class OtherTeamCache : ITeamCache { }&#xD;&#xA;&#xD;&#xA;public interface ITeam { }&#xD;&#xA;&#xD;&#xA;public class Chargers : ITeam { }&#xD;&#xA;&#xD;&#xA;[Singleton] // This specific type will be a singleton&#xD;&#xA;public class Chiefs : ITeam { }&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="attribute-targeting-constructor-parameters-or-setter-properties">Attribute Targeting Constructor Parameters or Setter Properties</h2>
 <p>As an example, let's say that you want a new attribute type that can decorate either properties or constructor parameters
 to say &quot;use the value from the old .Net AppSettings collection as the value for this property/parameter.&quot; To build that new
 custom attribute, you would create a new attribute that subclasses <code>StructureMapAttribute</code> and override the two methods shown below:</p>
-<pre><code class="language-csharp">
-        public class AppSettingAttribute : StructureMapAttribute
-        {
-            private readonly string _key;
-
-            public AppSettingAttribute(string key)
-            {
-                _key = key;
-            }
-
-            public override void Alter(IConfiguredInstance instance, PropertyInfo property)
-            {
-                var value = System.Configuration.ConfigurationManager.AppSettings[_key];
-
-                instance.Dependencies.AddForProperty(property, value);
-            }
-
-            public override void Alter(IConfiguredInstance instance, ParameterInfo parameter)
-            {
-                var value = System.Configuration.ConfigurationManager.AppSettings[_key];
-
-                instance.Dependencies.AddForConstructorParameter(parameter, value);
-            }
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class AppSettingAttribute : StructureMapAttribute&#xD;&#xA;{&#xD;&#xA;    private readonly string _key;&#xD;&#xA;&#xD;&#xA;    public AppSettingAttribute(string key)&#xD;&#xA;    {&#xD;&#xA;        _key = key;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public override void Alter(IConfiguredInstance instance, PropertyInfo property)&#xD;&#xA;    {&#xD;&#xA;        var value = System.Configuration.ConfigurationManager.AppSettings[_key];&#xD;&#xA;&#xD;&#xA;        instance.Dependencies.AddForProperty(property, value);&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public override void Alter(IConfiguredInstance instance, ParameterInfo parameter)&#xD;&#xA;    {&#xD;&#xA;        var value = System.Configuration.ConfigurationManager.AppSettings[_key];&#xD;&#xA;&#xD;&#xA;        instance.Dependencies.AddForConstructorParameter(parameter, value);&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>To test out the new attribute above, say we have a concrete type like this one that we
 decorate with the new <code>[AppSetting]</code> attribute:</p>
-<pre><code class="language-csharp">
-        public class AppSettingTarget
-        {
-            public string Name { get; set; }
-
-            [AppSetting(&quot;homestate&quot;)]
-            public string HomeState { get; set; }
-
-            public AppSettingTarget([AppSetting(&quot;name&quot;)]string name)
-            {
-                Name = name;
-            }
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class AppSettingTarget&#xD;&#xA;{&#xD;&#xA;    public string Name { get; set; }&#xD;&#xA;&#xD;&#xA;    [AppSetting(&quot;homestate&quot;)]&#xD;&#xA;    public string HomeState { get; set; }&#xD;&#xA;&#xD;&#xA;    public AppSettingTarget([AppSetting(&quot;name&quot;)]string name)&#xD;&#xA;    {&#xD;&#xA;        Name = name;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>The following unit test demonstrates our new custom <code>[AppSetting]</code> attribute in action:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void using_parameter_and_property_attibutes()
-        {
-            System.Configuration.ConfigurationManager.AppSettings[&quot;name&quot;] = &quot;Jeremy&quot;;
-            System.Configuration.ConfigurationManager.AppSettings[&quot;homestate&quot;] = &quot;Missouri&quot;;
-
-            System.Configuration.ConfigurationManager.AppSettings[&quot;name&quot;].ShouldBe(&quot;Jeremy&quot;);
-
-            var container = new Container();
-
-            var target = container.GetInstance&lt;AppSettingTarget&gt;();
-
-            target.Name.ShouldBe(&quot;Jeremy&quot;);
-            target.HomeState.ShouldBe(&quot;Missouri&quot;);
-
-            Debug.WriteLine(container.Model.For&lt;AppSettingTarget&gt;().Default.DescribeBuildPlan());
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void using_parameter_and_property_attibutes()&#xD;&#xA;{&#xD;&#xA;    System.Configuration.ConfigurationManager.AppSettings[&quot;name&quot;] = &quot;Jeremy&quot;;&#xD;&#xA;    System.Configuration.ConfigurationManager.AppSettings[&quot;homestate&quot;] = &quot;Missouri&quot;;&#xD;&#xA;&#xD;&#xA;    System.Configuration.ConfigurationManager.AppSettings[&quot;name&quot;].ShouldBe(&quot;Jeremy&quot;);&#xD;&#xA;&#xD;&#xA;    var container = new Container();&#xD;&#xA;&#xD;&#xA;    var target = container.GetInstance&lt;AppSettingTarget&gt;();&#xD;&#xA;&#xD;&#xA;    target.Name.ShouldBe(&quot;Jeremy&quot;);&#xD;&#xA;    target.HomeState.ShouldBe(&quot;Missouri&quot;);&#xD;&#xA;&#xD;&#xA;    Debug.WriteLine(container.Model.For&lt;AppSettingTarget&gt;().Default.DescribeBuildPlan());&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>The <a href="/diagnostics/build-plans">build plan</a> for <code>AppSettingTarget</code> is determined by the active StructureMap
 container to be this:</p>
 <pre>
@@ -264,7 +133,7 @@ Set String HomeState = Value: Missouri
 <p>Note that the values retrieved from <code>AppSettings</code> are essentially hard coded into the underlying builder function that StructureMap compiled for
 <code>AppSettingTarget</code>. You <em>could</em> instead add a <a href="/the-container/lambdas">&quot;lambda builder&quot;</a> dependency so that StructureMap had to
 use the live value for <code>AppSettings</code> as it constructs objects.</p>
-<h2>Built In Attributes</h2>
+<h2 id="built-in-attributes">Built In Attributes</h2>
 <p>StructureMap supplies a handful of built in attributes for customizing configuration:</p>
 <ul>
 <li><code>[ValidationMethod]</code> - Allows you to expose <a href="/diagnostics/environment-tests">Environment Tests</a> in your StructureMap registrations</li>
@@ -272,7 +141,6 @@ use the live value for <code>AppSettings</code> as it constructs objects.</p>
 <li><code>[DefaultConstructor]</code> - Declare which constructor function should be used by StructureMap. See <a href="/registration/constructor-selection">Constructor Selection</a> for more information</li>
 <li><code>[AlwaysUnique]</code> and <code>[Singleton]</code> - These attributes, new for StructureMap 4.0, just add another mechanism for <a href="/object-lifecycle/configuring-lifecycles">lifecycle configuration</a></li>
 </ul>
-
 
                       </div>
 

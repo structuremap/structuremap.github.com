@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/diagnostics/environment-tests">Environment Tests</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/diagnostics/whatdoihave">WhatDoIHave()</a></p></li>
                 </ul>
@@ -91,9 +91,7 @@
                           <!--Title: Validating Container Configuration-->
 <!--Url: validating-container-configuration-->
 <p>To find any potential holes in your StructureMap configuration like missing dependencies, unclear defaults of plugin types, validation errors, or just plain build errors, you can use this method below:</p>
-<pre><code class="language-csharp">
-            container.AssertConfigurationIsValid();
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;container.AssertConfigurationIsValid();&#xD;&#xA;</code></pre>
 <p>Running this method will walk over every single registration in your <code>Container</code> and:</p>
 <ol>
 <li>Try to create a build plan for that Instance that will flush out any problems with missing dependencies or invalid inline configuration</li>
@@ -102,23 +100,23 @@
 </ol>
 <p>If StructureMap encounters any errors of any kind during this method, it will throw an exception summarizing <strong>all</strong> of the problems that it encountered. That output will look something like:</p>
 <pre>
-<pre><code>StructureMap.StructureMapConfigurationException
-StructureMap Failures:  1 Build/Configuration Failures and 0 Validation Errors
 
-Profile 'DEFAULT'
+	StructureMap.StructureMapConfigurationException
+	StructureMap Failures:  1 Build/Configuration Failures and 0 Validation Errors
+	
+	Profile 'DEFAULT'
+	
+	-----------------------------------------------------------------------------------------------------
+	Build Error on Instance 'StructureMap.Testing.Diagnostics.NamedWidget'
+	    for PluginType StructureMap.Testing.Diagnostics.IWidget
+	
+	Unable to create a build plan for concrete type StructureMap.Testing.Diagnostics.NamedWidget
+	new NamedWidget(String name)
+	  ┗ String name = Required primitive dependency is not explicitly defined
 
------------------------------------------------------------------------------------------------------
-Build Error on Instance 'StructureMap.Testing.Diagnostics.NamedWidget'
-    for PluginType StructureMap.Testing.Diagnostics.IWidget
-
-Unable to create a build plan for concrete type StructureMap.Testing.Diagnostics.NamedWidget
-new NamedWidget(String name)
-  ┗ String name = Required primitive dependency is not explicitly defined
-</code></pre>
 </pre>
-<h2>Standin Dependencies for Runtime Dependencies</h2>
+<h2 id="standin-dependencies-for-runtime-dependencies">Standin Dependencies for Runtime Dependencies</h2>
 <p>If you take advantage of StructureMap's ability to supply <a href="/resolving/passing-arguments-at-runtime">arguments at runtime</a>, you may need to add fake or stubbed <em>stand in</em> services to StructureMap just to satisfy dependencies while calling <code>Container.AssertConfigurationIsValid()</code>. For example, in <a href="http://github.com/DarthFubuMVC/fubumvc">FubuMVC</a> we supply several services representing an HTTP request as explicit arguments. In order to use the container validation, we have to register stand in services in the main container.</p>
-
 
                       </div>
 

@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/object-lifecycle/configuring-lifecycles">Configuring Lifecycles</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/object-lifecycle">Object Lifecycles</a></p></li>
                 </ul>
@@ -98,385 +98,42 @@
 <li>AlwaysUnique -- A new object instance is created every time, even within the same object graph</li>
 <li>ThreadLocal -- Only one object instance will be created for the currently executing Thread</li>
 </ul>
-<h2>Transient</h2>
+<h2 id="transient">Transient</h2>
 <p>Older versions of StructureMap referred to <em>Transient</em> as <em>PerRequest</em>, which might be a more accurate reflection of how this lifecycle behaves but
 causes some confusion with ASP.Net HTTP scoping.  The easiest way to think of <em>Transient</em> is that a single object instance will be created for each top level
 call to <code>Container.GetInstance()</code> (or any other object resolution method on the <code>IContainer</code> interface). <em>Transient</em> objects resolved from a nested container, <em>Transient's</em> are scoped to the lifecycle
 of the nested container itself. See <a href="/the-container/nested-containers">Nested Containers (Per Request/Transaction)</a> for more information.</p>
 <p><strong>StructureMap's behavior for transient objects that implement <code>IDisposable</code> changed in 4.0 to introduce an &quot;opt-in&quot; tracking mode.</strong> Please see <a href="/the-container/disposing">StructureMap and IDisposable</a> for the details.</p>
 <p>The following unit test demonstrates how <em>Transient</em> lifecycles work in both root and nested containers.</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void Transient()
-        {
-            var c = new Container(x =&gt; { x.For&lt;IService&gt;().Use&lt;Service&gt;().Transient(); });
-
-            // In a normal container, you get a new object
-            // instance of the Service class in subsequent
-            // requests
-            c.GetInstance&lt;IService&gt;()
-                .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;())
-                .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;());
-
-            // Within a nested container, &#39;Transient&#39; now
-            // means within the Nested Container.
-            // A nested container is effectively one request
-            using (var nested = c.GetNestedContainer())
-            {
-                nested.GetInstance&lt;IService&gt;()
-                    .ShouldBeTheSameAs(nested.GetInstance&lt;IService&gt;())
-                    .ShouldBeTheSameAs(nested.GetInstance&lt;IService&gt;());
-            }
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void Transient()&#xD;&#xA;{&#xD;&#xA;    var c = new Container(x =&gt; { x.For&lt;IService&gt;().Use&lt;Service&gt;().Transient(); });&#xD;&#xA;&#xD;&#xA;    // In a normal container, you get a new object&#xD;&#xA;    // instance of the Service class in subsequent&#xD;&#xA;    // requests&#xD;&#xA;    c.GetInstance&lt;IService&gt;()&#xD;&#xA;        .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;())&#xD;&#xA;        .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;());&#xD;&#xA;&#xD;&#xA;    // Within a nested container, &#x27;Transient&#x27; now&#xD;&#xA;    // means within the Nested Container.&#xD;&#xA;    // A nested container is effectively one request&#xD;&#xA;    using (var nested = c.GetNestedContainer())&#xD;&#xA;    {&#xD;&#xA;        nested.GetInstance&lt;IService&gt;()&#xD;&#xA;            .ShouldBeTheSameAs(nested.GetInstance&lt;IService&gt;())&#xD;&#xA;            .ShouldBeTheSameAs(nested.GetInstance&lt;IService&gt;());&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>Also note that a transient dependency will
 be created exactly once in an object graph resolved from <code>IContainer.GetInstance(Type)</code>. Imagine that you are building an
 object graph with various objects that all need to apply some work to a shared <a href="http://msdn.microsoft.com/en-us/magazine/dd882510.aspx">unit of work</a> object (think NHibernate's ISession, Entity Framework's DbContext, RavenDb's IDocumentSession):</p>
-<pre><code class="language-csharp">
-        public interface IUnitOfWork
-        {
-        }
-
-        public class DefaultUnitOfWork : IUnitOfWork
-        {
-        }
-
-        public class Worker1
-        {
-            public IUnitOfWork Uow { get; set; }
-
-            public Worker1(IUnitOfWork uow)
-            {
-                Uow = uow;
-            }
-        }
-
-        public class Worker2
-        {
-            public IUnitOfWork Uow { get; set; }
-
-            public Worker2(IUnitOfWork uow)
-            {
-                Uow = uow;
-            }
-        }
-
-        public class WorkerCoordinator
-        {
-            public IUnitOfWork Uow { get; set; }
-            public Worker1 Worker1 { get; set; }
-            public Worker2 Worker2 { get; set; }
-
-            public WorkerCoordinator(IUnitOfWork uow, Worker1 worker1, Worker2 worker2)
-            {
-                Uow = uow;
-                Worker1 = worker1;
-                Worker2 = worker2;
-            }
-        }
-
-        [Fact]
-        public void transient_scoped_Instance_is_built_once_per_resolution_to_the_Container()
-        {
-            var container = new Container(_ =&gt; { _.For&lt;IUnitOfWork&gt;().Use&lt;DefaultUnitOfWork&gt;(); });
-
-            var coordinator = container.GetInstance&lt;WorkerCoordinator&gt;();
-
-            // The IUnitOfWork object instance is the same for
-            // all the objects in the object graph that had
-            // a constructor dependency on IUnitOfWork
-            coordinator.Uow
-                .ShouldBeTheSameAs(coordinator.Worker1.Uow);
-
-            coordinator.Uow
-                .ShouldBeTheSameAs(coordinator.Worker2.Uow);
-
-            coordinator.Worker1.Uow
-                .ShouldBeTheSameAs(coordinator.Worker2.Uow);
-        }
-
-</code></pre>
-<h2>AlwaysUnique</h2>
+<pre><code class="language-csharp">&#xD;&#xA;public interface IUnitOfWork&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class DefaultUnitOfWork : IUnitOfWork&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Worker1&#xD;&#xA;{&#xD;&#xA;    public IUnitOfWork Uow { get; set; }&#xD;&#xA;&#xD;&#xA;    public Worker1(IUnitOfWork uow)&#xD;&#xA;    {&#xD;&#xA;        Uow = uow;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Worker2&#xD;&#xA;{&#xD;&#xA;    public IUnitOfWork Uow { get; set; }&#xD;&#xA;&#xD;&#xA;    public Worker2(IUnitOfWork uow)&#xD;&#xA;    {&#xD;&#xA;        Uow = uow;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class WorkerCoordinator&#xD;&#xA;{&#xD;&#xA;    public IUnitOfWork Uow { get; set; }&#xD;&#xA;    public Worker1 Worker1 { get; set; }&#xD;&#xA;    public Worker2 Worker2 { get; set; }&#xD;&#xA;&#xD;&#xA;    public WorkerCoordinator(IUnitOfWork uow, Worker1 worker1, Worker2 worker2)&#xD;&#xA;    {&#xD;&#xA;        Uow = uow;&#xD;&#xA;        Worker1 = worker1;&#xD;&#xA;        Worker2 = worker2;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void transient_scoped_Instance_is_built_once_per_resolution_to_the_Container()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt; { _.For&lt;IUnitOfWork&gt;().Use&lt;DefaultUnitOfWork&gt;(); });&#xD;&#xA;&#xD;&#xA;    var coordinator = container.GetInstance&lt;WorkerCoordinator&gt;();&#xD;&#xA;&#xD;&#xA;    // The IUnitOfWork object instance is the same for&#xD;&#xA;    // all the objects in the object graph that had&#xD;&#xA;    // a constructor dependency on IUnitOfWork&#xD;&#xA;    coordinator.Uow&#xD;&#xA;        .ShouldBeTheSameAs(coordinator.Worker1.Uow);&#xD;&#xA;&#xD;&#xA;    coordinator.Uow&#xD;&#xA;        .ShouldBeTheSameAs(coordinator.Worker2.Uow);&#xD;&#xA;&#xD;&#xA;    coordinator.Worker1.Uow&#xD;&#xA;        .ShouldBeTheSameAs(coordinator.Worker2.Uow);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="alwaysunique">AlwaysUnique</h2>
 <p>Very simply, using the <em>AlwaysUnique</em> means that a new object instance will be created every single time a configured Instance is either requested
 from a Container or as a dependency to another object. The <em>AlwaysUnique</em> lifecycle is a &quot;fire and forget&quot; operation as the object instances are neither tracked nor disposed by StructureMap.</p>
 <div class="alert alert-info" role="alert">The StructureMap team strongly feels that the default lifecycle is appropriate in most cases and that the <i>unique</i>
 lifecycle is mostly useful for logging services as demonstrated in the <a href="http://jeremydmiller.com/2014/08/12/structuremap-3-1/">StructureMap 3.1 announcement.</a></div>
-<pre><code class="language-csharp">
-        [Fact]
-        public void Always_Unique()
-        {
-            var c = new Container(x =&gt; { x.For&lt;IService&gt;().Use&lt;Service&gt;().AlwaysUnique(); });
-
-            // In a normal container, you get a new object
-            // instance of the Service class in subsequent
-            // requests
-            c.GetInstance&lt;IService&gt;()
-                .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;())
-                .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;());
-
-            // Within a nested container, &#39;Transient&#39; now
-            // means within the Nested Container.
-            // A nested container is effectively one request
-            using (var nested = c.GetNestedContainer())
-            {
-                nested.GetInstance&lt;IService&gt;()
-                    .ShouldNotBeTheSameAs(nested.GetInstance&lt;IService&gt;())
-                    .ShouldNotBeTheSameAs(nested.GetInstance&lt;IService&gt;());
-            }
-
-            // Even in a single request,
-            var holder = c.GetInstance&lt;ServiceUserHolder&gt;();
-            holder.Service.ShouldNotBeTheSameAs(holder.User.Service);
-        }
-
-</code></pre>
-<h2>Singleton</h2>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void Always_Unique()&#xD;&#xA;{&#xD;&#xA;    var c = new Container(x =&gt; { x.For&lt;IService&gt;().Use&lt;Service&gt;().AlwaysUnique(); });&#xD;&#xA;&#xD;&#xA;    // In a normal container, you get a new object&#xD;&#xA;    // instance of the Service class in subsequent&#xD;&#xA;    // requests&#xD;&#xA;    c.GetInstance&lt;IService&gt;()&#xD;&#xA;        .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;())&#xD;&#xA;        .ShouldNotBeTheSameAs(c.GetInstance&lt;IService&gt;());&#xD;&#xA;&#xD;&#xA;    // Within a nested container, &#x27;Transient&#x27; now&#xD;&#xA;    // means within the Nested Container.&#xD;&#xA;    // A nested container is effectively one request&#xD;&#xA;    using (var nested = c.GetNestedContainer())&#xD;&#xA;    {&#xD;&#xA;        nested.GetInstance&lt;IService&gt;()&#xD;&#xA;            .ShouldNotBeTheSameAs(nested.GetInstance&lt;IService&gt;())&#xD;&#xA;            .ShouldNotBeTheSameAs(nested.GetInstance&lt;IService&gt;());&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    // Even in a single request,&#xD;&#xA;    var holder = c.GetInstance&lt;ServiceUserHolder&gt;();&#xD;&#xA;    holder.Service.ShouldNotBeTheSameAs(holder.User.Service);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="singleton">Singleton</h2>
 <p>StructureMap 3.0 fixed the <a href="https://github.com/structuremap/structuremap/issues/3">dreaded singletons with nested container's bug</a> that was so problematic in 2.6.</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void singletons_are_disposed_when_the_container_is_disposed()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.ForSingletonOf&lt;DisposableSingleton&gt;();
-            });
-
-            // As a singleton-scoped object, every request for DisposableSingleton
-            // will return the same object
-            var singleton = container.GetInstance&lt;DisposableSingleton&gt;();
-            singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());
-            singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());
-            singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());
-            singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());
-
-            singleton.WasDisposed.ShouldBeFalse();
-
-            // now, dispose the Container
-            container.Dispose();
-
-            // the SingletonThing scoped object should be disposed
-            singleton.WasDisposed.ShouldBeTrue();
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void singletons_are_disposed_when_the_container_is_disposed()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.ForSingletonOf&lt;DisposableSingleton&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    // As a singleton-scoped object, every request for DisposableSingleton&#xD;&#xA;    // will return the same object&#xD;&#xA;    var singleton = container.GetInstance&lt;DisposableSingleton&gt;();&#xD;&#xA;    singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());&#xD;&#xA;    singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());&#xD;&#xA;    singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());&#xD;&#xA;    singleton.ShouldBeSameAs(container.GetInstance&lt;DisposableSingleton&gt;());&#xD;&#xA;&#xD;&#xA;    singleton.WasDisposed.ShouldBeFalse();&#xD;&#xA;&#xD;&#xA;    // now, dispose the Container&#xD;&#xA;    container.Dispose();&#xD;&#xA;&#xD;&#xA;    // the SingletonThing scoped object should be disposed&#xD;&#xA;    singleton.WasDisposed.ShouldBeTrue();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>Do note that objects created as the singleton scope will be disposed when the Container is disposed if they
 implement the <code>IDisposable</code> interface:</p>
-<pre><code class="language-csharp">
-        public interface IUnitOfWork
-        {
-        }
-
-        public class DefaultUnitOfWork : IUnitOfWork
-        {
-        }
-
-        public class Worker1
-        {
-            public IUnitOfWork Uow { get; set; }
-
-            public Worker1(IUnitOfWork uow)
-            {
-                Uow = uow;
-            }
-        }
-
-        public class Worker2
-        {
-            public IUnitOfWork Uow { get; set; }
-
-            public Worker2(IUnitOfWork uow)
-            {
-                Uow = uow;
-            }
-        }
-
-        public class WorkerCoordinator
-        {
-            public IUnitOfWork Uow { get; set; }
-            public Worker1 Worker1 { get; set; }
-            public Worker2 Worker2 { get; set; }
-
-            public WorkerCoordinator(IUnitOfWork uow, Worker1 worker1, Worker2 worker2)
-            {
-                Uow = uow;
-                Worker1 = worker1;
-                Worker2 = worker2;
-            }
-        }
-
-        [Fact]
-        public void transient_scoped_Instance_is_built_once_per_resolution_to_the_Container()
-        {
-            var container = new Container(_ =&gt; { _.For&lt;IUnitOfWork&gt;().Use&lt;DefaultUnitOfWork&gt;(); });
-
-            var coordinator = container.GetInstance&lt;WorkerCoordinator&gt;();
-
-            // The IUnitOfWork object instance is the same for
-            // all the objects in the object graph that had
-            // a constructor dependency on IUnitOfWork
-            coordinator.Uow
-                .ShouldBeTheSameAs(coordinator.Worker1.Uow);
-
-            coordinator.Uow
-                .ShouldBeTheSameAs(coordinator.Worker2.Uow);
-
-            coordinator.Worker1.Uow
-                .ShouldBeTheSameAs(coordinator.Worker2.Uow);
-        }
-
-</code></pre>
-<h2>ContainerScoped</h2>
+<pre><code class="language-csharp">&#xD;&#xA;public interface IUnitOfWork&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class DefaultUnitOfWork : IUnitOfWork&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Worker1&#xD;&#xA;{&#xD;&#xA;    public IUnitOfWork Uow { get; set; }&#xD;&#xA;&#xD;&#xA;    public Worker1(IUnitOfWork uow)&#xD;&#xA;    {&#xD;&#xA;        Uow = uow;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Worker2&#xD;&#xA;{&#xD;&#xA;    public IUnitOfWork Uow { get; set; }&#xD;&#xA;&#xD;&#xA;    public Worker2(IUnitOfWork uow)&#xD;&#xA;    {&#xD;&#xA;        Uow = uow;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class WorkerCoordinator&#xD;&#xA;{&#xD;&#xA;    public IUnitOfWork Uow { get; set; }&#xD;&#xA;    public Worker1 Worker1 { get; set; }&#xD;&#xA;    public Worker2 Worker2 { get; set; }&#xD;&#xA;&#xD;&#xA;    public WorkerCoordinator(IUnitOfWork uow, Worker1 worker1, Worker2 worker2)&#xD;&#xA;    {&#xD;&#xA;        Uow = uow;&#xD;&#xA;        Worker1 = worker1;&#xD;&#xA;        Worker2 = worker2;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void transient_scoped_Instance_is_built_once_per_resolution_to_the_Container()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt; { _.For&lt;IUnitOfWork&gt;().Use&lt;DefaultUnitOfWork&gt;(); });&#xD;&#xA;&#xD;&#xA;    var coordinator = container.GetInstance&lt;WorkerCoordinator&gt;();&#xD;&#xA;&#xD;&#xA;    // The IUnitOfWork object instance is the same for&#xD;&#xA;    // all the objects in the object graph that had&#xD;&#xA;    // a constructor dependency on IUnitOfWork&#xD;&#xA;    coordinator.Uow&#xD;&#xA;        .ShouldBeTheSameAs(coordinator.Worker1.Uow);&#xD;&#xA;&#xD;&#xA;    coordinator.Uow&#xD;&#xA;        .ShouldBeTheSameAs(coordinator.Worker2.Uow);&#xD;&#xA;&#xD;&#xA;    coordinator.Worker1.Uow&#xD;&#xA;        .ShouldBeTheSameAs(coordinator.Worker2.Uow);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="containerscoped">ContainerScoped</h2>
 <p>New in StructureMap 4.0 is the <em>ContainerScoped</em> lifecycle that was designed specifically for compliance with the new ASP.Net DNX adapter model.
 <em>ContainerScoped</em> in this case means that a registration will be built once per <code>Container</code>, such that the root container, any child or profile
 container, and every single nested container will build its own object instance.</p>
 <p>The acceptance test for <code>ContainerScoped</code> is shown below:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void container_scoping_with_root_child_and_nested_container()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.ForConcreteType&lt;Disposable&gt;().Configure.ContainerScoped();
-            });
-
-            var child = container.CreateChildContainer();
-
-            var nested = container.GetNestedContainer();
-
-            // Always the same object when requested from the root container
-            var mainDisposable = container.GetInstance&lt;Disposable&gt;();
-            mainDisposable
-                .ShouldBeTheSameAs(container.GetInstance&lt;Disposable&gt;());
-
-            // Always the same object when requested from a child container
-            var childDisposable = child.GetInstance&lt;Disposable&gt;();
-            childDisposable
-                .ShouldBeTheSameAs(child.GetInstance&lt;Disposable&gt;());
-
-            // Always the same object when requested from a nested container
-            var nestedDisposable = nested.GetInstance&lt;Disposable&gt;();
-            nestedDisposable
-                .ShouldBeTheSameAs(nested.GetInstance&lt;Disposable&gt;());
-
-            // It should be a different object instance for
-            // all three containers
-            mainDisposable
-                .ShouldNotBeTheSameAs(childDisposable);
-
-            mainDisposable
-                .ShouldNotBeTheSameAs(nestedDisposable);
-
-            childDisposable
-                .ShouldNotBeTheSameAs(nestedDisposable);
-
-            // When the nested container is disposed,
-            // it should dispose all the container scoped objects,
-            // but not impact the other containers
-            nested.Dispose();
-            nestedDisposable.WasDisposed.ShouldBeTrue();
-            childDisposable.WasDisposed.ShouldBeFalse();
-            mainDisposable.WasDisposed.ShouldBeFalse();
-
-            // Same for the child container
-            child.Dispose();
-            childDisposable.WasDisposed.ShouldBeTrue();
-            mainDisposable.WasDisposed.ShouldBeFalse();
-
-            // Same for the main container
-            container.Dispose();
-            mainDisposable.WasDisposed.ShouldBeTrue();
-        }
-
-</code></pre>
-<h2>ThreadLocal</h2>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void container_scoping_with_root_child_and_nested_container()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.ForConcreteType&lt;Disposable&gt;().Configure.ContainerScoped();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    var child = container.CreateChildContainer();&#xD;&#xA;&#xD;&#xA;    var nested = container.GetNestedContainer();&#xD;&#xA;&#xD;&#xA;    // Always the same object when requested from the root container&#xD;&#xA;    var mainDisposable = container.GetInstance&lt;Disposable&gt;();&#xD;&#xA;    mainDisposable&#xD;&#xA;        .ShouldBeTheSameAs(container.GetInstance&lt;Disposable&gt;());&#xD;&#xA;&#xD;&#xA;    // Always the same object when requested from a child container&#xD;&#xA;    var childDisposable = child.GetInstance&lt;Disposable&gt;();&#xD;&#xA;    childDisposable&#xD;&#xA;        .ShouldBeTheSameAs(child.GetInstance&lt;Disposable&gt;());&#xD;&#xA;&#xD;&#xA;    // Always the same object when requested from a nested container&#xD;&#xA;    var nestedDisposable = nested.GetInstance&lt;Disposable&gt;();&#xD;&#xA;    nestedDisposable&#xD;&#xA;        .ShouldBeTheSameAs(nested.GetInstance&lt;Disposable&gt;());&#xD;&#xA;&#xD;&#xA;    // It should be a different object instance for&#xD;&#xA;    // all three containers&#xD;&#xA;    mainDisposable&#xD;&#xA;        .ShouldNotBeTheSameAs(childDisposable);&#xD;&#xA;&#xD;&#xA;    mainDisposable&#xD;&#xA;        .ShouldNotBeTheSameAs(nestedDisposable);&#xD;&#xA;&#xD;&#xA;    childDisposable&#xD;&#xA;        .ShouldNotBeTheSameAs(nestedDisposable);&#xD;&#xA;&#xD;&#xA;    // When the nested container is disposed,&#xD;&#xA;    // it should dispose all the container scoped objects,&#xD;&#xA;    // but not impact the other containers&#xD;&#xA;    nested.Dispose();&#xD;&#xA;    nestedDisposable.WasDisposed.ShouldBeTrue();&#xD;&#xA;    childDisposable.WasDisposed.ShouldBeFalse();&#xD;&#xA;    mainDisposable.WasDisposed.ShouldBeFalse();&#xD;&#xA;&#xD;&#xA;    // Same for the child container&#xD;&#xA;    child.Dispose();&#xD;&#xA;    childDisposable.WasDisposed.ShouldBeTrue();&#xD;&#xA;    mainDisposable.WasDisposed.ShouldBeFalse();&#xD;&#xA;&#xD;&#xA;    // Same for the main container&#xD;&#xA;    container.Dispose();&#xD;&#xA;    mainDisposable.WasDisposed.ShouldBeTrue();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="threadlocal">ThreadLocal</h2>
 <p>The ThreadLocalStorage based lifecycle is seldom used, but the easiest example of using it and explanation is the integration test:</p>
-<pre><code class="language-csharp">
-
-    public class ThreadLocalStorageLifecycleTester
-    {
-        public ThreadLocalStorageLifecycleTester()
-        {
-            _lifecycle = new ThreadLocalStorageLifecycle();
-
-            container = new Container(x =&gt; x.For&lt;Rule&gt;(Lifecycles.ThreadLocal).Use(() =&gt; new ColorRule(&quot;Red&quot;)));
-        }
-
-        private ThreadLocalStorageLifecycle _lifecycle;
-        private ColorRule _rule1;
-        private ColorRule _rule2;
-        private ColorRule _rule3;
-        private Container container;
-
-        private void findRule1()
-        {
-            _rule1 = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();
-
-            var rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();
-            _rule1.ShouldBeTheSameAs(rule);
-        }
-
-        private void findRule2()
-        {
-            _rule2 = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();
-
-            var rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();
-            _rule2.ShouldBeTheSameAs(rule);
-        }
-
-        private void findRule3()
-        {
-            _rule3 = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();
-
-            var rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();
-            _rule3.ShouldBeTheSameAs(rule);
-
-            rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();
-            _rule3.ShouldBeTheSameAs(rule);
-
-            rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();
-            _rule3.ShouldBeTheSameAs(rule);
-
-            rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();
-            _rule3.ShouldBeTheSameAs(rule);
-        }
-
-        [Fact]
-        public void object_has_been_created()
-        {
-            container.Model.For&lt;Rule&gt;().Default.ObjectHasBeenCreated().ShouldBeFalse();
-            var r1 = container.GetInstance&lt;Rule&gt;();
-            container.Model.For&lt;Rule&gt;().Default.ObjectHasBeenCreated().ShouldBeTrue();
-        }
-
-        [Fact]
-        public void FindUniqueInstancePerThread()
-        {
-            var t1 = new Thread(findRule1);
-            var t2 = new Thread(findRule2);
-            var t3 = new Thread(findRule3);
-
-            t1.Start();
-            t2.Start();
-            t3.Start();
-
-            t1.Join();
-            t2.Join();
-            t3.Join();
-
-            _rule1.ShouldNotBeTheSameAs(_rule2);
-            _rule1.ShouldNotBeTheSameAs(_rule3);
-            _rule2.ShouldNotBeTheSameAs(_rule3);
-            (_rule1.ID != _rule2.ID).ShouldBeTrue();
-            (_rule1.ID != _rule3.ID).ShouldBeTrue();
-            (_rule2.ID != _rule3.ID).ShouldBeTrue();
-        }
-    }
-
-</code></pre>
-<h2>Legacy ASP.Net Lifecycles</h2>
+<pre><code class="language-csharp">&#xD;&#xA;&#xD;&#xA;public class ThreadLocalStorageLifecycleTester&#xD;&#xA;{&#xD;&#xA;    public ThreadLocalStorageLifecycleTester()&#xD;&#xA;    {&#xD;&#xA;        _lifecycle = new ThreadLocalStorageLifecycle();&#xD;&#xA;&#xD;&#xA;        container = new Container(x =&gt; x.For&lt;Rule&gt;(Lifecycles.ThreadLocal).Use(() =&gt; new ColorRule(&quot;Red&quot;)));&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    private ThreadLocalStorageLifecycle _lifecycle;&#xD;&#xA;    private ColorRule _rule1;&#xD;&#xA;    private ColorRule _rule2;&#xD;&#xA;    private ColorRule _rule3;&#xD;&#xA;    private Container container;&#xD;&#xA;&#xD;&#xA;    private void findRule1()&#xD;&#xA;    {&#xD;&#xA;        _rule1 = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();&#xD;&#xA;&#xD;&#xA;        var rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();&#xD;&#xA;        _rule1.ShouldBeTheSameAs(rule);&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    private void findRule2()&#xD;&#xA;    {&#xD;&#xA;        _rule2 = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();&#xD;&#xA;&#xD;&#xA;        var rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();&#xD;&#xA;        _rule2.ShouldBeTheSameAs(rule);&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    private void findRule3()&#xD;&#xA;    {&#xD;&#xA;        _rule3 = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();&#xD;&#xA;&#xD;&#xA;        var rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();&#xD;&#xA;        _rule3.ShouldBeTheSameAs(rule);&#xD;&#xA;&#xD;&#xA;        rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();&#xD;&#xA;        _rule3.ShouldBeTheSameAs(rule);&#xD;&#xA;&#xD;&#xA;        rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();&#xD;&#xA;        _rule3.ShouldBeTheSameAs(rule);&#xD;&#xA;&#xD;&#xA;        rule = container.GetInstance&lt;Rule&gt;().ShouldBeOfType&lt;ColorRule&gt;();&#xD;&#xA;        _rule3.ShouldBeTheSameAs(rule);&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    [Fact]&#xD;&#xA;    public void object_has_been_created()&#xD;&#xA;    {&#xD;&#xA;        container.Model.For&lt;Rule&gt;().Default.ObjectHasBeenCreated().ShouldBeFalse();&#xD;&#xA;        var r1 = container.GetInstance&lt;Rule&gt;();&#xD;&#xA;        container.Model.For&lt;Rule&gt;().Default.ObjectHasBeenCreated().ShouldBeTrue();&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    [Fact]&#xD;&#xA;    public void FindUniqueInstancePerThread()&#xD;&#xA;    {&#xD;&#xA;        var t1 = new Thread(findRule1);&#xD;&#xA;        var t2 = new Thread(findRule2);&#xD;&#xA;        var t3 = new Thread(findRule3);&#xD;&#xA;&#xD;&#xA;        t1.Start();&#xD;&#xA;        t2.Start();&#xD;&#xA;        t3.Start();&#xD;&#xA;&#xD;&#xA;        t1.Join();&#xD;&#xA;        t2.Join();&#xD;&#xA;        t3.Join();&#xD;&#xA;&#xD;&#xA;        _rule1.ShouldNotBeTheSameAs(_rule2);&#xD;&#xA;        _rule1.ShouldNotBeTheSameAs(_rule3);&#xD;&#xA;        _rule2.ShouldNotBeTheSameAs(_rule3);&#xD;&#xA;        (_rule1.ID != _rule2.ID).ShouldBeTrue();&#xD;&#xA;        (_rule1.ID != _rule3.ID).ShouldBeTrue();&#xD;&#xA;        (_rule2.ID != _rule3.ID).ShouldBeTrue();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="legacy-asp.net-lifecycles">Legacy ASP.Net Lifecycles</h2>
 <div class="alert alert-info" role="alert">The StructureMap team strongly recommends against using the old ASP.Net lifecycles.  <b>Most</b> modern web frameworks in .Net will use a Nested Container per request to accomplish the same scoping in a better way.</div>
-<p><Nuget name="StructureMap.Web" /></p>
+<Nuget name="StructureMap.Web" />
 <p>In addition, the StructureMap.Web package adds the legacy ASP.Net related lifecycles for:</p>
 <ul>
 <li>HttpContext</li>
@@ -484,11 +141,10 @@ container, and every single nested container will build its own object instance.
 <li>Hybrid -- uses ThreadLocalStorage in the absence of an active HttpContext</li>
 <li>HybridSession</li>
 </ul>
-<p class="bg-warning" style="padding:10px"><b>Missing code sample &#39;AspNet-Lifecycles&#39;</b><small> -- Wait for ST to catch up reading samples or CTRL+SHIFT+R to force refresh</small></p>
+<p class="bg-warning" style="padding:10px"><b>Missing code sample &#x27;AspNet-Lifecycles&#x27;</b><small> -- Wait for dotnet stdocs to catch up reading samples or CTRL&#x2B;SHIFT&#x2B;R to force refresh</small></p>
 <p>If you do use any of the HttpContext lifecycles, make sure you also do:</p>
-<p class="bg-warning" style="padding:10px"><b>Missing code sample &#39;clean-up-http-context&#39;</b><small> -- Wait for ST to catch up reading samples or CTRL+SHIFT+R to force refresh</small></p> 
+<p class="bg-warning" style="padding:10px"><b>Missing code sample &#x27;clean-up-http-context&#x27;</b><small> -- Wait for dotnet stdocs to catch up reading samples or CTRL&#x2B;SHIFT&#x2B;R to force refresh</small></p> 
 <p>at the end of your HTTP request.</p>
-
 
                       </div>
 

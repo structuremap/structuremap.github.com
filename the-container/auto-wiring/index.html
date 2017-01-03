@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/the-container/lambdas">Building Objects with Lambdas</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/the-container">The Container</a></p></li>
                 </ul>
@@ -91,56 +91,18 @@
                           <!--Title: Auto Wiring-->
 <!--Url: auto-wiring-->
 <p>The best way to use an IoC container is to allow &quot;Auto Wiring&quot; to do most of the work for you.  IoC Containers like StructureMap are an infrastructure concern, and as such, should be isolated from as much of your code as possible.  Before examining Auto Wiring in depth, let's look at a common anti pattern of IoC usage:</p>
-<pre><code class="language-csharp">
-        // This is the wrong way to use an IoC container.  Do NOT invoke the container from
-        // the constructor function.  This tightly couples the ShippingScreenPresenter to
-        // the IoC container in a harmful way.  This class cannot be used in either
-        // production or testing without a valid IoC configuration.  Plus, you&#39;re writing more
-        // code
-        public ShippingScreenPresenter(IContainer container)
-        {
-            // It&#39;s even worse if you use a static facade to retrieve
-            // a service locator!
-            _service = container.GetInstance&lt;IShippingService&gt;();
-            _repository = container.GetInstance&lt;IRepository&gt;();
-        }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;// This is the wrong way to use an IoC container.  Do NOT invoke the container from&#xD;&#xA;// the constructor function.  This tightly couples the ShippingScreenPresenter to&#xD;&#xA;// the IoC container in a harmful way.  This class cannot be used in either&#xD;&#xA;// production or testing without a valid IoC configuration.  Plus, you&#x27;re writing more&#xD;&#xA;// code&#xD;&#xA;public ShippingScreenPresenter(IContainer container)&#xD;&#xA;{&#xD;&#xA;    // It&#x27;s even worse if you use a static facade to retrieve&#xD;&#xA;    // a service locator!&#xD;&#xA;    _service = container.GetInstance&lt;IShippingService&gt;();&#xD;&#xA;    _repository = container.GetInstance&lt;IRepository&gt;();&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>Instead of binding <code>ShippingScreenPresenter</code> so tightly to StructureMap and having to explicitly fetch its dependencies, let's switch
 it to using StructureMap a little more idiomatically and just exposing a constructor function with the necessary dependencies
 as arguments:</p>
-<pre><code class="language-csharp">
-        // This is the way to write a Constructor Function with an IoC tool
-        // Let the IoC container &quot;inject&quot; services from outside, and keep
-        // ShippingScreenPresenter ignorant of the IoC infrastructure
-        public ShippingScreenPresenter(IShippingService service, IRepository repository)
-        {
-            _service = service;
-            _repository = repository;
-        }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;// This is the way to write a Constructor Function with an IoC tool&#xD;&#xA;// Let the IoC container &quot;inject&quot; services from outside, and keep&#xD;&#xA;// ShippingScreenPresenter ignorant of the IoC infrastructure&#xD;&#xA;public ShippingScreenPresenter(IShippingService service, IRepository repository)&#xD;&#xA;{&#xD;&#xA;    _service = service;&#xD;&#xA;    _repository = repository;&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>As long as a StructureMap <code>Container</code> knows how to resolve the <code>IRepository</code> and
 <code>IShippingService</code> interfaces, StructureMap can build <code>ShippingScreenPresenter</code> by using &quot;auto-wiring.&quot; All this means is that
 instead of forcing you to explicitly configure all the dependencies for <code>ShippingScreenPresenter</code>, StructureMap can infer from
 the public <a href="/registration/constructor-selection">constructor function</a> and <a href="/setter-injection">public property setters</a>
 what dependencies <code>ShippingScreenPresenter</code> needs and uses the defaults of both to build it out.</p>
 <p>Looking at the <a href="/diagnostics/build-plans">build plan</a> for <code>ShippingScreenPresenter</code>:</p>
-<pre><code class="language-csharp">
-        public void ShowBuildPlan()
-        {
-            var container = new Container(_ =&gt;
-            {
-                _.For&lt;IShippingService&gt;().Use&lt;InternalShippingService&gt;();
-                _.For&lt;IRepository&gt;().Use&lt;SimpleRepository&gt;();
-            });
-
-            // Just proving that we can build ShippingScreenPresenter;)
-            container.GetInstance&lt;ShippingScreenPresenter&gt;().ShouldNotBeNull();
-
-            var buildPlan = container.Model.For&lt;ShippingScreenPresenter&gt;().Default.DescribeBuildPlan(1);
-
-            Debug.WriteLine(buildPlan);
-        }
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public void ShowBuildPlan()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.For&lt;IShippingService&gt;().Use&lt;InternalShippingService&gt;();&#xD;&#xA;        _.For&lt;IRepository&gt;().Use&lt;SimpleRepository&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    // Just proving that we can build ShippingScreenPresenter;)&#xD;&#xA;    container.GetInstance&lt;ShippingScreenPresenter&gt;().ShouldNotBeNull();&#xD;&#xA;&#xD;&#xA;    var buildPlan = container.Model.For&lt;ShippingScreenPresenter&gt;().Default.DescribeBuildPlan(1);&#xD;&#xA;&#xD;&#xA;    Debug.WriteLine(buildPlan);&#xD;&#xA;}&#xD;&#xA;</code></pre>
 <p>give us:</p>
 <pre>
 PluginType: StructureMap.Testing.DocumentationExamples.ShippingScreenPresenter
@@ -155,9 +117,9 @@ new ShippingScreenPresenter(IShippingService, IRepository)
                | PluginType: StructureMap.Testing.DocumentationExamples.IRepository
                | Lifecycle: Transient
                | new SimpleRepository()
+              
 </pre>
 <p>See <a href="/the-container/primitives">Working with Primitive Types</a> for more information on how StructureMap deals with primitive types like numbers, strings, enums, and dates in auto-wiring.</p>
-
 
                       </div>
 

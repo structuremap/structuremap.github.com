@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/registration/policies">Construction Policies</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/registration/auto-registration-and-conventions">Auto-Registration and Conventions</a></p></li>
                 </ul>
@@ -95,139 +95,22 @@ StructureMap exposes the <code>IConfiguredInstance</code> interface as a means o
 created or resolved. While the <a href="/registration/registry-dsl">Registry DSL</a> fluent interface provides the main way of explicitly configuring concrete type creation,
 the <code>IConfiguredInstance</code> interface is meant to support <a href="/registration/auto-registration-and-conventions">conventional registration</a>,
 <a href="/registration/attributes">configuration attributes</a>, and <a href="/registration/policies">construction policies</a>.</p>
-<pre><code class="language-csharp">
-    /// &lt;summary&gt;
-    /// Represents a configured Instance object that
-    /// is built by StructureMap directly by calling 
-    /// constructor functions and property setters
-    /// &lt;/summary&gt;
-    public interface IConfiguredInstance
-    {
-        /// &lt;summary&gt;
-        /// The Instance name
-        /// &lt;/summary&gt;
-        string Name { get; set; }
-
-        /// &lt;summary&gt;
-        /// The actual concrete type built by this Instance
-        /// &lt;/summary&gt;
-        Type PluggedType { get; }
-
-        /// &lt;summary&gt;
-        /// The explicitly configured inline dependencies that override
-        /// auto-wiring
-        /// &lt;/summary&gt;
-        DependencyCollection Dependencies { get; }
-
-        /// &lt;summary&gt;
-        /// Add an interceptor to only this Instance
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;interceptor&quot;&gt;&lt;/param&gt;
-        void AddInterceptor(IInterceptor interceptor);
-
-        /// &lt;summary&gt;
-        /// Set the lifecycle of only this Instance to the ILifecycle type.
-        /// &lt;/summary&gt;
-        /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;
-        /// &lt;example&gt;
-        /// SetLifecycleTo&lt;SingletonLifecycle&gt;()
-        /// &lt;/example&gt;
-        void SetLifecycleTo&lt;T&gt;() where T : ILifecycle, new();
-
-        /// &lt;summary&gt;
-        /// Set the lifecycle of only this Instance to a certain lifecycle
-        /// &lt;/summary&gt;
-        /// &lt;param name=&quot;lifecycle&quot;&gt;&lt;/param&gt;
-        void SetLifecycleTo(ILifecycle lifecycle);
-
-        /// &lt;summary&gt;
-        /// The current Lifecycle that will be used for this Instance
-        /// &lt;/summary&gt;
-        ILifecycle Lifecycle { get; }
-
-        /// &lt;summary&gt;
-        /// Explicitly choose a constructor
-        /// &lt;/summary&gt;
-        ConstructorInfo Constructor { get; set; }
-
-        /// &lt;summary&gt;
-        /// Has a build plan already been created for this instance?
-        /// &lt;/summary&gt;
-        /// &lt;returns&gt;&lt;/returns&gt;
-        bool HasBuildPlan();
-
-        /// &lt;summary&gt;
-        /// Clears out any cached IBuildPlan for this Instance.
-        /// &lt;/summary&gt;
-        void ClearBuildPlan();
-    }
-</code></pre>
-<h2>Changing the Instance Lifecycle</h2>
+<pre><code class="language-csharp">&#xD;&#xA;/// &lt;summary&gt;&#xD;&#xA;/// Represents a configured Instance object that&#xD;&#xA;/// is built by StructureMap directly by calling &#xD;&#xA;/// constructor functions and property setters&#xD;&#xA;/// &lt;/summary&gt;&#xD;&#xA;public interface IConfiguredInstance&#xD;&#xA;{&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The Instance name&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    string Name { get; set; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The actual concrete type built by this Instance&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    Type PluggedType { get; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The explicitly configured inline dependencies that override&#xD;&#xA;    /// auto-wiring&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    DependencyCollection Dependencies { get; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Add an interceptor to only this Instance&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;interceptor&quot;&gt;&lt;/param&gt;&#xD;&#xA;    void AddInterceptor(IInterceptor interceptor);&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Set the lifecycle of only this Instance to the ILifecycle type.&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;&#xD;&#xA;    /// &lt;example&gt;&#xD;&#xA;    /// SetLifecycleTo&lt;SingletonLifecycle&gt;()&#xD;&#xA;    /// &lt;/example&gt;&#xD;&#xA;    void SetLifecycleTo&lt;T&gt;() where T : ILifecycle, new();&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Set the lifecycle of only this Instance to a certain lifecycle&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;param name=&quot;lifecycle&quot;&gt;&lt;/param&gt;&#xD;&#xA;    void SetLifecycleTo(ILifecycle lifecycle);&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The current Lifecycle that will be used for this Instance&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    ILifecycle Lifecycle { get; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Explicitly choose a constructor&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    ConstructorInfo Constructor { get; set; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Has a build plan already been created for this instance?&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xD;&#xA;    bool HasBuildPlan();&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Clears out any cached IBuildPlan for this Instance.&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    void ClearBuildPlan();&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<h2 id="changing-the-instance-lifecycle">Changing the Instance Lifecycle</h2>
 <p>You can override the lifecycle of a single <code>IConfiguredInstance</code> by calling the <code>LifecycleIs()</code> methods and either supplying a
 type of <code>ILifecycle</code> or an <code>ILifecycle</code> object. As a quick helper, there are also extension methods for common lifecycles:</p>
-<pre><code class="language-csharp">
-            IConfiguredInstance instance
-                = new ConfiguredInstance(typeof(WidgetHolder));
-
-            // Use the SingletonThing lifecycle
-            instance.Singleton();
-
-            // or supply an ILifecycle type
-            instance.SetLifecycleTo&lt;ThreadLocalStorageLifecycle&gt;();
-
-            // or supply an ILifecycle object
-            instance.SetLifecycleTo(new Lifecycles_Samples.MyCustomLifecycle());
-
-            // or override to the default &quot;transient&quot; lifecycle
-            instance.DefaultLifecycle();
-</code></pre>
-<h2>Reflecting over Constructor Parameters</h2>
+<pre><code class="language-csharp">&#xD;&#xA;IConfiguredInstance instance&#xD;&#xA;    = new ConfiguredInstance(typeof(WidgetHolder));&#xD;&#xA;&#xD;&#xA;// Use the SingletonThing lifecycle&#xD;&#xA;instance.Singleton();&#xD;&#xA;&#xD;&#xA;// or supply an ILifecycle type&#xD;&#xA;instance.SetLifecycleTo&lt;ThreadLocalStorageLifecycle&gt;();&#xD;&#xA;&#xD;&#xA;// or supply an ILifecycle object&#xD;&#xA;instance.SetLifecycleTo(new Lifecycles_Samples.MyCustomLifecycle());&#xD;&#xA;&#xD;&#xA;// or override to the default &quot;transient&quot; lifecycle&#xD;&#xA;instance.DefaultLifecycle();&#xD;&#xA;</code></pre>
+<h2 id="reflecting-over-constructor-parameters">Reflecting over Constructor Parameters</h2>
 <p>To find the constructor function parameters of an <code>IConfiguredInstance</code>, just use this syntax (it's just .Net Reflection):</p>
-<pre><code class="language-csharp">
-        public class GuyWithArguments
-        {
-            public GuyWithArguments(IWidget widget, Rule rule)
-            {
-            }
-        }
-
-        [Fact]
-        public void reflecting_over_constructor_args()
-        {
-            IConfiguredInstance instance = new SmartInstance&lt;GuyWithArguments&gt;()
-                // I&#39;m just forcing it to assign the constructor function
-                .SelectConstructor(() =&gt; new GuyWithArguments(null, null));
-
-            instance.Constructor.GetParameters().Select(x =&gt; x.Name)
-                .ShouldHaveTheSameElementsAs(&quot;widget&quot;, &quot;rule&quot;);
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;public class GuyWithArguments&#xD;&#xA;{&#xD;&#xA;    public GuyWithArguments(IWidget widget, Rule rule)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void reflecting_over_constructor_args()&#xD;&#xA;{&#xD;&#xA;    IConfiguredInstance instance = new SmartInstance&lt;GuyWithArguments&gt;()&#xD;&#xA;        // I&#x27;m just forcing it to assign the constructor function&#xD;&#xA;        .SelectConstructor(() =&gt; new GuyWithArguments(null, null));&#xD;&#xA;&#xD;&#xA;    instance.Constructor.GetParameters().Select(x =&gt; x.Name)&#xD;&#xA;        .ShouldHaveTheSameElementsAs(&quot;widget&quot;, &quot;rule&quot;);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p><strong>The <a href="/registration/constructor-selection">constructor function selection</a> process takes place as the very first step in creating a <a href="/diagnostics/build-plans">build plan</a> and will be
 available in any kind of <a href="/registration/policies">construction policy</a> or <a href="/registration/attributes">configuration attribute</a> on
 parameters or properties.</strong></p>
-<h2>Reflecting over Setter Properties</h2>
+<h2 id="reflecting-over-setter-properties">Reflecting over Setter Properties</h2>
 <p>There's a helper extension method off of `IConfiguredInstance' for finding all of the settable properties
 that StructureMap can work with as shown below:</p>
-<pre><code class="language-csharp">
-        public class GuyWithProperties
-        {
-            public IWidget Widget { get; set; }
-            public Rule Rule { get; private set; }
-        }
-
-        [Fact]
-        public void get_settable_properties()
-        {
-            IConfiguredInstance instance
-                = new ConfiguredInstance(typeof(GuyWithProperties));
-
-            instance.SettableProperties()
-                .Single().Name.ShouldBe(&quot;Widget&quot;);
-        }
-
-</code></pre>
-<h2>Working with Dependencies</h2>
+<pre><code class="language-csharp">&#xD;&#xA;public class GuyWithProperties&#xD;&#xA;{&#xD;&#xA;    public IWidget Widget { get; set; }&#xD;&#xA;    public Rule Rule { get; private set; }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void get_settable_properties()&#xD;&#xA;{&#xD;&#xA;    IConfiguredInstance instance&#xD;&#xA;        = new ConfiguredInstance(typeof(GuyWithProperties));&#xD;&#xA;&#xD;&#xA;    instance.SettableProperties()&#xD;&#xA;        .Single().Name.ShouldBe(&quot;Widget&quot;);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="working-with-dependencies">Working with Dependencies</h2>
 <p>The <code>IConfiguredInstance.Dependencies</code> property is a collection of <code>Argument</code> objects that model inline dependencies. A
 single <em>Argument</em> can refer to a public property or the parameter in a constructor function and consists of:</p>
 <ol>
@@ -248,111 +131,21 @@ the order that the <code>Argument</code> objects are registered, so do watch the
 insert new arguments at the front of the list if you need to do any kind of overrides of previous behavior.</p>
 <p>There are several <code>Add()</code> overloads on <code>IConfiguredInstance.Dependencies</code> to add dependencies, or you can use the two helper
 methods for constructor parameters and setter properties shown in the following sections.</p>
-<h2>Add a Dependency for a Setter Property</h2>
+<h2 id="add-a-dependency-for-a-setter-property">Add a Dependency for a Setter Property</h2>
 <p>If you already have a <code>PropertyInfo</code> for the concrete type (like you might in a policy or attribute usage) and you want to register an inline dependency, there is the
 <code>Dependencies.AddForProperty()</code> method as a convenience. For the actual value of the dependency, it needs to either be an object
 that can be cast to the property type or an Instance object that returns a type that can be cast to the property type.</p>
 <p>With a value:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void dependency_with_setter_with_value()
-        {
-            var instance
-                = new ConfiguredInstance(typeof(GuyWithProperties));
-            var prop = instance.PluggedType.GetProperty(&quot;Widget&quot;);
-
-            var myWidget = new ColorWidget(&quot;red&quot;);
-            instance.Dependencies.AddForProperty(prop, myWidget);
-
-            var container = new Container();
-
-            container.GetInstance&lt;GuyWithProperties&gt;(instance)
-                .Widget.ShouldBeTheSameAs(myWidget);
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void dependency_with_setter_with_value()&#xD;&#xA;{&#xD;&#xA;    var instance&#xD;&#xA;        = new ConfiguredInstance(typeof(GuyWithProperties));&#xD;&#xA;    var prop = instance.PluggedType.GetProperty(&quot;Widget&quot;);&#xD;&#xA;&#xD;&#xA;    var myWidget = new ColorWidget(&quot;red&quot;);&#xD;&#xA;    instance.Dependencies.AddForProperty(prop, myWidget);&#xD;&#xA;&#xD;&#xA;    var container = new Container();&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;GuyWithProperties&gt;(instance)&#xD;&#xA;        .Widget.ShouldBeTheSameAs(myWidget);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>With an Instance for the dependency value:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void dependency_with_setter_with_instance()
-        {
-            var instance
-                = new ConfiguredInstance(typeof(GuyWithProperties));
-            var prop = instance.PluggedType.GetProperty(&quot;Widget&quot;);
-
-            var dependency = new SmartInstance&lt;AWidget&gt;();
-            instance.Dependencies.AddForProperty(prop, dependency);
-
-            var container = new Container();
-
-            container.GetInstance&lt;GuyWithProperties&gt;(instance)
-                .Widget.ShouldBeOfType&lt;AWidget&gt;();
-        }
-
-</code></pre>
-<h2>Add a Dependency for a Constructor Parameter</h2>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void dependency_with_setter_with_instance()&#xD;&#xA;{&#xD;&#xA;    var instance&#xD;&#xA;        = new ConfiguredInstance(typeof(GuyWithProperties));&#xD;&#xA;    var prop = instance.PluggedType.GetProperty(&quot;Widget&quot;);&#xD;&#xA;&#xD;&#xA;    var dependency = new SmartInstance&lt;AWidget&gt;();&#xD;&#xA;    instance.Dependencies.AddForProperty(prop, dependency);&#xD;&#xA;&#xD;&#xA;    var container = new Container();&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;GuyWithProperties&gt;(instance)&#xD;&#xA;        .Widget.ShouldBeOfType&lt;AWidget&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="add-a-dependency-for-a-constructor-parameter">Add a Dependency for a Constructor Parameter</h2>
 <p>Likewise, you can add a dependency for a specific constructor parameter as either the actual value or an Instance object with the <code>AddForConstructorParameter</code> helper method:</p>
-<pre><code class="language-csharp">
-        public class GuyWithDatabaseConnection
-        {
-            public string ConnectionString { get; set; }
-
-            public GuyWithDatabaseConnection(string connectionString)
-            {
-                ConnectionString = connectionString;
-            }
-        }
-
-        [Fact]
-        public void specify_dependency_by_constructor_parameter()
-        {
-            var instance = ConstructorInstance
-                .For&lt;GuyWithDatabaseConnection&gt;();
-
-            var parameter = instance.Constructor.GetParameters().Single();
-            parameter.Name.ShouldBe(&quot;connectionString&quot;);
-
-            var connString =
-                &quot;I haven&#39;t used sql server in years and I don&#39;t remember what connection strings look like&quot;;
-
-            instance.Dependencies.AddForConstructorParameter(parameter, connString);
-
-            var guy = new Container().GetInstance&lt;GuyWithDatabaseConnection&gt;(instance);
-
-            guy.ConnectionString.ShouldBe(connString);
-        }
-
-</code></pre>
-<h2>Adding Interceptors</h2>
+<pre><code class="language-csharp">&#xD;&#xA;public class GuyWithDatabaseConnection&#xD;&#xA;{&#xD;&#xA;    public string ConnectionString { get; set; }&#xD;&#xA;&#xD;&#xA;    public GuyWithDatabaseConnection(string connectionString)&#xD;&#xA;    {&#xD;&#xA;        ConnectionString = connectionString;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void specify_dependency_by_constructor_parameter()&#xD;&#xA;{&#xD;&#xA;    var instance = ConstructorInstance&#xD;&#xA;        .For&lt;GuyWithDatabaseConnection&gt;();&#xD;&#xA;&#xD;&#xA;    var parameter = instance.Constructor.GetParameters().Single();&#xD;&#xA;    parameter.Name.ShouldBe(&quot;connectionString&quot;);&#xD;&#xA;&#xD;&#xA;    var connString =&#xD;&#xA;        &quot;I haven&#x27;t used sql server in years and I don&#x27;t remember what connection strings look like&quot;;&#xD;&#xA;&#xD;&#xA;    instance.Dependencies.AddForConstructorParameter(parameter, connString);&#xD;&#xA;&#xD;&#xA;    var guy = new Container().GetInstance&lt;GuyWithDatabaseConnection&gt;(instance);&#xD;&#xA;&#xD;&#xA;    guy.ConnectionString.ShouldBe(connString);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="adding-interceptors">Adding Interceptors</h2>
 <p>You can add interceptors directly to a single <code>IConfiguredInstance</code> with code like this:</p>
-<pre><code class="language-csharp">
-
-        public class SimpleWidget
-        {
-            public bool WasIntercepted = false;
-
-            public void Intercept()
-            {
-                WasIntercepted = true;
-            }
-        }
-
-        [Fact]
-        public void add_interceptor()
-        {
-            var interceptor =
-                new ActivatorInterceptor&lt;SimpleWidget&gt;(w =&gt; w.Intercept());
-            var instance = new SmartInstance&lt;SimpleWidget&gt;();
-
-            instance.AddInterceptor(interceptor);
-
-            new Container().GetInstance&lt;SimpleWidget&gt;(instance)
-                .WasIntercepted.ShouldBeTrue();
-        }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;&#xD;&#xA;public class SimpleWidget&#xD;&#xA;{&#xD;&#xA;    public bool WasIntercepted = false;&#xD;&#xA;&#xD;&#xA;    public void Intercept()&#xD;&#xA;    {&#xD;&#xA;        WasIntercepted = true;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void add_interceptor()&#xD;&#xA;{&#xD;&#xA;    var interceptor =&#xD;&#xA;        new ActivatorInterceptor&lt;SimpleWidget&gt;(w =&gt; w.Intercept());&#xD;&#xA;    var instance = new SmartInstance&lt;SimpleWidget&gt;();&#xD;&#xA;&#xD;&#xA;    instance.AddInterceptor(interceptor);&#xD;&#xA;&#xD;&#xA;    new Container().GetInstance&lt;SimpleWidget&gt;(instance)&#xD;&#xA;        .WasIntercepted.ShouldBeTrue();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>See <a href="/interception-and-decorators">Interception and Decorators</a> for more information.</p>
-
 
                       </div>
 

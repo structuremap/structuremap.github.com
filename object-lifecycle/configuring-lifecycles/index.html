@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/object-lifecycle/custom-lifecycles">Custom Lifecycles</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/object-lifecycle/supported-lifecycles">Supported Lifecycles</a></p></li>
                 </ul>
@@ -99,63 +99,13 @@
 <li>If no lifecycle is configured for either the <em>Instance</em> or the <em>Plugin Type</em>, use the default <em>Transient</em> lifecycle</li>
 </ol>
 <p>The lifecycle precedence rules and the syntax for configuring object lifecycles are shown below:</p>
-<pre><code class="language-csharp">
-        [Fact]
-        public void lifecycle_precedence()
-        {
-            var container = new Container(x =&gt;
-            {
-                x.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();
-
-                // Configure the default lifecycle for
-                // a PluginType (Rule)
-                x.For&lt;Rule&gt;().Singleton();
-                x.For&lt;Rule&gt;().Add&lt;ARule&gt;().Named(&quot;C&quot;);
-
-                // Configure the lifecycle for a single Instance
-                x.For&lt;Rule&gt;().Add&lt;ARule&gt;().Named(&quot;A&quot;).Transient();
-                x.For&lt;Rule&gt;().Add&lt;ARule&gt;().Named(&quot;B&quot;).AlwaysUnique();
-            });
-
-            // The default lifecycle is Transient
-            container.Model.For&lt;IWidget&gt;().Default
-                .Lifecycle.ShouldBeOfType&lt;TransientLifecycle&gt;();
-
-            // Override at the Family
-            container.Model.For&lt;Rule&gt;().Lifecycle.ShouldBeOfType&lt;SingletonLifecycle&gt;();
-            container.Model.For&lt;Rule&gt;().Find(&quot;C&quot;).Lifecycle.ShouldBeOfType&lt;SingletonLifecycle&gt;();
-
-            // &#39;C&#39; is the default lifecycle for Rule (SingletonThing)
-            container.GetInstance&lt;Rule&gt;(&quot;C&quot;)
-                .ShouldBeTheSameAs(container.GetInstance&lt;Rule&gt;(&quot;C&quot;));
-
-            // &#39;A&#39; is a transient
-            container.GetInstance&lt;Rule&gt;(&quot;A&quot;)
-                .ShouldNotBeTheSameAs(container.GetInstance&lt;Rule&gt;(&quot;A&quot;));
-
-            using (var nested = container.GetNestedContainer())
-            {
-                // &#39;B&#39; is always unique
-                nested.GetInstance&lt;Rule&gt;(&quot;B&quot;)
-                    .ShouldNotBeTheSameAs(nested.GetInstance&lt;Rule&gt;(&quot;B&quot;));
-            }
-        }
-
-</code></pre>
-<h2>Using Attributes</h2>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void lifecycle_precedence()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        x.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();&#xD;&#xA;&#xD;&#xA;        // Configure the default lifecycle for&#xD;&#xA;        // a PluginType (Rule)&#xD;&#xA;        x.For&lt;Rule&gt;().Singleton();&#xD;&#xA;        x.For&lt;Rule&gt;().Add&lt;ARule&gt;().Named(&quot;C&quot;);&#xD;&#xA;&#xD;&#xA;        // Configure the lifecycle for a single Instance&#xD;&#xA;        x.For&lt;Rule&gt;().Add&lt;ARule&gt;().Named(&quot;A&quot;).Transient();&#xD;&#xA;        x.For&lt;Rule&gt;().Add&lt;ARule&gt;().Named(&quot;B&quot;).AlwaysUnique();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    // The default lifecycle is Transient&#xD;&#xA;    container.Model.For&lt;IWidget&gt;().Default&#xD;&#xA;        .Lifecycle.ShouldBeOfType&lt;TransientLifecycle&gt;();&#xD;&#xA;&#xD;&#xA;    // Override at the Family&#xD;&#xA;    container.Model.For&lt;Rule&gt;().Lifecycle.ShouldBeOfType&lt;SingletonLifecycle&gt;();&#xD;&#xA;    container.Model.For&lt;Rule&gt;().Find(&quot;C&quot;).Lifecycle.ShouldBeOfType&lt;SingletonLifecycle&gt;();&#xD;&#xA;&#xD;&#xA;    // &#x27;C&#x27; is the default lifecycle for Rule (SingletonThing)&#xD;&#xA;    container.GetInstance&lt;Rule&gt;(&quot;C&quot;)&#xD;&#xA;        .ShouldBeTheSameAs(container.GetInstance&lt;Rule&gt;(&quot;C&quot;));&#xD;&#xA;&#xD;&#xA;    // &#x27;A&#x27; is a transient&#xD;&#xA;    container.GetInstance&lt;Rule&gt;(&quot;A&quot;)&#xD;&#xA;        .ShouldNotBeTheSameAs(container.GetInstance&lt;Rule&gt;(&quot;A&quot;));&#xD;&#xA;&#xD;&#xA;    using (var nested = container.GetNestedContainer())&#xD;&#xA;    {&#xD;&#xA;        // &#x27;B&#x27; is always unique&#xD;&#xA;        nested.GetInstance&lt;Rule&gt;(&quot;B&quot;)&#xD;&#xA;            .ShouldNotBeTheSameAs(nested.GetInstance&lt;Rule&gt;(&quot;B&quot;));&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<h2 id="using-attributes">Using Attributes</h2>
 <p>New in StructureMap 4.0 are some simple attributes to mark either a complete <em>Plugin Type</em> or a single <em>Instance</em> as either
 a singleton or using the always unique lifecycle:</p>
 <p>The usage is shown below:</p>
-<pre><code class="language-csharp">
-    [AlwaysUnique]
-    public interface IShouldBeUnique { }
-
-    [Singleton] // because the most wonderful thing about Tiggers is that I&#39;m the only one....
-    public class Tigger { }
-
-</code></pre>
+<pre><code class="language-csharp">&#xD;&#xA;[AlwaysUnique]&#xD;&#xA;public interface IShouldBeUnique { }&#xD;&#xA;&#xD;&#xA;[Singleton] // because the most wonderful thing about Tiggers is that I&#x27;m the only one....&#xD;&#xA;public class Tigger { }&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>See <a href="/registration/attributes">Using Attributes for Configuration</a> for information about adding your own custom attibutes for other lifecycles.</p>
-
 
                       </div>
 
