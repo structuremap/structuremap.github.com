@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.3</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.3" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/get-structuremap">Get StructureMap</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/quickstart">A Gentle Quickstart</a></p></li>
                 </ul>
@@ -93,7 +93,7 @@
 <h2 id="container">Container</h2>
 <p>Tools like StructureMap are generally known as <em>Inversion of Control (IoC) Containers</em> or <em>Dependency Injection (DI) Containers</em>. In the Java world they are also known as <em>Lightweight Containers</em> to differentiate them from the older <em>EJB Containers</em>.</p>
 <p>A container is a tool that can help you composing object graphs and managing their scope (lifecycle). Altough you can do Inversion of Control and Dependecy Injection manually, using tools like StructureMap makes you far more productive and succesfull in doing so.</p>
-<p>Obviously there is more to a container then resolving services and managing their scope, but in the core that's just what it is. Before you can do so you need to tell StructureMap, the container, how it must compose those objects graphs and what their lifecycle is. This is called registration and can be done in various mixed ways. The strongly recommend way would be using the <a href="/registration/registry-dsl">Registry DSL</a>. In your registration you're basically mapping abstractions to concrete types and defining their lifecycle.</p>
+<p>Obviously there is more to a container than resolving services and managing their scope, but in the core that's just what it is. Before you can do so you need to tell StructureMap, the container, how it must compose those objects graphs and what their lifecycle is. This is called registration and can be done in various mixed ways. The strongly recommend way would be using the <a href="/registration/registry-dsl">Registry DSL</a>. In your registration you're basically mapping abstractions to concrete types and defining their lifecycle.</p>
 <p>A simple example of a container using the <a href="/registration/registry-dsl">Registry DSL</a>:</p>
 <pre><code class="language-csharp">&#xD;&#xA;public class FooBarRegistry : Registry&#xD;&#xA;{&#xD;&#xA;    public FooBarRegistry()&#xD;&#xA;    {&#xD;&#xA;        For&lt;IFoo&gt;().Use&lt;Foo&gt;();&#xD;&#xA;        For&lt;IBar&gt;().Use&lt;Bar&gt;();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <pre><code class="language-csharp">&#xD;&#xA;var container = new Container(c =&gt; { c.AddRegistry&lt;FooBarRegistry&gt;(); });&#xD;&#xA;</code></pre>

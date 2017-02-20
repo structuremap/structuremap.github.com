@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.4.2</a>
+              <a href="/" class="navbar-brand">StructureMap 4.4.3</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.2" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.3" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/glossary">Glossary</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/roadmap">Roadmap</a></p></li>
                 </ul>
@@ -115,7 +115,7 @@ It's important that you structure and build your application with these concepts
 <pre><code class="language-csharp">&#xD;&#xA;var container = new Container(_ =&gt;&#xD;&#xA;{&#xD;&#xA;    _.Scan(x =&gt;&#xD;&#xA;    {&#xD;&#xA;        x.TheCallingAssembly();&#xD;&#xA;        x.WithDefaultConventions();&#xD;&#xA;    });&#xD;&#xA;});&#xD;&#xA;&#xD;&#xA;container.GetInstance&lt;IFoo&gt;()&#xD;&#xA;    .ShouldBeOfType&lt;Foo&gt;()&#xD;&#xA;    .Bar.ShouldBeOfType&lt;Bar&gt;();&#xD;&#xA;&#xD;&#xA;</code></pre>
 <h2 id="integrating-structuremap-within-your-application">Integrating StructureMap within your application</h2>
 <p>At some point you will want to integrate StructureMap into your application. Whether you are using Windows Presentation Foundation (WPF), FubuMVC, ASP.NET WebForms, ASP.NET MVC or any other framework or technology, you will have to do some sort of plumbing and bootstrapping. Depending on the used technology or framework there can be important integration points that you will have to use to fully enable the power of StructureMap.</p>
-<p>While StructureMap doesn't provide integration support out of the box for all of the frameworks and technologies out there, we do find it important to help you get started with integrating StructureMap into your application. That said, StructureMap does provide integration support for <a href="http://fubuworld.com/fubumvc">FubuMVC</a> (a web framework, which is part of the same family as StructureMap).</p>
+<p>While StructureMap doesn't provide integration support out of the box for all of the frameworks and technologies out there, we do find it important to help you get started with integrating StructureMap into your application. That said, StructureMap does provide integration support for <a href="https://fubumvc.github.io/">FubuMVC</a> (a web framework, which is part of the same family as StructureMap).</p>
 <h2 id="what-to-do-when-things-go-wrong">What to do when things go wrong?</h2>
 <p>StructureMap, and any other IoC tool for that matter, is configuration intensive, which means that their will be problems in that configuration. We're all moving to more convention based type registration, so more stuff is happening off stage and out of your sight, making debugging the configuration even trickier. Not to worry (too much), StructureMap has some diagnostic abilities to help you solve configuration problems:</p>
 <ul>
