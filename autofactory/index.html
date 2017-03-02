@@ -95,9 +95,9 @@
 with implementation
 <pre><code class="language-csharp">&#xD;&#xA;public class DummyService : IDummyService&#xD;&#xA;{&#xD;&#xA;    public string Name { get; set; }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>Now you declare an interface for your factory:</p>
-<p class="bg-warning" style="padding:10px"><b>Missing code sample &#x27;ISimpleDummyFactory&#x27;</b><small> -- Wait for dotnet stdocs to catch up reading samples or CTRL&#x2B;SHIFT&#x2B;R to force refresh</small></p>
+<pre><code class="language-csharp">&#xD;&#xA;public interface ISimpleDummyFactory&#xD;&#xA;{&#xD;&#xA;    IDummyService CreateDummyService();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <p>All you need to do is to call <code>CreateFactory</code> when configuring the container as shown below:</p>
-<p class="bg-warning" style="padding:10px"><b>Missing code sample &#x27;simple-factory&#x27;</b><small> -- Wait for dotnet stdocs to catch up reading samples or CTRL&#x2B;SHIFT&#x2B;R to force refresh</small></p>
+<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void Simple_factory_creation()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(cfg =&gt;&#xD;&#xA;    {&#xD;&#xA;        cfg.For&lt;IDummyService&gt;().Use&lt;DummyService&gt;();&#xD;&#xA;        cfg.For&lt;ISimpleDummyFactory&gt;().CreateFactory();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    var factory = container.GetInstance&lt;ISimpleDummyFactory&gt;();&#xD;&#xA;&#xD;&#xA;    var component = factory.CreateDummyService();&#xD;&#xA;&#xD;&#xA;    component.ShouldNotBeNull();&#xD;&#xA;    component.ShouldBeOfType&lt;DummyService&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
 <h2 id="default-convention">Default convention</h2>
 <p>As for now, Auto-factories support two types of methods:</p>
 <ol>
