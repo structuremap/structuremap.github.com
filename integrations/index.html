@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.4.3</a>
+              <a href="/" class="navbar-brand">StructureMap 4.5.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.4.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.5.0" width="210" height="210"></h3></li>
                     
                     <li><h3 class="no-margin">Previous</h3><a href="/instances">Custom Instance Types</a></p></li>
                 </ul>
@@ -95,9 +95,8 @@
 StructureMap into ASP.NET MVC. The design is necessarily odd to work around ASP.NET limitations, but you do get the all
 important &quot;<a href="/the-container/nested-containers">nested container</a> per HTTP request&quot; pattern that we recommend.</p>
 <h2 id="asp.net-web-api">ASP.NET Web API</h2>
-<p>The StructureMap team recommends the <a href="https://www.nuget.org/packages/StructureMap.WebApi2/">StructureMap.WebApi2</a> NuGet package.
-The IoC integration in Web API is somewhat better designed than ASP.NET MVC's bolt on mechanism and the StructureMap integration
-is quite a bit cleaner.</p>
+<p>The easiest way to integrate StructureMap with ASP.NET Web API is with the <a href="https://www.nuget.org/packages/WebApi.StructureMap">WebApi.StructureMap</a> NuGet package. This package requires StructureMap 4.1 or higher.
+Use the <a href="https://www.nuget.org/packages/StructureMap.WebApi2/">StructureMap.WebApi2</a> NuGet package for older versions of StructureMap or combined ASP.NET MVC and Web API projects where you already use the <a href="https://www.nuget.org/packages/StructureMap.MVC5/">StructureMap.MVC5</a> NuGet package.</p>
 <h2 id="asp.net-core">ASP.NET Core</h2>
 <p>See the <a href="https://github.com/structuremap/StructureMap.Microsoft.DependencyInjection">StructureMap.Microsoft.DependencyInjection</a> project and NuGet package for integration with ASP.NET Core.</p>
 <h2 id="nservicebus">NServiceBus</h2>
