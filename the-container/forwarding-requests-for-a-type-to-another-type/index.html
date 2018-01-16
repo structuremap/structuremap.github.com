@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.5.3</a>
+              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.5.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/the-container/profiles-and-child-containers">Profiles and Child Containers</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/the-container/working-with-the-icontext-at-build-time">Working with the IContext at Build Time</a></p></li>
                 </ul>
@@ -97,14 +97,14 @@ to support different consumers.</p>
 of application wide state. Some consumers will only need to read or query data, so we'll create an <code>IReader</code>
 interface for that role. Other consumers will only make updates to the <code>StatefulCache</code>, so we'll also have
 an <code>IWriter</code> interface as shown below:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public interface IWriter { }&#xD;&#xA;&#xD;&#xA;public interface IReader { }&#xD;&#xA;&#xD;&#xA;public class StatefulCache : IReader, IWriter&#xD;&#xA;{&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IWriter { }&#xA;&#xA;public interface IReader { }&#xA;&#xA;public class StatefulCache : IReader, IWriter&#xA;{&#xA;}&#xA;&#xA;</code></pre>
 <p>What we need from StructureMap is a way to make all requests to either <code>IReader</code> and <code>IWriter</code>
 resolve to the same singleton object instance of <code>StatefulCache</code>.</p>
 <p>StructureMap provides the <code>Forward&lt;TFrom, TTo&gt;()</code> mechanism for exactly this purpose:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void stateful_cache_serves_multiple_interfaces()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        // Let&#x27;s make StatefulCache a SingletonThing in the container&#xD;&#xA;        _.ForConcreteType&lt;StatefulCache&gt;().Configure.Singleton();&#xD;&#xA;&#xD;&#xA;        _.Forward&lt;StatefulCache, IReader&gt;();&#xD;&#xA;        _.Forward&lt;StatefulCache, IWriter&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IReader&gt;().ShouldBeOfType&lt;StatefulCache&gt;();&#xD;&#xA;    container.GetInstance&lt;IWriter&gt;().ShouldBeOfType&lt;StatefulCache&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void stateful_cache_serves_multiple_interfaces()&#xA;{&#xA;    var container = new Container(_ =&gt;&#xA;    {&#xA;        // Let&#x27;s make StatefulCache a SingletonThing in the container&#xA;        _.ForConcreteType&lt;StatefulCache&gt;().Configure.Singleton();&#xA;&#xA;        _.Forward&lt;StatefulCache, IReader&gt;();&#xA;        _.Forward&lt;StatefulCache, IWriter&gt;();&#xA;    });&#xA;&#xA;    container.GetInstance&lt;IReader&gt;().ShouldBeOfType&lt;StatefulCache&gt;();&#xA;    container.GetInstance&lt;IWriter&gt;().ShouldBeOfType&lt;StatefulCache&gt;();&#xA;}&#xA;&#xA;</code></pre>
 <p>And because the syntax has consistently been confusing to users (including me even though I wrote it),
 here's how to effect the same registration with <a href="/the-container/lambdas">lambda registrations</a>:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void equivalent()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        // Let&#x27;s make StatefulCache a SingletonThing in the container&#xD;&#xA;        _.ForConcreteType&lt;StatefulCache&gt;().Configure.Singleton();&#xD;&#xA;&#xD;&#xA;        _.For&lt;IReader&gt;().Use(c =&gt; c.GetInstance&lt;StatefulCache&gt;());&#xD;&#xA;        _.For&lt;IWriter&gt;().Use(c =&gt; c.GetInstance&lt;StatefulCache&gt;());&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IReader&gt;().ShouldBeOfType&lt;StatefulCache&gt;();&#xD;&#xA;    container.GetInstance&lt;IWriter&gt;().ShouldBeOfType&lt;StatefulCache&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void equivalent()&#xA;{&#xA;    var container = new Container(_ =&gt;&#xA;    {&#xA;        // Let&#x27;s make StatefulCache a SingletonThing in the container&#xA;        _.ForConcreteType&lt;StatefulCache&gt;().Configure.Singleton();&#xA;&#xA;        _.For&lt;IReader&gt;().Use(c =&gt; c.GetInstance&lt;StatefulCache&gt;());&#xA;        _.For&lt;IWriter&gt;().Use(c =&gt; c.GetInstance&lt;StatefulCache&gt;());&#xA;    });&#xA;&#xA;    container.GetInstance&lt;IReader&gt;().ShouldBeOfType&lt;StatefulCache&gt;();&#xA;    container.GetInstance&lt;IWriter&gt;().ShouldBeOfType&lt;StatefulCache&gt;();&#xA;}&#xA;&#xA;</code></pre>
 
                       </div>
 

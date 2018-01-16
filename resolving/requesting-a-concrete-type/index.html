@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.5.3</a>
+              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.5.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/the-container">The Container</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/resolving/passing-arguments-at-runtime">Passing Arguments at Runtime</a></p></li>
                 </ul>
@@ -97,10 +97,10 @@
 <li>The constructor does not contain any <em>primitive</em> arguments like strings, numbers, or dates because StructureMap assumes those elements are configuration items and not <em>auto resolvable</em>.</li>
 </ul>
 <p>Let's say we have the following object model, which represents the weather condition for a certain location.</p>
-<pre><code class="language-csharp">&#xD;&#xA;public class Weather&#xD;&#xA;{&#xD;&#xA;    public Location Location { get; set; }&#xD;&#xA;    public Atmosphere Atmosphere { get; set; }&#xD;&#xA;    public Wind Wind { get; set; }&#xD;&#xA;    public Condition Condition { get; set; }&#xD;&#xA;&#xD;&#xA;    public Weather(Location location, Atmosphere atmosphere, Wind wind, Condition condition)&#xD;&#xA;    {&#xD;&#xA;        Location = location;&#xD;&#xA;        Atmosphere = atmosphere;&#xD;&#xA;        Wind = wind;&#xD;&#xA;        Condition = condition;&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Location&#xD;&#xA;{&#xD;&#xA;    //some properties&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Atmosphere&#xD;&#xA;{&#xD;&#xA;    //some properties&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Wind&#xD;&#xA;{&#xD;&#xA;    //some properties        &#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;public class Condition&#xD;&#xA;{&#xD;&#xA;    //some properties        &#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class Weather&#xA;{&#xA;    public Location Location { get; set; }&#xA;    public Atmosphere Atmosphere { get; set; }&#xA;    public Wind Wind { get; set; }&#xA;    public Condition Condition { get; set; }&#xA;&#xA;    public Weather(Location location, Atmosphere atmosphere, Wind wind, Condition condition)&#xA;    {&#xA;        Location = location;&#xA;        Atmosphere = atmosphere;&#xA;        Wind = wind;&#xA;        Condition = condition;&#xA;    }&#xA;}&#xA;&#xA;public class Location&#xA;{&#xA;    //some properties&#xA;}&#xA;&#xA;public class Atmosphere&#xA;{&#xA;    //some properties&#xA;}&#xA;&#xA;public class Wind&#xA;{&#xA;    //some properties        &#xA;}&#xA;&#xA;public class Condition&#xA;{&#xA;    //some properties        &#xA;}&#xA;&#xA;</code></pre>
 <p>Before we can resolve the concrete <code>Weather</code> type, we need an instance of an <code>Container</code> object. As mentioned earlier, these objects defines a generic <code>GetInstance</code> method which can build us an instance of the <code>Weather</code> type.</p>
 <p>You can create a container yourself or use the statically accessed container.</p>
-<pre><code class="language-csharp">&#xD;&#xA;var container = new Container();&#xD;&#xA;var weather1 = container.GetInstance&lt;Weather&gt;();&#xD;&#xA;&#xD;&#xA;var weather2 = container.GetInstance&lt;Weather&gt;();&#xD;&#xA;weather2 = container.GetInstance&lt;Weather&gt;(); //short version for above.&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;var container = new Container();&#xA;var weather1 = container.GetInstance&lt;Weather&gt;();&#xA;&#xA;var weather2 = container.GetInstance&lt;Weather&gt;();&#xA;weather2 = container.GetInstance&lt;Weather&gt;(); //short version for above.&#xA;</code></pre>
 <p>The reason why we don't need to supply any configuration is because StructureMap supports a concept called <a href="/the-container/auto-wiring">Auto Wiring</a>. It's basically a smart way of building instances of types by looking to the constructors of the requested and all the needed underlaying types. During this inspection StructureMap also uses any provided configuration to help building the requested service or dependency.</p>
 <p>In our example, where there isn't any configuration available, StructureMap looks at the constructor of the requested <code>Weather</code> type. It sees that it depends on four concrete types which all have a default constructor. StructureMap is therefore able to create an instance for all of them and inject them into the <code>Weather</code> constructor. After that the <code>Weather</code> instance is returned to the caller.</p>
 <p>Most of the time you will be mapping abstractions to concrete types, but as you have seen StructureMap supports other use cases as well.</p>

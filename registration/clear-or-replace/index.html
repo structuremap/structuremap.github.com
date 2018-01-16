@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.5.3</a>
+              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.5.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/registration/attributes">Using Attributes for Configuration</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/registration/existing-objects">Registering Existing Objects</a></p></li>
                 </ul>
@@ -106,9 +106,9 @@ that was built with quite a bit of extensibility in mind. One of the extensibili
 <p>In usage, let's say that our application needs some type of <code>IWidget</code> service to run. For an important client, they want to deploy our system with
 a special version, so we will create a new StructureMap <code>Registry</code> to apply their specific registrations using the <code>ClearAll()</code> mechanism to
 insure that the important client gets their way:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public class ImportantClientWidget : IWidget { }&#xD;&#xA;&#xD;&#xA;public class ImportantClientServices : Registry&#xD;&#xA;{&#xD;&#xA;    public ImportantClientServices()&#xD;&#xA;    {&#xD;&#xA;        For&lt;IWidget&gt;().ClearAll().Use&lt;ImportantClientWidget&gt;();&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class ImportantClientWidget : IWidget { }&#xA;&#xA;public class ImportantClientServices : Registry&#xA;{&#xA;    public ImportantClientServices()&#xA;    {&#xA;        For&lt;IWidget&gt;().ClearAll().Use&lt;ImportantClientWidget&gt;();&#xA;    }&#xA;}&#xA;&#xA;</code></pre>
 <p>In usage, the <code>ClearAll()</code> stomps all over the default registration before adding their own:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void clear_all_in_action()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();&#xD;&#xA;&#xD;&#xA;        _.IncludeRegistry&lt;ImportantClientServices&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IWidget&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;ImportantClientWidget&gt;();&#xD;&#xA;&#xD;&#xA;    Debug.WriteLine(container.WhatDoIHave(pluginType: typeof(IWidget)));&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void clear_all_in_action()&#xA;{&#xA;    var container = new Container(_ =&gt;&#xA;    {&#xA;        _.For&lt;IWidget&gt;().Use&lt;AWidget&gt;();&#xA;&#xA;        _.IncludeRegistry&lt;ImportantClientServices&gt;();&#xA;    });&#xA;&#xA;    container.GetInstance&lt;IWidget&gt;()&#xA;        .ShouldBeOfType&lt;ImportantClientWidget&gt;();&#xA;&#xA;    Debug.WriteLine(container.WhatDoIHave(pluginType: typeof(IWidget)));&#xA;}&#xA;&#xA;</code></pre>
 <p>If you were to check the <a href="/diagnostics/whatdoihave">WhatDoIHave()</a> view for <code>IWidget</code>, you would see only the <code>ImportantClientWidget</code>:</p>
 <pre style="overflow:scroll;word-break:normal;word-wrap:normal">
 ==============================================================================================================================================

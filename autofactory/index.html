@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.5.3</a>
+              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.5.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/best-practices">Best Practices</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/dynamic-interception">Aspect Oriented Programming with StructureMap.DynamicInterception</a></p></li>
                 </ul>
@@ -91,13 +91,13 @@
                           <!--title:Auto-factories-->
 <div class="alert alert-info" role="alert">You need to install <a href="https://www.nuget.org/packages/StructureMap.Autofactory">StructureMap.Autofactory</a> package to use the functionality described below.</div>
 <p>When you need to implement <a href="http://en.wikipedia.org/wiki/Abstract_factory_pattern">Abstract Factory</a>, StructureMap offers a way to do it for you. Let's say you have</p>
-<pre><code class="language-csharp">&#xD;&#xA;public interface IDummyService&#xD;&#xA;{&#xD;&#xA;    string Name { get; }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IDummyService&#xA;{&#xA;    string Name { get; }&#xA;}&#xA;&#xA;</code></pre>
 with implementation
-<pre><code class="language-csharp">&#xD;&#xA;public class DummyService : IDummyService&#xD;&#xA;{&#xD;&#xA;    public string Name { get; set; }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class DummyService : IDummyService&#xA;{&#xA;    public string Name { get; set; }&#xA;}&#xA;&#xA;</code></pre>
 <p>Now you declare an interface for your factory:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public interface ISimpleDummyFactory&#xD;&#xA;{&#xD;&#xA;    IDummyService CreateDummyService();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface ISimpleDummyFactory&#xA;{&#xA;    IDummyService CreateDummyService();&#xA;}&#xA;&#xA;</code></pre>
 <p>All you need to do is to call <code>CreateFactory</code> when configuring the container as shown below:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void Simple_factory_creation()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(cfg =&gt;&#xD;&#xA;    {&#xD;&#xA;        cfg.For&lt;IDummyService&gt;().Use&lt;DummyService&gt;();&#xD;&#xA;        cfg.For&lt;ISimpleDummyFactory&gt;().CreateFactory();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    var factory = container.GetInstance&lt;ISimpleDummyFactory&gt;();&#xD;&#xA;&#xD;&#xA;    var component = factory.CreateDummyService();&#xD;&#xA;&#xD;&#xA;    component.ShouldNotBeNull();&#xD;&#xA;    component.ShouldBeOfType&lt;DummyService&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void Simple_factory_creation()&#xA;{&#xA;    var container = new Container(cfg =&gt;&#xA;    {&#xA;        cfg.For&lt;IDummyService&gt;().Use&lt;DummyService&gt;();&#xA;        cfg.For&lt;ISimpleDummyFactory&gt;().CreateFactory();&#xA;    });&#xA;&#xA;    var factory = container.GetInstance&lt;ISimpleDummyFactory&gt;();&#xA;&#xA;    var component = factory.CreateDummyService();&#xA;&#xA;    component.ShouldNotBeNull();&#xA;    component.ShouldBeOfType&lt;DummyService&gt;();&#xA;}&#xA;&#xA;</code></pre>
 <h2 id="default-convention">Default convention</h2>
 <p>As for now, Auto-factories support two types of methods:</p>
 <ol>
@@ -112,13 +112,13 @@ with implementation
 </ol>
 <p>Any other method that has the return type (i.e. doesn't return <code>void</code>), is treated as a factory method. In addition, if the method name starts with <code>GetNamed</code>, the first method argument is used as the name for the named instance. All the rest arguments are passed as <a href="/registration/inline-dependencies">explicit arguments</a> to the implementation constructor.</p>
 <p>It is much easier to see it on an example:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public interface IDummyFactory&#xD;&#xA;{&#xD;&#xA;    // This method will return the names of all registered implementations of TService.&#xD;&#xA;    IList&lt;string&gt; GetNames&lt;TService&gt;();&#xD;&#xA;&#xD;&#xA;    // This method will just create the default IDummyService implementation.&#xD;&#xA;    IDummyService CreateDummyService();&#xD;&#xA;&#xD;&#xA;    // This method will just create the default IDummyService implementation and pass namePart1 and namePart2 as&#xD;&#xA;    // dependencies.&#xD;&#xA;    IDummyService CreateDummyService(string namePart1, string namePart2);&#xD;&#xA;&#xD;&#xA;    // This method will create IDummyService implementation with serviceName name.&#xD;&#xA;    IDummyService GetNamedDummyService(string serviceName, string namePart1, string namePart2);&#xD;&#xA;&#xD;&#xA;    // Generic methods are also allowed as factory methods.&#xD;&#xA;    TService CreateService&lt;TService&gt;();&#xD;&#xA;&#xD;&#xA;    // Something that is common for event-sourcing implementations.&#xD;&#xA;    IHandler&lt;TMessage&gt; CreateHandler&lt;TMessage&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IDummyFactory&#xA;{&#xA;    // This method will return the names of all registered implementations of TService.&#xA;    IList&lt;string&gt; GetNames&lt;TService&gt;();&#xA;&#xA;    // This method will just create the default IDummyService implementation.&#xA;    IDummyService CreateDummyService();&#xA;&#xA;    // This method will just create the default IDummyService implementation and pass namePart1 and namePart2 as&#xA;    // dependencies.&#xA;    IDummyService CreateDummyService(string namePart1, string namePart2);&#xA;&#xA;    // This method will create IDummyService implementation with serviceName name.&#xA;    IDummyService GetNamedDummyService(string serviceName, string namePart1, string namePart2);&#xA;&#xA;    // Generic methods are also allowed as factory methods.&#xA;    TService CreateService&lt;TService&gt;();&#xA;&#xA;    // Something that is common for event-sourcing implementations.&#xA;    IHandler&lt;TMessage&gt; CreateHandler&lt;TMessage&gt;();&#xA;}&#xA;&#xA;</code></pre>
 <h2 id="custom-convention">Custom convention</h2>
 <p>If the default convention doesn't work for you, you can create and use your custom convention. All you need is to implement <code>IAutoFactoryConventionProvider</code> and use the corresponding <code>CreateFactory</code> overload. <code>IAutoFactoryConventionProvider</code> has a single method to implement:</p>
 <pre><code>IAutoFactoryMethodDefinition GetMethodDefinition(MethodInfo methodInfo, IList&lt;object&gt; arguments);
 </code></pre>
 <p><code>IAutoFactoryMethodDefinition</code> is defined as follows:</p>
-<pre><code class="language-csharp">&#xD;&#xA;/// &lt;summary&gt;&#xD;&#xA;/// Describes how AutoFactory should treat the specific method declared in an abstract factory interface.&#xD;&#xA;/// &lt;/summary&gt;&#xD;&#xA;public interface IAutoFactoryMethodDefinition&#xD;&#xA;{&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The method type. See &lt;see cref=&quot;AutoFactoryMethodType&quot;/&gt; for possible values.&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    AutoFactoryMethodType MethodType { get; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The instance type to create.&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    Type InstanceType { get; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// The instance name if available.&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    string InstanceName { get; }&#xD;&#xA;&#xD;&#xA;    /// &lt;summary&gt;&#xD;&#xA;    /// Explicit arguments if available.&#xD;&#xA;    /// &lt;/summary&gt;&#xD;&#xA;    ExplicitArguments ExplicitArguments { get; }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;/// &lt;summary&gt;&#xA;/// Describes how AutoFactory should treat the specific method declared in an abstract factory interface.&#xA;/// &lt;/summary&gt;&#xA;public interface IAutoFactoryMethodDefinition&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// The method type. See &lt;see cref=&quot;AutoFactoryMethodType&quot;/&gt; for possible values.&#xA;    /// &lt;/summary&gt;&#xA;    AutoFactoryMethodType MethodType { get; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// The instance type to create.&#xA;    /// &lt;/summary&gt;&#xA;    Type InstanceType { get; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// The instance name if available.&#xA;    /// &lt;/summary&gt;&#xA;    string InstanceName { get; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// Explicit arguments if available.&#xA;    /// &lt;/summary&gt;&#xA;    ExplicitArguments ExplicitArguments { get; }&#xA;}&#xA;&#xA;</code></pre>
 
                       </div>
 

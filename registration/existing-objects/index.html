@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.5.3</a>
+              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.5.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/registration/clear-or-replace">Replace or Clear Out Previous Registrations</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/registration/fallback-services">Fallback Services</a></p></li>
                 </ul>
@@ -91,7 +91,7 @@
                           <!--Title: Registering Existing Objects-->
 <p>It's frequently common to register existing objects with a StructureMap <code>Container</code> and there are
 overloads of the <code>Registry.For().Use(object)</code> and <code>Registry.For().Add(object)</code> methods to do just that:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void should_be_able_to_resolve_from_the_generic_family_expression()&#xD;&#xA;{&#xD;&#xA;    var widget = new AWidget();&#xD;&#xA;    var container = new Container(x =&gt; x.For(typeof(IWidget)).Use(widget).Named(&quot;mine&quot;));&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IWidget&gt;(&quot;mine&quot;).ShouldBeTheSameAs(widget);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void should_be_able_to_resolve_from_the_generic_family_expression()&#xA;{&#xA;    var widget = new AWidget();&#xA;    var container = new Container(x =&gt; x.For(typeof(IWidget)).Use(widget).Named(&quot;mine&quot;));&#xA;&#xA;    container.GetInstance&lt;IWidget&gt;(&quot;mine&quot;).ShouldBeTheSameAs(widget);&#xA;}&#xA;&#xA;</code></pre>
 <p>Injecting an existing object into the <code>Container</code> makes it a de facto singleton, but the <code>Container</code> treats it with a
 special scope called <code>ObjectLifecycle</code> if you happen to look into the <a href="/diagnostics/whatdoihave">WhatDoIHave()</a> diagnostics.</p>
 <p>StructureMap will attempt to call the <code>IDisposable.Dispose()</code> on any objects that are directly injected into a <code>Container</code>

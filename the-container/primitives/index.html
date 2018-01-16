@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.5.3</a>
+              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.5.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/object-lifecycle">Object Lifecycles</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/the-container/disposing">StructureMap and IDisposable</a></p></li>
                 </ul>
@@ -94,7 +94,7 @@ types that are completely exempt from <a href="/the-container/auto-wiring">auto 
 constructor or setter dependencies on these types must be supplied as <a href="/registration/inline-dependencies">inline dependencies</a>.</p>
 <p>To make this concrete, if you ask StructureMap to build a concrete type that has dependencies on simple types without
 like this example, StructureMap will throw an exception telling you that it cannot build the instance:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public class GuyWithNoDefaultName&#xD;&#xA;{&#xD;&#xA;    // StructureMap will not use any kind of auto-wiring&#xD;&#xA;    // on name&#xD;&#xA;    public GuyWithNoDefaultName(string name)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void cannot_build_simple_arguments()&#xD;&#xA;{&#xD;&#xA;    var container = new Container();&#xD;&#xA;&#xD;&#xA;    Exception&lt;StructureMapBuildPlanException&gt;.ShouldBeThrownBy(() =&gt;&#xD;&#xA;    {&#xD;&#xA;        container.GetInstance&lt;GuyWithNoDefaultName&gt;();&#xD;&#xA;    });&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class GuyWithNoDefaultName&#xA;{&#xA;    // StructureMap will not use any kind of auto-wiring&#xA;    // on name&#xA;    public GuyWithNoDefaultName(string name)&#xA;    {&#xA;    }&#xA;}&#xA;&#xA;[Fact]&#xA;public void cannot_build_simple_arguments()&#xA;{&#xA;    var container = new Container();&#xA;&#xA;    Exception&lt;StructureMapBuildPlanException&gt;.ShouldBeThrownBy(() =&gt;&#xA;    {&#xA;        container.GetInstance&lt;GuyWithNoDefaultName&gt;();&#xA;    });&#xA;}&#xA;&#xA;</code></pre>
 <p>Part of the exception message thrown in the unit test shown above is the erroneous <a href="/diagnostics/build-plans">build plan</a>
 showing you that the <code>name</code> parameter has to be defined:</p>
 <pre>
@@ -103,14 +103,14 @@ showing you that the <code>name</code> parameter has to be defined:</p>
 </pre>
 <p>We can build <code>GuyWithNoDefaultName</code> by supplying a value for <code>name</code> as I did in the following
 sample:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void can_build_with_explicit_argument()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.ForConcreteType&lt;GuyWithNoDefaultName&gt;()&#xD;&#xA;            .Configure.Ctor&lt;string&gt;(&quot;name&quot;).Is(&quot;Steve Winwood&quot;);&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;GuyWithNoDefaultName&gt;()&#xD;&#xA;        .ShouldNotBeNull();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void can_build_with_explicit_argument()&#xA;{&#xA;    var container = new Container(_ =&gt;&#xA;    {&#xA;        _.ForConcreteType&lt;GuyWithNoDefaultName&gt;()&#xA;            .Configure.Ctor&lt;string&gt;(&quot;name&quot;).Is(&quot;Steve Winwood&quot;);&#xA;    });&#xA;&#xA;    container.GetInstance&lt;GuyWithNoDefaultName&gt;()&#xA;        .ShouldNotBeNull();&#xA;}&#xA;&#xA;</code></pre>
 <p>See <a href="/registration/policies">Construction Policies</a> for an example of using a constructor policy to set a dependency
 on a &quot;connectionString&quot; argument in a conventional way.</p>
 <h2 id="default-values">Default Values</h2>
 <p>As a new feature in the 4.0 release, StructureMap can finally take advantage of default parameter arguments to
 derive the values for a primitive argument (or setter value) while still allowing you to explicitly define
 that parameter or setter value:</p>
-<pre><code class="language-csharp">&#xD;&#xA;// I was listening to Jim Croce&#x27;s &quot;I&#x27;ve got a Name&quot; song&#xD;&#xA;// when I wrote this feature;)&#xD;&#xA;public class GuyWithName&#xD;&#xA;{&#xD;&#xA;    public GuyWithName(string name = &quot;Jim Croce&quot;)&#xD;&#xA;    {&#xD;&#xA;        Name = name;&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public string Name { get; set; }&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void uses_the_default_value_if_one_exists()&#xD;&#xA;{&#xD;&#xA;    var container = new Container();&#xD;&#xA;&#xD;&#xA;    // Should happily build with the default&#xD;&#xA;    // value of &#x27;name&#x27;&#xD;&#xA;    container.GetInstance&lt;GuyWithName&gt;()&#xD;&#xA;        .Name.ShouldBe(&quot;Jim Croce&quot;);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void uses_the_default_value_if_one_exists_2()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.ForConcreteType&lt;GuyWithName&gt;();&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    // Should happily build with the default&#xD;&#xA;    // value of &#x27;name&#x27;&#xD;&#xA;    container.GetInstance&lt;GuyWithName&gt;()&#xD;&#xA;        .Name.ShouldBe(&quot;Jim Croce&quot;);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;[Fact]&#xD;&#xA;public void use_explicit_dependency_if_one_exists()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(_ =&gt;&#xD;&#xA;    {&#xD;&#xA;        _.ForConcreteType&lt;GuyWithName&gt;()&#xD;&#xA;            .Configure.Ctor&lt;string&gt;(&quot;name&quot;).Is(&quot;Eric Clapton&quot;);&#xD;&#xA;    });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;GuyWithName&gt;()&#xD;&#xA;        .Name.ShouldBe(&quot;Eric Clapton&quot;);&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;// I was listening to Jim Croce&#x27;s &quot;I&#x27;ve got a Name&quot; song&#xA;// when I wrote this feature;)&#xA;public class GuyWithName&#xA;{&#xA;    public GuyWithName(string name = &quot;Jim Croce&quot;)&#xA;    {&#xA;        Name = name;&#xA;    }&#xA;&#xA;    public string Name { get; set; }&#xA;}&#xA;&#xA;[Fact]&#xA;public void uses_the_default_value_if_one_exists()&#xA;{&#xA;    var container = new Container();&#xA;&#xA;    // Should happily build with the default&#xA;    // value of &#x27;name&#x27;&#xA;    container.GetInstance&lt;GuyWithName&gt;()&#xA;        .Name.ShouldBe(&quot;Jim Croce&quot;);&#xA;}&#xA;&#xA;[Fact]&#xA;public void uses_the_default_value_if_one_exists_2()&#xA;{&#xA;    var container = new Container(_ =&gt;&#xA;    {&#xA;        _.ForConcreteType&lt;GuyWithName&gt;();&#xA;    });&#xA;&#xA;    // Should happily build with the default&#xA;    // value of &#x27;name&#x27;&#xA;    container.GetInstance&lt;GuyWithName&gt;()&#xA;        .Name.ShouldBe(&quot;Jim Croce&quot;);&#xA;}&#xA;&#xA;[Fact]&#xA;public void use_explicit_dependency_if_one_exists()&#xA;{&#xA;    var container = new Container(_ =&gt;&#xA;    {&#xA;        _.ForConcreteType&lt;GuyWithName&gt;()&#xA;            .Configure.Ctor&lt;string&gt;(&quot;name&quot;).Is(&quot;Eric Clapton&quot;);&#xA;    });&#xA;&#xA;    container.GetInstance&lt;GuyWithName&gt;()&#xA;        .Name.ShouldBe(&quot;Eric Clapton&quot;);&#xA;}&#xA;&#xA;</code></pre>
 
                       </div>
 

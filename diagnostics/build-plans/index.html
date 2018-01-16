@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.5.3</a>
+              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.5.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/diagnostics/using-the-container-model">Using the Container Model</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/diagnostics/environment-tests">Environment Tests</a></p></li>
                 </ul>
@@ -101,7 +101,7 @@
 <li>Description of any Lambda or <code>Func&lt;T&gt;</code> that is used to construct the Instance object</li>
 </ol>
 <p>To retrieve the build plan for a configured Instance, use the queryable <code>Container.Model</code> to find the configured Instance and call <code>DescribeBuildPlan(int maxDepth)</code> to get the textual report as shown in this sample below:</p>
-<pre><code class="language-csharp">&#xD;&#xA;var container = Container.For&lt;VisualizationRegistry&gt;();&#xD;&#xA;&#xD;&#xA;var description = container.Model.For&lt;IDevice&gt;().Default&#xD;&#xA;    .DescribeBuildPlan();&#xD;&#xA;&#xD;&#xA;Debug.WriteLine(description);&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;var container = Container.For&lt;VisualizationRegistry&gt;();&#xA;&#xA;var description = container.Model.For&lt;IDevice&gt;().Default&#xA;    .DescribeBuildPlan();&#xA;&#xA;Debug.WriteLine(description);&#xA;</code></pre>
 <p>The result of the code above is this textual representation of how StructureMap will build and/or resolve the default of the <code>IDevice</code> plugin type:</p>
 <pre>
 PluginType: StructureMap.Testing.Diagnostics.IDevice
@@ -116,7 +116,7 @@ Decorator --> Decorator of type StructureMap.Testing.Diagnostics.CrazyDecorator
       
 </pre>
 <p>For another example, you can retrieve the build plan for a named instance of a certain build plan with this code:</p>
-<pre><code class="language-csharp">&#xD;&#xA;var description = theContainer.Model.For&lt;IDevice&gt;()&#xD;&#xA;    .Find(&quot;A&quot;)&#xD;&#xA;    .DescribeBuildPlan();&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;var description = theContainer.Model.For&lt;IDevice&gt;()&#xA;    .Find(&quot;A&quot;)&#xA;    .DescribeBuildPlan();&#xA;</code></pre>
 <p>See <a href="/diagnostics/using-the-container-model">Using the Container Model</a> for more information on using <code>Container.Model</code>.</p>
 <p>You can find many more examples of finding the build plan description from <code>Container.Model</code> from the <a href="https://github.com/structuremap/structuremap/blob/master/src/StructureMap.Testing/Diagnostics/BuildPlanVisualizationSmokeTester.cs">unit tests in the StructureMap codebase</a>.</p>
 

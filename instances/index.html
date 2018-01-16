@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.5.3</a>
+              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.5.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/integrations">Integrating StructureMap into Common .Net Frameworks</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/release-notes">Release Notes</a></p></li>
                 </ul>
@@ -91,14 +91,14 @@
                           <!--Title:Custom Instance Types-->
 <p>Most users will never need to implement a custom <code>Instance</code> type, but it does come up here and there. The easiest way is probably to
 subclass <code>LambdaInstance</code> as shown below:</p>
-<pre><code class="language-csharp">&#xD;&#xA;public class FuncInstance&lt;T&gt; : LambdaInstance&lt;Func&lt;T&gt;&gt;&#xD;&#xA;{&#xD;&#xA;    // Pass a Func&lt;IContext, T&gt; into the base constructor&#xD;&#xA;    // Use a static method for cleaner syntax to avoid the &#xD;&#xA;    // nasty Lambda syntax formatting as needed&#xD;&#xA;    public FuncInstance() : base(s =&gt; s.GetInstance&lt;IContainer&gt;().GetInstance&lt;T&gt;)&#xD;&#xA;    {&#xD;&#xA;    }&#xD;&#xA;&#xD;&#xA;    public override string Description&#xD;&#xA;    {&#xD;&#xA;        get { return &quot;Constructor for Func&lt;{0}&gt;&quot;.ToFormat(typeof (T).Name); }&#xD;&#xA;    }&#xD;&#xA;}&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public class FuncInstance&lt;T&gt; : LambdaInstance&lt;Func&lt;T&gt;&gt;&#xA;{&#xA;    // Pass a Func&lt;IContext, T&gt; into the base constructor&#xA;    // Use a static method for cleaner syntax to avoid the &#xA;    // nasty Lambda syntax formatting as needed&#xA;    public FuncInstance() : base(s =&gt; s.GetInstance&lt;IContainer&gt;().GetInstance&lt;T&gt;)&#xA;    {&#xA;    }&#xA;&#xA;    public override string Description&#xA;    {&#xA;        get { return &quot;Constructor for Func&lt;{0}&gt;&quot;.ToFormat(typeof (T).Name); }&#xA;    }&#xA;}&#xA;</code></pre>
 <p>The other common customization is as a <a href="/generics">generic builder template</a></p>
 <p>If neither of these approaches will easily work for your custom <code>Instance</code>, you may want to contact the StructureMap team
 via the gitter link above and we can help walk you through a custom subclass of <code>Instance</code> -- or more likely, talk you out
 of it somehow.</p>
 <h2 id="missing-name-instance-template">Missing Name Instance Template</h2>
 <p>New to StructureMap 4.0 is the <code>Instance.ToNamedClone(name)</code> method that is used behind the scenes by the <a href="/the-container/handling-missing-named-instances">Handling Missing Named Instances</a> feature.</p>
-<pre><code class="language-csharp">&#xD;&#xA;public virtual Instance ToNamedClone(string name)&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public virtual Instance ToNamedClone(string name)&#xA;</code></pre>
 <p>Custom Instance types can override this method to provide a brand new Instance for a name. This functionality may be useful for multi-tenancy situations.</p>
 
                       </div>

@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.5.3</a>
+              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.5.3" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/resolving/get-a-service-by-plugin-type-and-name">Get a Service by Plugin Type and Name</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/resolving">Resolving Services</a></p></li>
                 </ul>
@@ -91,7 +91,7 @@
                           <!--Title: Get a Service by PluginType-->
 <!--Url: get-a-service-by-plugintype-->
 <p>Requesting the default configured object of a plugin type is done through the <code>IContainer.GetInstance()</code> method shown below:</p>
-<pre><code class="language-csharp">&#xD;&#xA;[Fact]&#xD;&#xA;public void get_the_default_instance()&#xD;&#xA;{&#xD;&#xA;    var container = new Container(x =&gt; { x.For&lt;IWidget&gt;().Use&lt;AWidget&gt;(); });&#xD;&#xA;&#xD;&#xA;    container.GetInstance&lt;IWidget&gt;()&#xD;&#xA;        .ShouldBeOfType&lt;AWidget&gt;();&#xD;&#xA;&#xD;&#xA;    // or&#xD;&#xA;&#xD;&#xA;    container.GetInstance(typeof(IWidget))&#xD;&#xA;        .ShouldBeOfType&lt;AWidget&gt;();&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;[Fact]&#xA;public void get_the_default_instance()&#xA;{&#xA;    var container = new Container(x =&gt; { x.For&lt;IWidget&gt;().Use&lt;AWidget&gt;(); });&#xA;&#xA;    container.GetInstance&lt;IWidget&gt;()&#xA;        .ShouldBeOfType&lt;AWidget&gt;();&#xA;&#xA;    // or&#xA;&#xA;    container.GetInstance(typeof(IWidget))&#xA;        .ShouldBeOfType&lt;AWidget&gt;();&#xA;}&#xA;&#xA;</code></pre>
 
                       </div>
 
