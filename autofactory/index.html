@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
+              <a href="/" class="navbar-brand">StructureMap 4.7.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.7.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/best-practices">Best Practices</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/dynamic-interception">Aspect Oriented Programming with StructureMap.DynamicInterception</a></p></li>
                 </ul>
@@ -118,7 +118,7 @@ with implementation
 <pre><code>IAutoFactoryMethodDefinition GetMethodDefinition(MethodInfo methodInfo, IList&lt;object&gt; arguments);
 </code></pre>
 <p><code>IAutoFactoryMethodDefinition</code> is defined as follows:</p>
-<pre><code class="language-csharp">&#xA;/// &lt;summary&gt;&#xA;/// Describes how AutoFactory should treat the specific method declared in an abstract factory interface.&#xA;/// &lt;/summary&gt;&#xA;public interface IAutoFactoryMethodDefinition&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// The method type. See &lt;see cref=&quot;AutoFactoryMethodType&quot;/&gt; for possible values.&#xA;    /// &lt;/summary&gt;&#xA;    AutoFactoryMethodType MethodType { get; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// The instance type to create.&#xA;    /// &lt;/summary&gt;&#xA;    Type InstanceType { get; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// The instance name if available.&#xA;    /// &lt;/summary&gt;&#xA;    string InstanceName { get; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// Explicit arguments if available.&#xA;    /// &lt;/summary&gt;&#xA;    ExplicitArguments ExplicitArguments { get; }&#xA;}&#xA;&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IAutoFactoryMethodDefinition&#xA;{&#xA;    AutoFactoryMethodType MethodType { get; }&#xA;&#xA;    Type InstanceType { get; }&#xA;&#xA;    string InstanceName { get; }&#xA;&#xA;    ExplicitArguments ExplicitArguments { get; }&#xA;}&#xA;&#xA;</code></pre>
 
                       </div>
 

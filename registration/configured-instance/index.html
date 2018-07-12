@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
+              <a href="/" class="navbar-brand">StructureMap 4.7.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.7.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/registration/policies">Construction Policies</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/registration/auto-registration-and-conventions">Auto-Registration and Conventions</a></p></li>
                 </ul>
@@ -95,7 +95,7 @@ StructureMap exposes the <code>IConfiguredInstance</code> interface as a means o
 created or resolved. While the <a href="/registration/registry-dsl">Registry DSL</a> fluent interface provides the main way of explicitly configuring concrete type creation,
 the <code>IConfiguredInstance</code> interface is meant to support <a href="/registration/auto-registration-and-conventions">conventional registration</a>,
 <a href="/registration/attributes">configuration attributes</a>, and <a href="/registration/policies">construction policies</a>.</p>
-<pre><code class="language-csharp">&#xA;/// &lt;summary&gt;&#xA;/// Represents a configured Instance object that&#xA;/// is built by StructureMap directly by calling &#xA;/// constructor functions and property setters&#xA;/// &lt;/summary&gt;&#xA;public interface IConfiguredInstance&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// The Instance name&#xA;    /// &lt;/summary&gt;&#xA;    string Name { get; set; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// The actual concrete type built by this Instance&#xA;    /// &lt;/summary&gt;&#xA;    Type PluggedType { get; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// The explicitly configured inline dependencies that override&#xA;    /// auto-wiring&#xA;    /// &lt;/summary&gt;&#xA;    DependencyCollection Dependencies { get; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// Add an interceptor to only this Instance&#xA;    /// &lt;/summary&gt;&#xA;    /// &lt;param name=&quot;interceptor&quot;&gt;&lt;/param&gt;&#xA;    void AddInterceptor(IInterceptor interceptor);&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// Set the lifecycle of only this Instance to the ILifecycle type.&#xA;    /// &lt;/summary&gt;&#xA;    /// &lt;typeparam name=&quot;T&quot;&gt;&lt;/typeparam&gt;&#xA;    /// &lt;example&gt;&#xA;    /// SetLifecycleTo&lt;SingletonLifecycle&gt;()&#xA;    /// &lt;/example&gt;&#xA;    void SetLifecycleTo&lt;T&gt;() where T : ILifecycle, new();&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// Set the lifecycle of only this Instance to a certain lifecycle&#xA;    /// &lt;/summary&gt;&#xA;    /// &lt;param name=&quot;lifecycle&quot;&gt;&lt;/param&gt;&#xA;    void SetLifecycleTo(ILifecycle lifecycle);&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// The current Lifecycle that will be used for this Instance&#xA;    /// &lt;/summary&gt;&#xA;    ILifecycle Lifecycle { get; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// Explicitly choose a constructor&#xA;    /// &lt;/summary&gt;&#xA;    ConstructorInfo Constructor { get; set; }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// Has a build plan already been created for this instance?&#xA;    /// &lt;/summary&gt;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xA;    bool HasBuildPlan();&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// Clears out any cached IBuildPlan for this Instance.&#xA;    /// &lt;/summary&gt;&#xA;    void ClearBuildPlan();&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IConfiguredInstance&#xA;{&#xA;    string Name { get; set; }&#xA;&#xA;    Type PluggedType { get; }&#xA;&#xA;    DependencyCollection Dependencies { get; }&#xA;&#xA;    void AddInterceptor(IInterceptor interceptor);&#xA;&#xA;    void SetLifecycleTo&lt;T&gt;() where T : ILifecycle, new();&#xA;&#xA;    void SetLifecycleTo(ILifecycle lifecycle);&#xA;&#xA;    ILifecycle Lifecycle { get; }&#xA;&#xA;    ConstructorInfo Constructor { get; set; }&#xA;&#xA;    bool HasBuildPlan();&#xA;&#xA;    void ClearBuildPlan();&#xA;}&#xA;</code></pre>
 <h2 id="changing-the-instance-lifecycle">Changing the Instance Lifecycle</h2>
 <p>You can override the lifecycle of a single <code>IConfiguredInstance</code> by calling the <code>LifecycleIs()</code> methods and either supplying a
 type of <code>ILifecycle</code> or an <code>ILifecycle</code> object. As a quick helper, there are also extension methods for common lifecycles:</p>

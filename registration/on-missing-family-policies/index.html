@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
+              <a href="/" class="navbar-brand">StructureMap 4.7.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.7.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/registration/constructor-selection">Constructor Selection</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/registration/changing-configuration-at-runtime">Changing Configuration at Runtime</a></p></li>
                 </ul>
@@ -92,7 +92,7 @@
 <!--Url: on-missing-family-policies-->
 <p>New for StructureMap 3.0 is a feature to create missing service registrations at runtime based on pluggable rules using the new <code>IFamilyPolicy</code>
 interface:</p>
-<pre><code class="language-csharp">&#xA;&#xA;/// &lt;summary&gt;&#xA;/// Allows StructureMap to fill in missing registrations by unknown plugin types&#xA;/// at runtime&#xA;/// &lt;/summary&gt;&#xA;public interface IFamilyPolicy&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// Allows you to create missing registrations for an unknown plugin type&#xA;    /// at runtime.&#xA;    /// Return null if this policy does not apply to the given type&#xA;    /// &lt;/summary&gt;&#xA;    PluginFamily Build(Type type);&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// Should this policy be used to determine whether or not the Container has&#xA;    /// registrations for a plugin type in the PluginGraph.HasFamily(type) method&#xA;    /// &lt;/summary&gt;&#xA;    bool AppliesToHasFamilyChecks { get; }&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;&#xA;public interface IFamilyPolicy&#xA;{&#xA;    PluginFamily Build(Type type);&#xA;&#xA;    bool AppliesToHasFamilyChecks { get; }&#xA;}&#xA;</code></pre>
 <p>Internally, if you make a request to <code>IContainer.GetInstance(type)</code> for a type that the active <code>Container</code> does not recognize, StructureMap will next
 try to apply all the registered <code>IFamilyPolicy</code> policies to create a <code>PluginFamily</code> object for that plugin type that models the registrations for that plugin type, including the default, additional named instances, interceptors or decorators, and lifecycle rules.</p>
 <p>The simplest built in example is the <code>EnumerableFamilyPolicy</code> shown below that can fill in requests for <code>IList&lt;T&gt;</code>, <code>ICollection&lt;T&gt;</code>, and <code>T[]</code> with a collection of all the known registrations of the type <code>T</code>:</p>

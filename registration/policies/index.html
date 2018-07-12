@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
+              <a href="/" class="navbar-brand">StructureMap 4.7.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.7.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/registration/changing-configuration-at-runtime">Changing Configuration at Runtime</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/registration/configured-instance">Working with IConfiguredInstance</a></p></li>
                 </ul>
@@ -94,7 +94,7 @@
 and 3.0 introduced cleaner mechanisms for <a href="/interception-and-decorators">interception policies</a>.
 The 4.0 release extends StructureMap's support for conventional build policies with a new mechanism for altering
 <em>how</em> object instances are built based on user created <em>meta-conventions</em> using the <code>IInstancePolicy</code> shown below:</p>
-<pre><code class="language-csharp">&#xA;/// &lt;summary&gt;&#xA;/// Custom policy on Instance construction that is evaluated&#xA;/// as part of creating a &quot;build plan&quot;&#xA;/// &lt;/summary&gt;&#xA;public interface IInstancePolicy&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// Apply any conventional changes to the configuration&#xA;    /// of a single Instance&#xA;    /// &lt;/summary&gt;&#xA;    /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;&#xA;    /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;&#xA;    void Apply(Type pluginType, Instance instance);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IInstancePolicy&#xA;{&#xA;    void Apply(Type pluginType, Instance instance);&#xA;}&#xA;</code></pre>
 <p>These policies are registered as part of the <a href="/registration/registry-dsl">registry dsl</a> with
 the <code>Policies.Add()</code> method:</p>
 <pre><code class="language-csharp">&#xA;var container = new Container(_ =&gt;&#xA;{&#xA;    _.Policies.Add&lt;MyCustomPolicy&gt;();&#xA;    // or&#xA;    _.Policies.Add(new MyCustomPolicy());&#xA;});&#xA;</code></pre>
@@ -109,7 +109,7 @@ for actual construction.</p>
 the ability to add interceptors and to modify the lifecycle. If you wish to add inline dependencies to
 Instances that are built by calling constructor function and setter properties, you may find it easier
 to use the <code>ConfiguredInstancePolicy</code> base class as a convenience:</p>
-<pre><code class="language-csharp">&#xA;public abstract class ConfiguredInstancePolicy : IInstancePolicy&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// Applies explicit configuration to an IConfiguredInstance&#xA;    /// &lt;/summary&gt;&#xA;    /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;&#xA;    /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;&#xA;    public void Apply(Type pluginType, Instance instance)&#xA;    {&#xA;        var configured = instance as IConfiguredInstance;&#xA;        if (configured != null)&#xA;        {&#xA;            apply(pluginType, configured);&#xA;        }&#xA;    }&#xA;&#xA;    /// &lt;summary&gt;&#xA;    /// This method is called against any Instance that implements the&#xA;    /// IConfiguredInstance interface&#xA;    /// &lt;/summary&gt;&#xA;    /// &lt;param name=&quot;pluginType&quot;&gt;&lt;/param&gt;&#xA;    /// &lt;param name=&quot;instance&quot;&gt;&lt;/param&gt;&#xA;    protected abstract void apply(Type pluginType, IConfiguredInstance instance);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public abstract class ConfiguredInstancePolicy : IInstancePolicy&#xA;{&#xA;    public void Apply(Type pluginType, Instance instance)&#xA;    {&#xA;        var configured = instance as IConfiguredInstance;&#xA;        if (configured != null)&#xA;        {&#xA;            apply(pluginType, configured);&#xA;        }&#xA;    }&#xA;&#xA;    protected abstract void apply(Type pluginType, IConfiguredInstance instance);&#xA;}&#xA;</code></pre>
 <p>For more information, see:</p>
 <ul>
 <li><a href="/diagnostics/build-plans">Build Plans</a></li>

@@ -31,7 +31,7 @@
         <nav class="navbar navbar-default navbar-fixed-top" role="banner">
           <div class="container">
             <div class="navbar-header">
-              <a href="/" class="navbar-brand">StructureMap 4.6.0</a>
+              <a href="/" class="navbar-brand">StructureMap 4.7.0</a>
             </div>
             <nav class="collapse navbar-collapse" role="navigation">
               <ul class="nav navbar-nav pull-right">
@@ -74,7 +74,7 @@
 
               <div class="col-md-3" id="leftCol">
                 <ul class="nav nav-stacked affix" id="sidebar">
-                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.6.0" width="210" height="210"></h3></li>
+                    <li><h3><img src="/content/images/structuremap-logo-210x210.png" alt="StructureMap 4.7.0" width="210" height="210"></h3></li>
                     <li><h3 class="no-margin">Next</h3><p><a href="/interpreting-exceptions">Interpreting Exceptions</a></p></li>
                     <li><h3 class="no-margin">Previous</h3><a href="/generics">Generic Types</a></p></li>
                 </ul>
@@ -143,7 +143,7 @@ provides the <code>FuncInterceptor&lt;T&gt;</code> type where <code>T</code> is 
 and activators by an individual <code>Instance</code> or by matching on implementing types. For more customized interception policies
 that don't fit these mechanisms, StructureMap allows you to directly define an interception policy with a class
 implementing this interface below:</p>
-<pre><code class="language-csharp">&#xA;/// &lt;summary&gt;&#xA;/// User defined policy to conventionally attach interceptors&#xA;/// to any pluginType/instance combination in a StructureMap&#xA;/// container&#xA;/// &lt;/summary&gt;&#xA;public interface IInterceptorPolicy : IDescribed&#xA;{&#xA;    /// &lt;summary&gt;&#xA;    /// Determine what (if any) interceptors should be attached to the&#xA;    /// given instance and pluginType&#xA;    /// &lt;/summary&gt;&#xA;    /// &lt;param name=&quot;pluginType&quot;&gt;The Type that is being requested&lt;/param&gt;&#xA;    /// &lt;param name=&quot;instance&quot;&gt;The Instance being built&lt;/param&gt;&#xA;    /// &lt;returns&gt;&lt;/returns&gt;&#xA;    IEnumerable&lt;IInterceptor&gt; DetermineInterceptors(Type pluginType, Instance instance);&#xA;}&#xA;</code></pre>
+<pre><code class="language-csharp">&#xA;public interface IInterceptorPolicy : IDescribed&#xA;{&#xA;    IEnumerable&lt;IInterceptor&gt; DetermineInterceptors(Type pluginType, Instance instance);&#xA;}&#xA;</code></pre>
 <p>For a simple example, let's say that we want to decorate any <code>IWidget</code> object with the
 <code>WidgetHolder</code> class from earlier. We could build a small custom interceptor policy
 like this one:</p>
